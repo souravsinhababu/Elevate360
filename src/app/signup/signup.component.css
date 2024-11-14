@@ -1,0 +1,125 @@
+/* Center the form */
+.form-container {
+  width: 350px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: left;;
+  background-color: rgb(234, 255, 0);
+  opacity: 0;
+  animation: fadeIn 1s forwards; /* Fade in animation for the form */
+  transition: transform 0.3s ease-in-out;
+}
+
+.form-container label {
+  font-size: 14px;  /* Reduced label font size */
+  font-weight: bold;
+  color: rgb(23, 187, 252);
+  display: inline-block;
+  width: 60%;  /* Reduced label width to ensure it fits */
+  vertical-align: middle;
+  margin-right: 10px;
+  text-align: left;  /* Align text to the left */
+}
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+  }
+  to {
+      opacity: 1;
+  }
+}
+
+/* Input Fields - Apply animation when focused */
+input[type="text"], input[type="password"], select {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+/* Focus effect for input fields */
+input[type="text"]:focus, input[type="password"]:focus, select:focus {
+  border-color: #4CAF50;
+  background-color: #e9f7e9;
+  transform: scale(1.05); /* Slight zoom effect on focus */
+}
+
+/* Role Selection dropdown animation */
+select {
+  animation: slideIn 0.5s ease-out;
+}
+
+/* Slide-in effect for dropdown */
+@keyframes slideIn {
+  from {
+      transform: translateX(-100%);
+      opacity: 0;
+  }
+  to {
+      transform: translateX(0);
+      opacity: 1;
+  }
+}
+
+/* Trainer, Trainee, Admin forms - Animation when shown */
+div {
+  opacity: 0;
+  animation: slideUp 0.5s forwards;
+}
+
+@keyframes slideUp {
+  from {
+      transform: translateY(20px);
+      opacity: 0;
+  }
+  to {
+      transform: translateY(0);
+      opacity: 1;
+  }
+}
+
+/* Submit button */
+button {
+  width: 90%;
+  padding: 10px;
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Hover effect for submit button */
+button:hover {
+  background-color: #45a049;
+  transform: scale(1.05); /* Button slightly grows on hover */
+}
+
+/* Button press effect */
+button:active {
+  transform: scale(0.98); /* Button shrinks slightly on click */
+}
+
+/* Label fade-in effect */
+label {
+  opacity: 0;
+  animation: fadeInLabel 0.5s forwards;
+}
+
+@keyframes fadeInLabel {
+  from {
+      opacity: 0;
+  }
+  to {
+      opacity: 1;
+  }
+}
