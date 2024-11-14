@@ -12,6 +12,14 @@ public class Trainer {
     private String trainerPassword;
     private String trainerSpecialization;
 
+    public Trainer(){}
+
+    public Trainer(String trainerEmail, String trainerUserName, String trainerPassword, String trainerSpecialization) {
+        this.trainerEmail = trainerEmail;
+        this.trainerUserName = trainerUserName;
+        this.trainerPassword = trainerPassword;
+        this.trainerSpecialization = trainerSpecialization;
+    }
     public String getTrainerEmail() {
         return trainerEmail;
     }
@@ -44,12 +52,6 @@ public class Trainer {
         this.trainerSpecialization = trainerSpecialization;
     }
 
-    public Trainer(String trainerEmail, String trainerUserName, String trainerPassword, String trainerSpecialization) {
-        this.trainerEmail = trainerEmail;
-        this.trainerUserName = trainerUserName;
-        this.trainerPassword = trainerPassword;
-        this.trainerSpecialization = trainerSpecialization;
-    }
 
     @Override
     public String toString() {
@@ -60,6 +62,4 @@ public class Trainer {
                 ", trainerSpecialization='" + trainerSpecialization + '\'' +
                 '}';
     }
-
-    public Trainer(){}
 }
