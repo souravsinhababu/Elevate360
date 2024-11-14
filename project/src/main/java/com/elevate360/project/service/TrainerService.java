@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TrainerService {
@@ -21,4 +22,20 @@ public class TrainerService {
     public List<Trainer> showTrainerDetails() {
         return trainerRepo.findAll();
     }
+
+    public String loginTrainer(String email, String password) {
+        Optional<Trainer> trainerOpt = trainerRepo.findById(email);  // Assuming email is the ID in DB
+
+        if (trainerOpt.isPresent()) {
+            Trainer trainer = trainerOpt.get();
+            if (trainer.getTrainerPassword().equals(password)) {
+                return "Login successful";
+            } else {
+                return "Invalid password";
+            }
+        } else {
+            return "Trainer not found";
+        }
+    }
 }
+
