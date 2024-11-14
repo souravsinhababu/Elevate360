@@ -3,9 +3,19 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "LoginForm": {
+    "Login": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "standalone": false
+        },
+        "@schematics/angular:directive": {
+          "standalone": false
+        },
+        "@schematics/angular:pipe": {
+          "standalone": false
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -13,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/login-form",
+            "outputPath": "dist/login",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -64,10 +74,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "LoginForm:build:production"
+              "buildTarget": "Login:build:production"
             },
             "development": {
-              "buildTarget": "LoginForm:build:development"
+              "buildTarget": "Login:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -99,6 +109,6 @@
     }
   },
   "cli": {
-    "analytics": "1178de2b-065a-4acb-a6b4-b15e91f0e0cb"
+    "analytics": "abc7c70c-f73c-4104-b206-b80cb12d96fa"
   }
 }

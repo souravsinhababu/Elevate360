@@ -1,13 +1,10 @@
-
-
 <div class="container">
   <h1>User Authentication</h1>
-  <button (click)="showLogin = true" class="g1">Login</button>
-  <button (click)="showLogin = false" class="g1">Sign Up</button>
 
-  <!-- Conditional display of Login or Signup component -->
-  <app-login *ngIf="showLogin"></app-login>
-  <app-signup *ngIf="!showLogin"></app-signup>
+  <!-- Navigation buttons to switch between Login and Sign Up -->
+  <button routerLink="/login" class="g1">Login</button>
+  <button routerLink="/signup" class="g1">Sign Up</button>
+
+  <!-- Display routed component here -->
+  <router-outlet></router-outlet>
 </div>
-
-  

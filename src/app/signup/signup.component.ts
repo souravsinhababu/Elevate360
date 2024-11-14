@@ -1,43 +1,41 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // Import FormsModule here
-import { CommonModule } from '@angular/common'; // CommonModule for Angular directives
 
 @Component({
   selector: 'app-signup',
-  standalone: true, // Mark the component as standalone
-  imports: [CommonModule, FormsModule], // Declare necessary modules
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
 export class SignupComponent {
-  role: string = '';  // The selected role value
+
   username: string = '';
   password: string = '';
   mobile: string = '';
-  firstName: string = '';
-  lastName: string = '';
-  designation: string = '';
-  specialization: string = '';
+  role: string = '';
+  specialization: string = '';  // Only for trainer
+  firstName: string = '';  // Only for trainee
+  lastName: string = '';   // Only for trainee
+  designation: string = '';  // Only for trainee
 
-  // Method triggered when the role changes
-  roleChanged() {
-    console.log('Role changed to:', this.role);
-    // Optionally, add additional logic based on the selected role
-    if (this.role === 'trainer') {
-      console.log('Specialization required for trainer.');
-    }
+  // Sign up form submission logic
+  onSignUpSubmit() {
+    alert('Sign Up Submitted:\n' + 
+          'Role: ' + this.role + '\n' +
+          'Username: ' + this.username + '\n' +
+          'Password: ' + this.password + '\n' +
+          'Mobile: ' + this.mobile + '\n' +
+          'Specialization: ' + this.specialization + '\n' +
+          'First Name: ' + this.firstName + '\n' +
+          'Last Name: ' + this.lastName + '\n' +
+          'Designation: ' + this.designation);
+   
   }
+    
 
-  onSubmit() {
-    console.log('Sign Up submitted with details:', {
-      role: this.role,
-      username: this.username,
-      password: this.password,
-      mobile: this.mobile,
-      firstName: this.firstName,
-      lastName: this.lastName,
-      designation: this.designation,
-      specialization: this.specialization
-    });
+  // Reset form fields when role changes
+  roleChanged() {
+    this.specialization = '';
+    this.firstName = '';
+    this.lastName = '';
+    this.designation = '';
   }
 }

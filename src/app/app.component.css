@@ -1,75 +1,75 @@
 /* Container for the whole layout */
 .container {
-  text-align: center;
-  padding: 20px;
-  font-family: 'Arial', sans-serif;
-}
-
-/* Header style */
-.header {
-  text-align: center;
-  padding: 20px;
-}
-
-/* Base button styling */
-.g1 {
-  font-size: 16px;
-  padding: 15px 30px;
-  margin: 10px;
-  border: none;
-  border-radius: 8px; /* Rounded corners */
-  cursor: pointer;
-  transition: all 0.3s ease; /* Smooth transition for hover effects */
-  font-weight: bold;
-  text-transform: uppercase; /* Make text uppercase */
-}
-
-/* Default button color */
-.g1 {
-  color: white;
-  background: linear-gradient(45deg, rgba(255, 60, 0, 1) 0%, rgba(35, 14, 231, 1) 100%);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for 3D effect */
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Slight text shadow */
-}
-
-/* Hover effect */
-.g1:hover {
-  background: linear-gradient(45deg, rgba(35, 14, 231, 1) 0%, rgba(255, 60, 0, 1) 100%);
-  transform: translateY(-3px); /* Button lifts when hovered */
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Increased shadow on hover */
-}
-
-/* Focus effect */
-.g1:focus {
-  outline: none;
-  box-shadow: 0 0 10px rgba(35, 14, 231, 0.8); /* Focus glow effect */
-}
-
-/* Disabled state */
-.g1:disabled {
-  background: #ddd;
-  color: #888;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-/* Additional animation effect on active state */
-.g1:active {
-  transform: translateY(2px); /* Button pressed effect */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle pressed shadow */
-}
-
-/* Style the h1 header */
-h1 {
-  color: #333;
-  font-size: 2em;
-  margin-bottom: 20px;
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 768px) {
-  .g1 {
-    font-size: 14px;
-    padding: 12px 25px;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
   }
-}
+  
+  /* Header style */
+  .header {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  /* Base button styling */
+  .g1 {
+    font-size: 16px;
+    padding: 15px 30px;
+    margin: 10px;
+    border: none;
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer;
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    font-weight: bold;
+    text-transform: uppercase; /* Make text uppercase */
+  }
+  
+  /* Default button color */
+  .g1 {
+    color: white;
+    background: linear-gradient(45deg, rgba(255, 60, 0, 1) 0%, rgba(35, 14, 231, 1) 100%);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for 3D effect */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Slight text shadow */
+  }
+  
+  /* Hover effect */
+  .g1:hover {
+    background: linear-gradient(45deg, rgba(35, 14, 231, 1) 0%, rgba(255, 60, 0, 1) 100%);
+    transform: translateY(-3px); /* Button lifts when hovered */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Increased shadow on hover */
+  }
+  
+  /* Focus effect */
+  .g1:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(35, 14, 231, 0.8); /* Focus glow effect */
+  }
+  
+  /* Disabled state */
+  .g1:disabled {
+    background: #ddd;
+    color: #888;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  
+  /* Additional animation effect on active state */
+  .g1:active {
+    transform: translateY(2px); /* Button pressed effect */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle pressed shadow */
+  }
+  
+  /* Style the h1 header */
+  h1 {
+    color: #333;
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+  
+  /* Responsive adjustments for smaller screens */
+  @media (max-width: 768px) {
+    .g1 {
+      font-size: 14px;
+      padding: 12px 25px;
+    }
+  }

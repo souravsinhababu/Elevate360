@@ -4,24 +4,29 @@
   margin: 50px auto;
   padding: 20px;
   border: 1px solid #ccc;
+  font-family: "Kanit", sans-serif;
+  font-weight: 500;
+  font-style: normal;
   border-radius: 8px;
-  text-align: left;;
-  background-color: rgb(234, 255, 0);
+  text-align: left;
+  background: linear-gradient(135deg, rgba(255, 204, 0, 1) 0%, rgba(255, 153, 0, 1) 100%); /* Lighter gradient */
   opacity: 0;
   animation: fadeIn 1s forwards; /* Fade in animation for the form */
   transition: transform 0.3s ease-in-out;
+  color: #333;  /* Set the default font color for the form text */
 }
 
 .form-container label {
   font-size: 14px;  /* Reduced label font size */
   font-weight: bold;
-  color: rgb(23, 187, 252);
+  color: #333;  /* Set label color to dark gray for consistency */
   display: inline-block;
   width: 60%;  /* Reduced label width to ensure it fits */
   vertical-align: middle;
   margin-right: 10px;
   text-align: left;  /* Align text to the left */
 }
+
 /* Fade-in animation */
 @keyframes fadeIn {
   from {
@@ -42,6 +47,7 @@ input[type="text"], input[type="password"], select {
   background-color: #f9f9f9;
   font-size: 16px;
   transition: all 0.3s ease;
+  color: #333;  /* Set input text color to dark gray */
 }
 
 /* Focus effect for input fields */
