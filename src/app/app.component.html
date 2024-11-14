@@ -1,0 +1,13 @@
+
+
+<div class="container">
+  <h1>User Authentication</h1>
+  <button (click)="showLogin = true" class="g1">Login</button>
+  <button (click)="showLogin = false" class="g1">Sign Up</button>
+
+  <!-- Conditional display of Login or Signup component -->
+  <app-login *ngIf="showLogin"></app-login>
+  <app-signup *ngIf="!showLogin"></app-signup>
+</div>
+
+  
