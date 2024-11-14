@@ -14,7 +14,6 @@ public class TrainerController {
     private TrainerService trainerService;
 
     @PostMapping("/addUser")
-    public void addTrainerDetail(Trainer trainer){
-        trainerService.addUser(trainer);
+    public void addTrainerDetail(Trainer trainer){trainerService.addUser(trainer);
     }
 }
