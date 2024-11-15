@@ -10,6 +10,16 @@ public class Admin {
     private String username;
     private String password;
 
+    // Default constructor
+    public Admin() {}
+
+    // Parametrized constructor
+    public Admin(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    // Getters and Setters
     public String getUsername() {
         return username;
     }
@@ -26,11 +36,6 @@ public class Admin {
         this.password = password;
     }
 
-    public Admin(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
     @Override
     public String toString() {
         return "Admin{" +
@@ -38,6 +43,4 @@ public class Admin {
                 ", password='" + password + '\'' +
                 '}';
     }
-
-    public Admin(){}
 }
