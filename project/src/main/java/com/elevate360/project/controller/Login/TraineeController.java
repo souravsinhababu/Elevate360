@@ -1,7 +1,7 @@
-package com.elevate360.project.controller;
+package com.elevate360.project.controller.Login;
 
 import com.elevate360.project.model.Trainee;
-import com.elevate360.project.service.TraineeService;
+import com.elevate360.project.service.Login.TraineeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

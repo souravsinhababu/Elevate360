@@ -1,4 +1,4 @@
-package com.elevate360.project.service;
+package com.elevate360.project.service.Login;
 
 import com.elevate360.project.model.Admin;
 import com.elevate360.project.repo.AdminRepo;

@@ -1,7 +1,7 @@
-package com.elevate360.project.controller;
+package com.elevate360.project.controller.Login;
 
 import com.elevate360.project.model.Admin;
-import com.elevate360.project.service.AdminService;
+import com.elevate360.project.service.Login.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
