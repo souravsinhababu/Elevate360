@@ -1,4 +1,4 @@
-package com.elevate360.project.service;
+package com.elevate360.project.service.Login;
 
 import com.elevate360.project.model.Trainee;
 import com.elevate360.project.model.courselist.CourseList;
@@ -65,3 +65,5 @@ public class TraineeService {
         }
     }
 }
+
+//this is service comment

@@ -28,7 +28,7 @@ public class TraineeController {
 
     // Endpoint for Trainee login
     @GetMapping("/loginTrainee")
-    public String loginTrainee(@RequestParam String email, @RequestParam String password) {
+    public Object loginTrainee(@RequestParam String email, @RequestParam String password) {
         return traineeService.loginTrainee(email, password);
     }
 }
