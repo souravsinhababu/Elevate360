@@ -1,6 +1,5 @@
 package com.elevate360.project.controller.Login;
 
-
 import com.elevate360.project.model.Trainer;
 import com.elevate360.project.service.Login.TrainerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ public class TrainerController {
 
     @PostMapping("/addUser")
     public String addTrainerDetail(@RequestBody Trainer trainer){
-        System.out.println(trainer.getTrainerEmail());
         trainerService.addUser(trainer);
         return "User added";
     }
