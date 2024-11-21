@@ -42,11 +42,11 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- MySQL Connector for database connectivity -->
+		<!-- PostgreSQL Connector for database connectivity -->
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.33</version>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.3</version>
 		</dependency>
 
 		<!-- Spring Boot Starter Test (for testing) -->
@@ -55,6 +55,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 
 	<build>

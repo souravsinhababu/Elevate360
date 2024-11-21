@@ -24,7 +24,7 @@ public class AdminService {
 
         if (adminOpt.isPresent()) {
             Admin admin = adminOpt.get();
-            if (admin.getPassword().equals(password)) {
+            if (password.equals(admin.getPassword())) {
                 return "Admin login successful";
             } else {
                 return "Invalid password";

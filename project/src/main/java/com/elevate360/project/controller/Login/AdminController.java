@@ -5,6 +5,7 @@ import com.elevate360.project.model.Course.Course;
 import com.elevate360.project.service.Course.CourseService;
 import com.elevate360.project.service.Login.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class AdminController {
 
     // Endpoint to login as Admin
     @GetMapping("/adminLogin")
-    public String loginAdmin(@RequestParam String username, @RequestParam String password) {
+    public String loginAdmin(@RequestParam  String username, @RequestParam String password) {
         return adminService.loginAdmin(username, password);
     }
 
