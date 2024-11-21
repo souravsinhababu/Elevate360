@@ -14,5 +14,4 @@ export class LoginComponent {
   onLoginSubmit() {
     alert('Login Submitted: ' + 'Username: ' + this.username + ', Password: ' + this.password);
   }
-  
 }

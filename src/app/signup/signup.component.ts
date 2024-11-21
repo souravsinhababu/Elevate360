@@ -27,7 +27,6 @@ export class SignupComponent {
           'First Name: ' + this.firstName + '\n' +
           'Last Name: ' + this.lastName + '\n' +
           'Designation: ' + this.designation);
-   
   }
     
 
