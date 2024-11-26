@@ -1,0 +1,115 @@
+/* Overall container styles */
+.dashboard-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .search-container, .filter-container {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    margin-right: 10px;
+  }
+  
+  input[type="text"], select {
+    padding: 5px;
+    margin-left: 10px;
+  }
+  
+  button {
+    padding: 8px 12px;
+    margin-left: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  h3 {
+    color: #333;
+  }
+  
+  /* Table styles */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .data-table th, .data-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .data-table th {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .data-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Action buttons inside table cells */
+  button {
+    margin-right: 5px;
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+  
+  button.edit {
+    background-color: #28a745;
+  }
+  
+  button.delete {
+    background-color: #dc3545;
+  }
+  
+  /* Button hover styles */
+  button.edit:hover {
+    background-color: #218838;
+  }
+  
+  button.delete:hover {
+    background-color: #c82333;
+  }
+  
+  .action-buttons {
+    margin-top: 20px;
+  }
+  
+  .action-buttons button {
+    margin-right: 10px;
+    font-size: 16px;
+    padding: 10px 20px;
+    background-color: #17a2b8;
+  }
+  
+  .action-buttons button:hover {
+    background-color: #138496;
+  }
+  
+  /* No data found message */
+  div:empty {
+    color: #888;
+    font-style: italic;
+    margin-top: 20px;
+  }
+  

@@ -1,8 +1,6 @@
-<!-- admin.component.html -->
-<div >
+<div>
   <p>Welcome, Admin!</p>
-  <button  routerLink="/home">Logout</button>
-
+  <button routerLink="/home">Logout</button>
 </div>
 
 <div class="dashboard-container">
@@ -26,12 +24,25 @@
   <div *ngIf="selectedRole === 'Trainer' || selectedRole === 'All'">
     <h3>List of Trainers</h3>
     <div *ngIf="trainers.length > 0">
-      <div *ngFor="let trainer of trainers" class="trainer-card">
-        <p>Name: {{ trainer.username }}</p>
-        <p>Email: {{ trainer.email }}</p>
-        <button (click)="editTrainer(trainer)">Edit</button>
-        <button (click)="deleteTrainer(trainer.id)">Delete</button>
-      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let trainer of trainers">
+            <td>{{ trainer.username }}</td>
+            <td>{{ trainer.email }}</td>
+            <td>
+              <button (click)="editTrainer(trainer)">Edit</button>
+              <button (click)="deleteTrainer(trainer.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div *ngIf="trainers.length === 0">No trainers found.</div>
   </div>
@@ -39,12 +50,25 @@
   <div *ngIf="selectedRole === 'Trainee' || selectedRole === 'All'">
     <h3>List of Trainees</h3>
     <div *ngIf="trainees.length > 0">
-      <div *ngFor="let trainee of trainees" class="trainee-card">
-        <p>Name: {{ trainee.username }}</p>
-        <p>Email: {{ trainee.email }}</p>
-        <button (click)="editTrainee(trainee)">Edit</button>
-        <button (click)="deleteTrainee(trainee.id)">Delete</button>
-      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let trainee of trainees">
+            <td>{{ trainee.username }}</td>
+            <td>{{ trainee.email }}</td>
+            <td>
+              <button (click)="editTrainee(trainee)">Edit</button>
+              <button (click)="deleteTrainee(trainee.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div *ngIf="trainees.length === 0">No trainees found.</div>
   </div>

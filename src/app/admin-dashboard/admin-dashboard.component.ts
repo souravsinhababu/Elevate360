@@ -49,11 +49,11 @@ export class AdminDashboardComponent implements OnInit {
   search() {
     if (this.searchQuery.trim()) {
       this.trainers = this.trainers.filter(trainer =>
-        trainer.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        trainer.username.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
         trainer.email.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
       this.trainees = this.trainees.filter(trainee =>
-        trainee.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        trainee.username.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
         trainee.email.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
     }
