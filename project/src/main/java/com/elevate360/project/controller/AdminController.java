@@ -25,5 +25,24 @@ public class AdminController {
     public List<User> getAllTrainees() {
         return userRepository.findByRole("trainee");
     }
+
+    @DeleteMapping("/trainers/{id}")
+    public void deleteTrainer(@PathVariable Long id) {
+        // Check if the user exists and has the role 'trainer'
+        User trainer = userRepository.findById(id).orElse(null);
+        if (trainer != null && "trainer".equals(trainer.getRole())) {
+            userRepository.deleteById(id);
+        }
+    }
+
+    // Delete a trainee by ID
+    @DeleteMapping("/trainees/{id}")
+    public void deleteTrainee(@PathVariable Long id) {
+        // Check if the user exists and has the role 'trainee'
+        User trainee = userRepository.findById(id).orElse(null);
+        if (trainee != null && "trainee".equals(trainee.getRole())) {
+            userRepository.deleteById(id);
+        }
+    }
 }
 
