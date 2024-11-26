@@ -1,79 +1,53 @@
 <div class="form-container">
-    <h2>Sign Up</h2>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <h2>Sign Up</h2>
 
-    <!-- Role Selection -->
+  <form #signupForm="ngForm" (ngSubmit)="onSignUpSubmit()">
     <label for="role">Select Role:</label>
-    <select id="role" [(ngModel)]="role" name="role" (change)="roleChanged()">
+    <select id="role" [(ngModel)]="role" name="role" (change)="roleChanged()" required>
       <option value="">Select Role</option>
       <option value="trainer">Trainer</option>
       <option value="trainee">Trainee</option>
       <option value="admin">Admin</option>
     </select>
-  
-    <!-- Trainer Form -->
+    <div *ngIf="signupForm.submitted && !role" class="error">Role is required</div>
+
+    <!-- Common Form Fields -->
+    <label for="username">Username:</label>
+    <input type="text" id="username" [(ngModel)]="username" name="username" required minlength="4" #usernameField="ngModel">
+    <div *ngIf="usernameField.invalid && usernameField.touched" class="error">Username is required and must be at least 4 characters</div>
+    
+    <label for="email">Email:</label>
+    <input type="email" id="email" [(ngModel)]="email" name="email" required email #emailField="ngModel">
+    <div *ngIf="emailField.invalid && emailField.touched" class="error">Valid email is required</div>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" [(ngModel)]="password" name="password" required minlength="6" #passwordField="ngModel">
+    <div *ngIf="passwordField.invalid && passwordField.touched" class="error">Password is required and must be at least 6 characters</div>
+
+    <label for="mobile">Mobile Number:</label>
+    <input type="text" id="mobile" [(ngModel)]="mobile" name="mobile" required pattern="^\d{10}$" #mobileField="ngModel">
+    <div *ngIf="mobileField.invalid && mobileField.touched" class="error">Mobile number must be 10 digits</div>
+
+    <!-- Trainer-specific field -->
     <div *ngIf="role === 'trainer'">
-      <label for="username">Username:</label>
-      <input type="text" id="username" [(ngModel)]="username" name="username" required>
-      <br>
-  
-      <label for="password">Password:</label>
-      <input type="password" id="password" [(ngModel)]="password" name="password" required>
-      <br>
-  
-      <label for="mobile">Mobile Number:</label>
-      <input type="text" id="mobile" [(ngModel)]="mobile" name="mobile" required>
-      <br>
-  
       <label for="specialization">Specialization:</label>
-      <input type="text" id="specialization" [(ngModel)]="specialization" name="specialization" required>
-      <br><br>
+      <input type="text" id="specialization" [(ngModel)]="specialization" name="specialization" required #specializationField="ngModel">
+      <div *ngIf="specializationField.invalid && specializationField.touched" class="error">Specialization is required</div>
     </div>
-  
-    <!-- Trainee Form -->
+
+    <!-- Trainee-specific fields -->
     <div *ngIf="role === 'trainee'">
-      <label for="username">Username:</label>
-      <input type="text" id="username" [(ngModel)]="username" name="username" required>
-      <br>
-  
-      <label for="password">Password:</label>
-      <input type="password" id="password" [(ngModel)]="password" name="password" required>
-      <br>
-  
-      <label for="firstName">First Name:</label>
-      <input type="text" id="firstName" [(ngModel)]="firstName" name="firstName" required>
-      <br>
-  
-      <label for="lastName">Last Name:</label>
-      <input type="text" id="lastName" [(ngModel)]="lastName" name="lastName" required>
-      <br>
-  
-      <label for="mobile">Mobile Number:</label>
-      <input type="text" id="mobile" [(ngModel)]="mobile" name="mobile" required>
-      <br>
-  
       <label for="designation">Designation:</label>
-      <input type="text" id="designation" [(ngModel)]="designation" name="designation" required>
-      <br><br>
+      <input type="text" id="designation" [(ngModel)]="designation" name="designation" required #designationField="ngModel">
+      <div *ngIf="designationField.invalid && designationField.touched" class="error">Designation is required</div>
     </div>
-  
-    <!-- Admin Form -->
-    <div *ngIf="role === 'admin'">
-      <label for="username">Username:</label>
-      <input type="text" id="username" [(ngModel)]="username" name="username" required>
-      <br>
-  
-      <label for="password">Password:</label>
-      <input type="password" id="password" [(ngModel)]="password" name="password" required>
-      <br>
-  
-      <label for="mobile">Mobile Number:</label>
-      <input type="text" id="mobile" [(ngModel)]="mobile" name="mobile" required>
-      <br><br>
+
+    <button type="submit" [disabled]="signupForm.invalid">Submit</button>
+
+    <!-- Text for existing users to navigate to login -->
+    <div class="already-user">
+      <span>Already a user?</span>
+      <button routerLink="/login" class="g1">Login</button>
     </div>
-  
-    <button (click)="onSignUpSubmit()">Submit</button>
-  </div>
-  
+  </form>
+</div>

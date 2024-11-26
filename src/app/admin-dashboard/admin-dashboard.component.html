@@ -1,0 +1,56 @@
+<!-- admin.component.html -->
+<div >
+  <p>Welcome, Admin!</p>
+  <button  routerLink="/login">Logout</button>
+
+</div>
+
+<div class="dashboard-container">
+  <h2>Welcome to the Admin Dashboard</h2>
+
+  <div class="search-container">
+    <label for="search">Search: </label>
+    <input type="text" [(ngModel)]="searchQuery" id="search" />
+    <button (click)="search()">Search</button>
+  </div>
+
+  <div class="filter-container">
+    <label for="role">Filter by Role: </label>
+    <select id="role" [(ngModel)]="selectedRole" (change)="filterByRole()">
+      <option value="All">All</option>
+      <option value="Trainer">Trainer</option>
+      <option value="Trainee">Trainee</option>
+    </select>
+  </div>
+
+  <div *ngIf="selectedRole === 'Trainer' || selectedRole === 'All'">
+    <h3>List of Trainers</h3>
+    <div *ngIf="trainers.length > 0">
+      <div *ngFor="let trainer of trainers" class="trainer-card">
+        <p>Name: {{ trainer.username }}</p>
+        <p>Email: {{ trainer.email }}</p>
+        <button (click)="editTrainer(trainer)">Edit</button>
+        <button (click)="deleteTrainer(trainer.id)">Delete</button>
+      </div>
+    </div>
+    <div *ngIf="trainers.length === 0">No trainers found.</div>
+  </div>
+
+  <div *ngIf="selectedRole === 'Trainee' || selectedRole === 'All'">
+    <h3>List of Trainees</h3>
+    <div *ngIf="trainees.length > 0">
+      <div *ngFor="let trainee of trainees" class="trainee-card">
+        <p>Name: {{ trainee.username }}</p>
+        <p>Email: {{ trainee.email }}</p>
+        <button (click)="editTrainee(trainee)">Edit</button>
+        <button (click)="deleteTrainee(trainee.id)">Delete</button>
+      </div>
+    </div>
+    <div *ngIf="trainees.length === 0">No trainees found.</div>
+  </div>
+
+  <div class="action-buttons">
+    <button (click)="addTrainer()">Add Trainer</button>
+    <button (click)="addTrainee()">Add Trainee</button>
+  </div>
+</div>

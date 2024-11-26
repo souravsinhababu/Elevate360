@@ -1,17 +1,20 @@
 <div class="form-container">
-    <h2>Login</h2>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <h2>Login</h2>
 
-    <label for="username">Username:</label>
-    <input type="text" id="username" [(ngModel)]="username" name="username" required>
-    <br>
-  
+  <form #loginForm="ngForm" (ngSubmit)="onLoginSubmit()">
+    <label for="username">Email:</label>
+    <input type="text" id="username" [(ngModel)]="username" name="username" required #usernameField="ngModel">
+    <div *ngIf="usernameField.invalid && usernameField.touched" class="error">Username is required</div>
+
     <label for="password">Password:</label>
-    <input type="password" id="password" [(ngModel)]="password" name="password" required>
-    <br>
-  
-    <button (click)="onLoginSubmit()">Login</button>
+    <input type="password" id="password" [(ngModel)]="password" name="password" required minlength="6" #passwordField="ngModel">
+    <div *ngIf="passwordField.invalid && passwordField.touched" class="error">Password is required and must be at least 6 characters</div>
+
+    <button type="submit" [disabled]="loginForm.invalid">Login</button>
+  </form>
+
+  <div class="signup-container">
+    <span>New user?</span>
+    <button routerLink="/signup" class="g1">Sign Up</button>
   </div>
-  
+</div>

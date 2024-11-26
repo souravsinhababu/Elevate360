@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { UserService } from '../../user.service';  
+import { environment } from '../../environment';
 
 @Component({
   selector: 'app-signup',
@@ -8,33 +10,52 @@ import { Component } from '@angular/core';
 export class SignupComponent {
 
   username: string = '';
+  email: string = '';
   password: string = '';
+  confirmPassword: string = '';  
   mobile: string = '';
   role: string = '';
-  specialization: string = '';  // Only for trainer
-  firstName: string = '';  // Only for trainee
-  lastName: string = '';   // Only for trainee
-  designation: string = '';  // Only for trainee
+  specialization: string = '';  
+  firstName: string = '';  
+  lastName: string = '';   
+  designation: string = ''; 
 
-  // Sign up form submission logic
+  isRoleSelected: boolean = false;
+
+  constructor(private userService: UserService) {}
+
   onSignUpSubmit() {
-    alert('Sign Up Submitted:\n' + 
-          'Role: ' + this.role + '\n' +
-          'Username: ' + this.username + '\n' +
-          'Password: ' + this.password + '\n' +
-          'Mobile: ' + this.mobile + '\n' +
-          'Specialization: ' + this.specialization + '\n' +
-          'First Name: ' + this.firstName + '\n' +
-          'Last Name: ' + this.lastName + '\n' +
-          'Designation: ' + this.designation);
-  }
-    
+    const user = {
+      username: this.username,
+      email: this.email,  
+      password: this.password,
+      role: this.role,
+      mobile: this.mobile,
+      specialization: this.specialization,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      designation: this.designation
+    };
 
-  // Reset form fields when role changes
+    this.userService.signup(user).subscribe(
+      response => {
+        alert('Sign Up Successful!');
+        console.log('Signed up user: ', response);
+      },
+      error => {
+        alert('Sign Up Failed! Please try again.');
+        console.error(error);
+      }
+    );
+  }
+
   roleChanged() {
     this.specialization = '';
     this.firstName = '';
     this.lastName = '';
     this.designation = '';
+    this.confirmPassword = '';  
+
+    this.isRoleSelected = this.role ? true : false;
   }
 }
