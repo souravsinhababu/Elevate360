@@ -44,5 +44,39 @@ public class AdminController {
             userRepository.deleteById(id);
         }
     }
+
+    // Update a trainer by ID
+    @PutMapping("/trainers/{id}")
+    public User updateTrainer(@PathVariable Long id, @RequestBody User updatedTrainer) {
+        User trainer = userRepository.findById(id).orElse(null);
+        if (trainer != null && "trainer".equals(trainer.getRole())) {
+            // Update fields
+            trainer.setUsername(updatedTrainer.getUsername());
+            trainer.setEmail(updatedTrainer.getEmail());
+            trainer.setPassword(updatedTrainer.getPassword());
+            trainer.setSpecialization(updatedTrainer.getSpecialization());
+            trainer.setDesignation(updatedTrainer.getDesignation());
+            // Save updated trainer
+            return userRepository.save(trainer);
+        }
+        return null;  // If trainer not found or role mismatch
+    }
+
+    // Update a trainee by ID
+    @PutMapping("/trainees/{id}")
+    public User updateTrainee(@PathVariable Long id, @RequestBody User updatedTrainee) {
+        User trainee = userRepository.findById(id).orElse(null);
+        if (trainee != null && "trainee".equals(trainee.getRole())) {
+            // Update fields
+            trainee.setUsername(updatedTrainee.getUsername());
+            trainee.setEmail(updatedTrainee.getEmail());
+            trainee.setPassword(updatedTrainee.getPassword());
+            trainee.setSpecialization(updatedTrainee.getSpecialization());
+            trainee.setDesignation(updatedTrainee.getDesignation());
+            // Save updated trainee
+            return userRepository.save(trainee);
+        }
+        return null;  // If trainee not found or role mismatch
+    }
 }
 
