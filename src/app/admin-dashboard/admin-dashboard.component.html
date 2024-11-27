@@ -6,12 +6,13 @@
 <div class="dashboard-container">
   <h2>Welcome to the Admin Dashboard</h2>
 
+  <!-- Search Section -->
   <div class="search-container">
     <label for="search">Search: </label>
-    <input type="text" [(ngModel)]="searchQuery" id="search" />
-    <button (click)="search()">Search</button>
+    <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="search()" id="search" />
   </div>
 
+  <!-- Role Filter Section -->
   <div class="filter-container">
     <label for="role">Filter by Role: </label>
     <select id="role" [(ngModel)]="selectedRole" (change)="filterByRole()">
@@ -21,6 +22,7 @@
     </select>
   </div>
 
+  <!-- Trainers List -->
   <div *ngIf="selectedRole === 'Trainer' || selectedRole === 'All'">
     <h3>List of Trainers</h3>
     <div *ngIf="trainers.length > 0">
@@ -51,7 +53,8 @@
     </div>
     <div *ngIf="trainers.length === 0">No trainers found.</div>
   </div>
-  
+
+  <!-- Trainees List -->
   <div *ngIf="selectedRole === 'Trainee' || selectedRole === 'All'">
     <h3>List of Trainees</h3>
     <div *ngIf="trainees.length > 0">
@@ -82,7 +85,8 @@
     </div>
     <div *ngIf="trainees.length === 0">No trainees found.</div>
   </div>
-  
+
+  <!-- Action Buttons -->
   <div class="action-buttons">
     <button (click)="addTrainer()">Add Trainer</button>
     <button (click)="addTrainee()">Add Trainee</button>

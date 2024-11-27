@@ -1,9 +1,6 @@
-// admin.component.ts
 import { Component, OnInit } from '@angular/core';
-
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
-import { EditTrainerComponent } from '../edit-trainer/edit-trainer.component';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -14,15 +11,16 @@ export class AdminDashboardComponent implements OnInit {
   public isLoggedIn: boolean = false;
   public trainers: any[] = [];
   public trainees: any[] = [];
+  public originalTrainers: any[] = [];  // Store original trainers list
+  public originalTrainees: any[] = [];  // Store original trainees list
   public selectedRole: string = 'All';  
   public searchQuery: string = '';
   public selectedTrainer: any;
   public selectedTrainee: any;
 
-  constructor( private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    
     this.loadTrainers();
     this.loadTrainees();
   }
@@ -31,6 +29,8 @@ export class AdminDashboardComponent implements OnInit {
     this.http.get<any[]>(`${environment.apiUrl}/admin/trainers`).subscribe(
       (data) => {
         this.trainers = data;
+        this.originalTrainers = [...data]; // Store a copy of the original trainers list
+        this.search();  // Apply search immediately after loading
       },
       (error) => {
         console.error('Error fetching trainers:', error);
@@ -38,12 +38,12 @@ export class AdminDashboardComponent implements OnInit {
     );
   }
 
-  
-
   loadTrainees() {
     this.http.get<any[]>(`${environment.apiUrl}/admin/trainee`).subscribe(
       (data) => {
         this.trainees = data;
+        this.originalTrainees = [...data]; // Store a copy of the original trainees list
+        this.search();  // Apply search immediately after loading
       },
       (error) => {
         console.error('Error fetching trainees:', error);
@@ -52,14 +52,20 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   search() {
-    if (this.searchQuery.trim()) {
-      this.trainers = this.trainers.filter(trainer =>
-        trainer.username.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        trainer.email.toLowerCase().includes(this.searchQuery.toLowerCase())
+    // Reset the trainers and trainees list to their original data before filtering
+    const searchLower = this.searchQuery.toLowerCase();
+
+    if (this.selectedRole === 'Trainer' || this.selectedRole === 'All') {
+      this.trainers = this.originalTrainers.filter(trainer =>
+        trainer.username.toLowerCase().includes(searchLower) ||
+        trainer.email.toLowerCase().includes(searchLower)
       );
-      this.trainees = this.trainees.filter(trainee =>
-        trainee.username.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        trainee.email.toLowerCase().includes(this.searchQuery.toLowerCase())
+    }
+
+    if (this.selectedRole === 'Trainee' || this.selectedRole === 'All') {
+      this.trainees = this.originalTrainees.filter(trainee =>
+        trainee.username.toLowerCase().includes(searchLower) ||
+        trainee.email.toLowerCase().includes(searchLower)
       );
     }
   }
@@ -87,9 +93,6 @@ export class AdminDashboardComponent implements OnInit {
     this.selectedTrainer = { ...trainer };
   }
 
-
-
-  // Handle deleting a trainer
   deleteTrainer(trainerId: number) {
     this.http.delete(`${environment.apiUrl}/admin/trainers/${trainerId}`).subscribe(
       () => {
@@ -101,8 +104,6 @@ export class AdminDashboardComponent implements OnInit {
     );
   }
 
-
-
   editTrainee(trainee: any) {
     this.selectedTrainee = { ...trainee };
   }
@@ -113,26 +114,24 @@ export class AdminDashboardComponent implements OnInit {
         this.trainees = this.trainees.filter(trainee => trainee.id !== traineeId);
       },
       (error) => {
-        console.error('Error deleting trainer:', error);
+        console.error('Error deleting trainee:', error);
       }
     );
   }
+
   handleUpdatedTrainee(updatedTrainee: any) {
     const index = this.trainees.findIndex(t => t.id === updatedTrainee.id);
     if (index !== -1) {
       this.trainees[index] = updatedTrainee;
     }
-    this.selectedTrainee = null; 
+    this.selectedTrainee = null;  // Reset selected trainee after update
   }
- 
+
   updateTrainerInDashboard(updatedTrainer: any) {
     const index = this.trainers.findIndex(t => t.id === updatedTrainer.id);
     if (index !== -1) {
       this.trainers[index] = updatedTrainer;
     }
-    this.selectedTrainer = null; 
+    this.selectedTrainer = null;  // Reset selected trainer after update
   }
-  
 }
-
-
