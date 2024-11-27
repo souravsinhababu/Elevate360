@@ -5,11 +5,9 @@
 
 <div class="dashboard-container">
   <h2>Welcome to the Admin Dashboard</h2>
-
   <div class="search-container">
     <label for="search">Search: </label>
-    <input type="text" [(ngModel)]="searchQuery" id="search" />
-    <button (click)="search()">Search</button>
+    <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="search()" id="search" />
   </div>
 
   <div class="filter-container">
