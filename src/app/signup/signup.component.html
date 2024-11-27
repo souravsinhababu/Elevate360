@@ -24,10 +24,7 @@
     <input type="password" id="password" [(ngModel)]="password" name="password" required minlength="6" #passwordField="ngModel">
     <div *ngIf="passwordField.invalid && passwordField.touched" class="error">Password is required and must be at least 6 characters</div>
 
-    <label for="mobile">Mobile Number:</label>
-    <input type="text" id="mobile" [(ngModel)]="mobile" name="mobile" required pattern="^\d{10}$" #mobileField="ngModel">
-    <div *ngIf="mobileField.invalid && mobileField.touched" class="error">Mobile number must be 10 digits</div>
-
+   
     <!-- Trainer-specific field -->
     <div *ngIf="role === 'trainer'">
       <label for="specialization">Specialization:</label>
