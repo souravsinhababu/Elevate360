@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
-
+ 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
@@ -17,14 +17,14 @@ export class AdminDashboardComponent implements OnInit {
   public searchQuery: string = '';
   public selectedTrainer: any;
   public selectedTrainee: any;
-
+ 
   constructor(private http: HttpClient) {}
-
+ 
   ngOnInit(): void {
     this.loadTrainers();
     this.loadTrainees();
   }
-
+ 
   loadTrainers() {
     this.http.get<any[]>(`${environment.apiUrl}/admin/trainers`).subscribe(
       (data) => {
@@ -37,7 +37,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-
+ 
   loadTrainees() {
     this.http.get<any[]>(`${environment.apiUrl}/admin/trainee`).subscribe(
       (data) => {
@@ -50,18 +50,18 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-
+ 
   search() {
     // Reset the trainers and trainees list to their original data before filtering
     const searchLower = this.searchQuery.toLowerCase();
-
+ 
     if (this.selectedRole === 'Trainer' || this.selectedRole === 'All') {
       this.trainers = this.originalTrainers.filter(trainer =>
         trainer.username.toLowerCase().includes(searchLower) ||
         trainer.email.toLowerCase().includes(searchLower)
       );
     }
-
+ 
     if (this.selectedRole === 'Trainee' || this.selectedRole === 'All') {
       this.trainees = this.originalTrainees.filter(trainee =>
         trainee.username.toLowerCase().includes(searchLower) ||
@@ -69,7 +69,7 @@ export class AdminDashboardComponent implements OnInit {
       );
     }
   }
-
+ 
   filterByRole() {
     if (this.selectedRole === 'Trainer') {
       this.loadTrainers();
@@ -80,19 +80,19 @@ export class AdminDashboardComponent implements OnInit {
       this.loadTrainees();
     }
   }
-
+ 
   addTrainer() {
     // Navigate to add trainer page or show a modal
   }
-
+ 
   addTrainee() {
     // Navigate to add trainee page or show a modal
   }
-
+ 
   editTrainer(trainer: any) {
     this.selectedTrainer = { ...trainer };
   }
-
+ 
   deleteTrainer(trainerId: number) {
     this.http.delete(`${environment.apiUrl}/admin/trainers/${trainerId}`).subscribe(
       () => {
@@ -103,11 +103,11 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-
+ 
   editTrainee(trainee: any) {
     this.selectedTrainee = { ...trainee };
   }
-
+ 
   deleteTrainee(traineeId: number) {
     this.http.delete(`${environment.apiUrl}/admin/trainees/${traineeId}`).subscribe(
       () => {
@@ -118,7 +118,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-
+ 
   handleUpdatedTrainee(updatedTrainee: any) {
     const index = this.trainees.findIndex(t => t.id === updatedTrainee.id);
     if (index !== -1) {
