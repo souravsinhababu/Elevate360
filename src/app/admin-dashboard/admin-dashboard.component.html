@@ -43,10 +43,15 @@
           </tr>
         </tbody>
       </table>
+      <!-- Display the Edit Trainer Component only when a trainer is selected -->
+      <app-edit-trainer *ngIf="selectedTrainer" 
+                        [trainer]="selectedTrainer" 
+                        (updateTrainer)="updateTrainerInDashboard($event)">
+      </app-edit-trainer>
     </div>
     <div *ngIf="trainers.length === 0">No trainers found.</div>
   </div>
-
+  
   <div *ngIf="selectedRole === 'Trainee' || selectedRole === 'All'">
     <h3>List of Trainees</h3>
     <div *ngIf="trainees.length > 0">
@@ -69,10 +74,15 @@
           </tr>
         </tbody>
       </table>
+      <!-- Display the Edit Trainee Component only when a trainee is selected -->
+      <app-edit-trainee *ngIf="selectedTrainee" 
+                        [trainee]="selectedTrainee" 
+                        (updateTrainee)="handleUpdatedTrainee($event)">
+      </app-edit-trainee>
     </div>
     <div *ngIf="trainees.length === 0">No trainees found.</div>
   </div>
-
+  
   <div class="action-buttons">
     <button (click)="addTrainer()">Add Trainer</button>
     <button (click)="addTrainee()">Add Trainee</button>

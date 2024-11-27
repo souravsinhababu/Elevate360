@@ -1,0 +1,25 @@
+<div class="modal">
+    <h2>Edit Trainer</h2>
+    <form (ngSubmit)="saveTrainer()">
+      <label for="username">Username</label>
+      <input type="text" id="username" [(ngModel)]="trainer.username" name="username" required>
+  
+      <label for="email">Email</label>
+      <input type="email" id="email" [(ngModel)]="trainer.email" name="email" required>
+  
+      <label for="password">Password</label>
+      <input type="password" id="password" [(ngModel)]="trainer.password" name="password" required>
+
+      <div>
+        <label for="mobileNumber">Mobile Number:</label>
+        <input type="tel" id="mobileNumber" [(ngModel)]="trainer.mobileNumber" name="mobileNumber" required pattern="[0-9]{10}" />
+      </div>
+  
+      <label for="specialization">Specialization</label>
+      <input type="text" id="specialization" [(ngModel)]="trainer.specialization" name="specialization">
+  
+     
+      <button type="submit">Save Changes</button>
+    </form>
+  </div>
+  

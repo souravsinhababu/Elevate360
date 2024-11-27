@@ -11,6 +11,9 @@ import { TrainerDashboardComponent } from './trainer-dashboard/trainer-dashboard
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';  
 import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
+import { EditTrainerComponent } from './edit-trainer/edit-trainer.component';
+import { EditTraineeComponent } from './edit-trainee/edit-trainee.component';
+
 
 @NgModule({
   declarations: [
@@ -20,7 +23,9 @@ import { HomeComponent } from './home/home.component';
     TraineeDashboardComponent,
     TrainerDashboardComponent,
     AdminDashboardComponent,
-    HomeComponent
+    HomeComponent,
+    EditTrainerComponent,
+    EditTraineeComponent,
   ],
   imports: [
     BrowserModule,

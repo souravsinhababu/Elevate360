@@ -7,6 +7,7 @@ import { TrainerDashboardComponent } from './trainer-dashboard/trainer-dashboard
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component'; 
 import { HomeComponent } from './home/home.component';
 
+
 const routes: Routes = [
   { path : 'home', component:HomeComponent},
   { path: 'login', component: LoginComponent },
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'trainer-dashboard', component: TrainerDashboardComponent }, // Trainer route
   { path: 'admin-dashboard', component: AdminDashboardComponent }, // Admin route
   {  path: '', redirectTo: '/home', pathMatch: 'full' },  
+  
 ];
 
 @NgModule({

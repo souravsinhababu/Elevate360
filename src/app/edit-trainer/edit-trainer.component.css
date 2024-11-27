@@ -1,0 +1,117 @@
+/* Overall container styles for the edit trainer modal */
+.edit-trainer-modal {
+    display: none; /* Initially hidden, will be displayed via Angular */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  /* When modal is active, show it */
+  .edit-trainer-modal.active {
+    display: block;
+    opacity: 1;
+  }
+  
+  /* Modal header */
+  .edit-trainer-modal h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* Form styling */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 5px;
+    width: 100%;
+  }
+  
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  /* Save Changes Button styling */
+  button[type="submit"] {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+    align-self: center;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Close button styles (optional if you want a close button inside the modal) */
+  .close-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    color: #333;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  
+  /* Close button hover effect */
+  .close-modal:hover {
+    color: #dc3545;
+  }
+  
+  /* Modal backdrop (semi-transparent background covering the rest of the page) */
+  .modal-overlay {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  /* When modal overlay is active, show the overlay */
+  .modal-overlay.active {
+    display: block;
+    opacity: 1;
+  }
+  

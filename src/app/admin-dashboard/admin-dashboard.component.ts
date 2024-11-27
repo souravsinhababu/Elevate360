@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
+import { EditTrainerComponent } from '../edit-trainer/edit-trainer.component';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -13,8 +14,10 @@ export class AdminDashboardComponent implements OnInit {
   public isLoggedIn: boolean = false;
   public trainers: any[] = [];
   public trainees: any[] = [];
-  public selectedRole: string = 'All';  // Default to show both Trainers and Trainees
+  public selectedRole: string = 'All';  
   public searchQuery: string = '';
+  public selectedTrainer: any;
+  public selectedTrainee: any;
 
   constructor( private http: HttpClient) {}
 
@@ -34,6 +37,8 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
+
+  
 
   loadTrainees() {
     this.http.get<any[]>(`${environment.apiUrl}/admin/trainee`).subscribe(
@@ -79,21 +84,55 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   editTrainer(trainer: any) {
-    // Handle trainer edit logic
+    this.selectedTrainer = { ...trainer };
   }
 
+
+
+  // Handle deleting a trainer
   deleteTrainer(trainerId: number) {
-    // Handle trainer delete logic
-    console.log('Deleting trainer:', trainerId);
+    this.http.delete(`${environment.apiUrl}/admin/trainers/${trainerId}`).subscribe(
+      () => {
+        this.trainers = this.trainers.filter(trainer => trainer.id !== trainerId);
+      },
+      (error) => {
+        console.error('Error deleting trainer:', error);
+      }
+    );
   }
+
+
 
   editTrainee(trainee: any) {
-    // Handle trainee edit logic
+    this.selectedTrainee = { ...trainee };
   }
 
   deleteTrainee(traineeId: number) {
-    // Handle trainee delete logic
-    console.log('Deleting trainee:', traineeId);
+    this.http.delete(`${environment.apiUrl}/admin/trainees/${traineeId}`).subscribe(
+      () => {
+        this.trainees = this.trainees.filter(trainee => trainee.id !== traineeId);
+      },
+      (error) => {
+        console.error('Error deleting trainer:', error);
+      }
+    );
+  }
+  handleUpdatedTrainee(updatedTrainee: any) {
+    const index = this.trainees.findIndex(t => t.id === updatedTrainee.id);
+    if (index !== -1) {
+      this.trainees[index] = updatedTrainee;
+    }
+    this.selectedTrainee = null; 
+  }
+ 
+  updateTrainerInDashboard(updatedTrainer: any) {
+    const index = this.trainers.findIndex(t => t.id === updatedTrainer.id);
+    if (index !== -1) {
+      this.trainers[index] = updatedTrainer;
+    }
+    this.selectedTrainer = null; 
   }
   
 }
+
+
