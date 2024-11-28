@@ -41,35 +41,40 @@ export class AdminDashboardComponent implements OnInit {
  
   loadTrainees() {
     this.http.get<any[]>(`${environment.apiUrl}/admin/trainee`).subscribe(
-      (data) => {
-        this.trainees = data;
-        this.originalTrainees = [...data]; // Store a copy of the original trainees list
-        this.search();  // Apply search immediately after loading
-      },
-      (error) => {
-        console.error('Error fetching trainees:', error);
-      }
+        (data) => {
+            this.trainees = data.map(trainee => {
+                // If trainer is null, assign 'Not assigned' to trainer_id
+                trainee.trainer_name = trainee.trainer ? trainee.trainer.username : 'Not assigned';
+                return trainee;
+            });
+            this.originalTrainees = [...data]; // Store a copy of the original trainees list
+            this.search();  
+        },
+        (error) => {
+            console.error('Error fetching trainees:', error);
+        }
+    );
+}
+
+search() {
+  // Reset the trainers and trainees list to their original data before filtering
+  const searchLower = this.searchQuery.toLowerCase();
+
+  if (this.selectedRole === 'Trainer' || this.selectedRole === 'All') {
+    this.trainers = this.originalTrainers.filter(trainer =>
+      trainer.username.toLowerCase().includes(searchLower) ||
+      trainer.email.toLowerCase().includes(searchLower)
     );
   }
- 
-  search() {
-    // Reset the trainers and trainees list to their original data before filtering
-    const searchLower = this.searchQuery.toLowerCase();
- 
-    if (this.selectedRole === 'Trainer' || this.selectedRole === 'All') {
-      this.trainers = this.originalTrainers.filter(trainer =>
-        trainer.username.toLowerCase().includes(searchLower) ||
-        trainer.email.toLowerCase().includes(searchLower)
-      );
-    }
- 
-    if (this.selectedRole === 'Trainee' || this.selectedRole === 'All') {
-      this.trainees = this.originalTrainees.filter(trainee =>
-        trainee.username.toLowerCase().includes(searchLower) ||
-        trainee.email.toLowerCase().includes(searchLower)
-      );
-    }
+
+  if (this.selectedRole === 'Trainee' || this.selectedRole === 'All') {
+    this.trainees = this.originalTrainees.filter(trainee =>
+      trainee.username.toLowerCase().includes(searchLower) ||
+      trainee.email.toLowerCase().includes(searchLower)
+    );
   }
+}
+  
  
   filterByRole() {
     if (this.selectedRole === 'Trainer') {

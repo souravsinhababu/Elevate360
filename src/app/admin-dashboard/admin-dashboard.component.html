@@ -1,15 +1,18 @@
-<div>
+<div class="Welcome">
   <p>Welcome, Admin!</p>
   <button (click)="logout()">Logout</button>
 </div>
 
 <div class="dashboard-container">
   <h2>Welcome to the Admin Dashboard</h2>
+  
+  <!-- Search Container -->
   <div class="search-container">
     <label for="search">Search: </label>
     <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="search()" id="search" />
   </div>
 
+  <!-- Filter Container -->
   <div class="filter-container">
     <label for="role">Filter by Role: </label>
     <select id="role" [(ngModel)]="selectedRole" (change)="filterByRole()">
@@ -19,12 +22,14 @@
     </select>
   </div>
 
+  <!-- List of Trainers -->
   <div *ngIf="selectedRole === 'Trainer' || selectedRole === 'All'">
     <h3>List of Trainers</h3>
     <div *ngIf="trainers.length > 0">
       <table class="data-table">
         <thead>
           <tr>
+            <th>Trainer ID</th> <!-- Added Trainer ID column -->
             <th>Name</th>
             <th>Email</th>
             <th>Actions</th>
@@ -32,8 +37,9 @@
         </thead>
         <tbody>
           <tr *ngFor="let trainer of trainers">
+            <td>{{ trainer.id }}</td> <!-- Display trainerId or 'Not assigned' -->
             <td>{{ trainer.username }}</td>
-            <td>{{ trainer.email }}</td>
+            <td>{{ trainer.email }}</td>            
             <td>
               <button (click)="editTrainer(trainer)">Edit</button>
               <button (click)="deleteTrainer(trainer.id)">Delete</button>
@@ -50,6 +56,7 @@
     <div *ngIf="trainers.length === 0">No trainers found.</div>
   </div>
   
+  <!-- List of Trainees -->
   <div *ngIf="selectedRole === 'Trainee' || selectedRole === 'All'">
     <h3>List of Trainees</h3>
     <div *ngIf="trainees.length > 0">
@@ -58,6 +65,7 @@
           <tr>
             <th>Name</th>
             <th>Email</th>
+            <th>Trainer Name</th> <!-- Added Trainer ID column -->
             <th>Actions</th>
           </tr>
         </thead>
@@ -65,6 +73,7 @@
           <tr *ngFor="let trainee of trainees">
             <td>{{ trainee.username }}</td>
             <td>{{ trainee.email }}</td>
+            <td>{{ trainee.trainer_name }}</td> <!-- Display trainerId or 'Not assigned' -->
             <td>
               <button (click)="editTrainee(trainee)">Edit</button>
               <button (click)="deleteTrainee(trainee.id)">Delete</button>
@@ -81,6 +90,7 @@
     <div *ngIf="trainees.length === 0">No trainees found.</div>
   </div>
   
+  <!-- Action Buttons -->
   <div class="action-buttons">
     <button (click)="addTrainer()">Add Trainer</button>
     <button (click)="addTrainee()">Add Trainee</button>
