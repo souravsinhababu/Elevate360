@@ -5,7 +5,7 @@
 
 <div class="dashboard-container">
   <h2>Welcome to the Admin Dashboard</h2>
-  
+
   <!-- Search Container -->
   <div class="search-container">
     <label for="search">Search: </label>
@@ -29,17 +29,17 @@
       <table class="data-table">
         <thead>
           <tr>
-            <th>Trainer ID</th> <!-- Added Trainer ID column -->
             <th>Name</th>
             <th>Email</th>
+            <th>ID</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let trainer of trainers">
-            <td>{{ trainer.id }}</td> <!-- Display trainerId or 'Not assigned' -->
             <td>{{ trainer.username }}</td>
-            <td>{{ trainer.email }}</td>            
+            <td>{{ trainer.email }}</td>
+            <td>{{ trainer.id }}</td>
             <td>
               <button (click)="editTrainer(trainer)">Edit</button>
               <button (click)="deleteTrainer(trainer.id)">Delete</button>
@@ -47,15 +47,14 @@
           </tr>
         </tbody>
       </table>
-      <!-- Display the Edit Trainer Component only when a trainer is selected -->
       <app-edit-trainer *ngIf="selectedTrainer" 
-                        [trainer]="selectedTrainer" 
-                        (updateTrainer)="updateTrainerInDashboard($event)">
+      [trainer]="selectedTrainer"
+       (updateTrainer)="updateTrainerInDashboard($event)">
       </app-edit-trainer>
     </div>
     <div *ngIf="trainers.length === 0">No trainers found.</div>
   </div>
-  
+
   <!-- List of Trainees -->
   <div *ngIf="selectedRole === 'Trainee' || selectedRole === 'All'">
     <h3>List of Trainees</h3>
@@ -65,7 +64,7 @@
           <tr>
             <th>Name</th>
             <th>Email</th>
-            <th>Trainer Name</th> <!-- Added Trainer ID column -->
+            <th>Trainer Name</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -73,26 +72,33 @@
           <tr *ngFor="let trainee of trainees">
             <td>{{ trainee.username }}</td>
             <td>{{ trainee.email }}</td>
-            <td>{{ trainee.trainer_name }}</td> <!-- Display trainerId or 'Not assigned' -->
+            <td>{{ trainee.trainer_name }}</td>
             <td>
+              
               <button (click)="editTrainee(trainee)">Edit</button>
               <button (click)="deleteTrainee(trainee.id)">Delete</button>
+              <button (click)="assignTrainer(trainee)">Assign Trainer</button>
             </td>
           </tr>
         </tbody>
       </table>
-      <!-- Display the Edit Trainee Component only when a trainee is selected -->
-      <app-edit-trainee *ngIf="selectedTrainee" 
-                        [trainee]="selectedTrainee" 
+      <app-edit-trainee *ngIf="isEditingTrainee"
+                        [trainee]="selectedTrainee"
                         (updateTrainee)="handleUpdatedTrainee($event)">
       </app-edit-trainee>
+ 
     </div>
     <div *ngIf="trainees.length === 0">No trainees found.</div>
   </div>
-  
-  <!-- Action Buttons -->
-  <div class="action-buttons">
-    <button (click)="addTrainer()">Add Trainer</button>
-    <button (click)="addTrainee()">Add Trainee</button>
+
+  <!-- Modal for Assigning Trainer -->
+  <div *ngIf="isAssigningTrainer" class="assign-trainer-modal">
+    <h4>Assign Trainer to {{ selectedTrainee?.username }}</h4>
+    <label for="trainer">Select Trainer:</label>
+    <select id="trainer" [(ngModel)]="selectedTrainerId">
+      <option *ngFor="let trainer of trainers" [value]="trainer.id">{{ trainer.username }}</option>
+    </select>
+    <button (click)="assignTrainerToTrainee()">Assign</button>
+    <button (click)="cancelAssign()">Cancel</button>
   </div>
 </div>
