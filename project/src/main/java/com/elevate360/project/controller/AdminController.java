@@ -1,7 +1,9 @@
 package com.elevate360.project.controller;
 import com.elevate360.project.entity.User;
 import com.elevate360.project.repo.UserRepository;
+import com.elevate360.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -78,5 +80,24 @@ public class AdminController {
         }
         return null;  // If trainee not found or role mismatch
     }
+
+
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/addtrainer")
+    public ResponseEntity<User> addTrainer(@RequestBody User user) {
+        user.setRole("trainer");
+        User savedUser = userService.signup(user);
+        return ResponseEntity.ok(savedUser);
+    }
+
+    @PostMapping("/addtrainee")
+    public ResponseEntity<User> addTrainee(@RequestBody User user) {
+        user.setRole("trainee");
+        User savedUser = userService.signup(user);
+        return ResponseEntity.ok(savedUser);
+    }
+
 }
 
