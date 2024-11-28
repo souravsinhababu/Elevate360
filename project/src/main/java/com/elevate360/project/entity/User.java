@@ -33,6 +33,10 @@ public class User {
     private String role;
 
     private String specialization;
+    // Add this field to the User class
+    @ManyToOne
+    @JoinColumn(name = "trainer_id")
+    private User trainer;
 
     // Getters and Setters
 
@@ -90,6 +94,14 @@ public class User {
 
     public void setSpecialization(String specialization) {
         this.specialization = specialization;
+    }
+
+    public User getTrainer() {
+        return trainer;
+    }
+
+    public void setTrainer(User trainer) {
+        this.trainer = trainer;
     }
 }
 
