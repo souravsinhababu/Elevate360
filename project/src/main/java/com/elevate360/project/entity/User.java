@@ -1,5 +1,6 @@
 package com.elevate360.project.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,10 +39,12 @@ public class User {
 //     Add this field to the User class
     @ManyToOne
     @JoinColumn(name = "trainer_id")
+    @JsonIgnore
     private User trainer;
 
     // Many trainees can be assigned to one trainer (OneToMany)
     @OneToMany(mappedBy = "trainer")
+    @JsonIgnore
     private List<User> trainees;
 
     // Getters and Setters
