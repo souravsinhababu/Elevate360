@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router'; 
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
-
+import { AuthService } from '../auth.servie';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +14,7 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router, private http: HttpClient, private authService: AuthService) {}
 
   // Login form submission logic
   onLoginSubmit() {
@@ -28,6 +28,12 @@ export class LoginComponent {
     this.http.post<any>(loginUrl, {}).subscribe(
       response => {
         const role = response.role;
+        const token = response.token;  // Assuming the response includes a token
+
+        // Store token and role in AuthService for session management
+        this.authService.login(token, role);  // Call AuthService to store the user's info
+
+        // Navigate to the appropriate dashboard based on the role
         if (role === 'trainee') {
           this.router.navigate(['/trainee-dashboard']);
         } else if (role === 'trainer') {
@@ -37,16 +43,10 @@ export class LoginComponent {
         } else {
           alert('Unknown role, please contact the admin.');
         }
-
-        // Call the onLoginSuccess method
-      
       },
       error => {
         alert('Login failed: Incorrect credentials');
       }
     );
   }
-
-  // Separate onLoginSuccess method
- 
 }

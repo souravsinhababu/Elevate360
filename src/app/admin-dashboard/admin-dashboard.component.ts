@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
+import { AuthService } from '../auth.servie';
  
 @Component({
   selector: 'app-admin-dashboard',
@@ -18,7 +19,7 @@ export class AdminDashboardComponent implements OnInit {
   public selectedTrainer: any;
   public selectedTrainee: any;
  
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private authService: AuthService) {}
  
   ngOnInit(): void {
     this.loadTrainers();
@@ -133,5 +134,8 @@ export class AdminDashboardComponent implements OnInit {
       this.trainers[index] = updatedTrainer;
     }
     this.selectedTrainer = null;  // Reset selected trainer after update
+  }
+  logout() {
+    this.authService.logout();  // Logout the user
   }
 }

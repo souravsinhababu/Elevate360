@@ -6,17 +6,16 @@ import { TraineeDashboardComponent } from './trainee-dashboard/trainee-dashboard
 import { TrainerDashboardComponent } from './trainer-dashboard/trainer-dashboard.component'; 
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component'; 
 import { HomeComponent } from './home/home.component';
-
+import { AuthGuard } from './auth.guard'; // Import the guard
 
 const routes: Routes = [
-  { path : 'home', component:HomeComponent},
+  { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
-  { path: 'trainee-dashboard', component: TraineeDashboardComponent }, // Trainee route
-  { path: 'trainer-dashboard', component: TrainerDashboardComponent }, // Trainer route
-  { path: 'admin-dashboard', component: AdminDashboardComponent }, // Admin route
-  {  path: '', redirectTo: '/home', pathMatch: 'full' },  
-  
+  { path: 'trainee-dashboard', component: TraineeDashboardComponent, canActivate: [AuthGuard] }, // Protect route with guard
+  { path: 'trainer-dashboard', component: TrainerDashboardComponent, canActivate: [AuthGuard] }, // Protect route with guard
+  { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard] }, // Protect route with guard
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
 ];
 
 @NgModule({
