@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 
 @Entity
 @Table(name = "user_table")
@@ -33,12 +35,17 @@ public class User {
     private String role;
 
     private String specialization;
-    // Add this field to the User class
+//     Add this field to the User class
     @ManyToOne
     @JoinColumn(name = "trainer_id")
     private User trainer;
 
+    // Many trainees can be assigned to one trainer (OneToMany)
+    @OneToMany(mappedBy = "trainer")
+    private List<User> trainees;
+
     // Getters and Setters
+
 
     public Long getId() {
         return id;
@@ -102,6 +109,14 @@ public class User {
 
     public void setTrainer(User trainer) {
         this.trainer = trainer;
+    }
+
+    public List<User> getTrainees() {
+        return trainees;
+    }
+
+    public void setTrainees(List<User> trainees) {
+        this.trainees = trainees;
     }
 }
 

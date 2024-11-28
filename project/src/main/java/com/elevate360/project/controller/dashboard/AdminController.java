@@ -1,4 +1,5 @@
-package com.elevate360.project.controller;
+package com.elevate360.project.controller.dashboard;
+import com.elevate360.project.dto.AssignTraineesRequest;
 import com.elevate360.project.entity.User;
 import com.elevate360.project.repo.UserRepository;
 import com.elevate360.project.service.UserService;
@@ -15,6 +16,9 @@ public class AdminController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     // Get all trainers
     @GetMapping("/trainers")
@@ -82,8 +86,8 @@ public class AdminController {
     }
 
 
-    @Autowired
-    private UserService userService;
+//    @Autowired
+//    private UserService userService;
 
     @PostMapping("/addtrainer")
     public ResponseEntity<User> addTrainer(@RequestBody User user) {
@@ -99,26 +103,28 @@ public class AdminController {
         return ResponseEntity.ok(savedUser);
     }
 
-    @PutMapping("/trainees/{traineeId}/assign/{trainerId}")
-    public ResponseEntity<User> assignTraineeToTrainer(@PathVariable Long traineeId, @PathVariable Long trainerId) {
-        User trainee = userRepository.findById(traineeId).orElse(null);
-        User trainer = userRepository.findById(trainerId).orElse(null);
 
-        if (trainee != null && trainer != null && "trainee".equals(trainee.getRole()) && "trainer".equals(trainer.getRole())) {
-            trainee.setTrainer(trainer);
-            User updatedTrainee = userRepository.save(trainee);
-            return ResponseEntity.ok(updatedTrainee);
-        }
 
-        return ResponseEntity.status(404).body(null); // Return 404 if trainee or trainer is not found
-    }
-    @GetMapping("/trainers/{id}/trainees")
-    public List<User> getTraineesByTrainer(@PathVariable Long id) {
-        User trainer = userRepository.findById(id).orElse(null);
-        if (trainer != null && "trainer".equals(trainer.getRole())) {
-            return userRepository.findByTrainer(trainer);
-        }
-        return null;
-    }
+//    @PutMapping("/trainees/{traineeId}/assign/{trainerId}")
+//    public ResponseEntity<User> assignTraineeToTrainer(@PathVariable Long traineeId, @PathVariable Long trainerId) {
+//        User trainee = userRepository.findById(traineeId).orElse(null);
+//        User trainer = userRepository.findById(trainerId).orElse(null);
+//
+//        if (trainee != null && trainer != null && "trainee".equals(trainee.getRole()) && "trainer".equals(trainer.getRole())) {
+//            trainee.setTrainer(trainer);
+//            User updatedTrainee = userRepository.save(trainee);
+//            return ResponseEntity.ok(updatedTrainee);
+//        }
+//
+//        return ResponseEntity.status(404).body(null); // Return 404 if trainee or trainer is not found
+//    }
+//    @GetMapping("/trainers/{id}/trainees")
+//    public List<User> getTraineesByTrainer(@PathVariable Long id) {
+//        User trainer = userRepository.findById(id).orElse(null);
+//        if (trainer != null && "trainer".equals(trainer.getRole())) {
+//            return userRepository.findByTrainer(trainer);
+//        }
+//        return null;
+//    }
 }
 
