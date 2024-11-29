@@ -1,0 +1,19 @@
+<div class="form-container">
+    <h2>Add Trainee</h2>
+    <form (ngSubmit)="onSubmit()">
+      <label for="username">Username:</label>
+      <input type="text" id="username" [(ngModel)]="trainee.username" name="username" required />
+  
+      <label for="email">Email:</label>
+      <input type="email" id="email" [(ngModel)]="trainee.email" name="email" required />
+  
+      <label for="password">Password:</label>
+      <input type="password" id="password" [(ngModel)]="trainee.password" name="password" required />
+  
+      <label for="designation">Designation:</label>
+      <input type="text" id="designation" [(ngModel)]="trainee.designation" name="designation" required />
+  
+      <button type="submit">Add Trainee</button>
+    </form>
+  </div>
+  
