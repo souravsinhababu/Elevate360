@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/trainer")
-@CrossOrigin(origins = "http://localhost:4200/")
+@CrossOrigin(origins = "*")
 public class TrainerController {
 
     @Autowired

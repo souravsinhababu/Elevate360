@@ -1,6 +1,7 @@
 package com.elevate360.project.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,10 +38,10 @@ public class User {
 
     private String specialization;
 //     Add this field to the User class
-    @ManyToOne
-    @JoinColumn(name = "trainer_id")
-    @JsonIgnore
-    private User trainer;
+@ManyToOne
+@JoinColumn(name = "trainer_id")  // foreign key to the trainer (another User)
+@JsonProperty("trainer")  // Will serialize the trainer object as part of the response
+private User trainer;
 
     // Many trainees can be assigned to one trainer (OneToMany)
     @OneToMany(mappedBy = "trainer")
@@ -121,5 +122,7 @@ public class User {
     public void setTrainees(List<User> trainees) {
         this.trainees = trainees;
     }
+
+
 }
 
