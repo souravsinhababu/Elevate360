@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
-import { AuthService } from '../auth.servie';
+import { AuthService } from '../auth.servie';  // Adjust the import for your AuthService
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -21,6 +21,8 @@ export class AdminDashboardComponent implements OnInit {
   public selectedTrainerId: number | null = null;
   public isAssigningTrainer: boolean = false;
   public isEditingTrainee: boolean = false;
+  public showAddTrainerModal = false;
+  public showAddTraineeModal = false;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -46,7 +48,7 @@ export class AdminDashboardComponent implements OnInit {
     this.http.get<any[]>(`${environment.apiUrl}/admin/trainee`).subscribe(
       (data) => {
         this.trainees = data.map(trainee => {
-          // If trainer is null, assign 'Not assigned' to trainer_id
+          // If trainer is null, assign 'Not assigned' to trainer_name
           trainee.trainer_name = trainee.trainer ? trainee.trainer.username : 'Not assigned';
           return trainee;
         });
@@ -100,7 +102,7 @@ export class AdminDashboardComponent implements OnInit {
             assignedTrainee.trainer_id = this.selectedTrainerId;  // Update trainer ID
             assignedTrainee.trainer_name = this.trainers.find(t => t.id === this.selectedTrainerId)?.username || 'Not assigned'; // Update trainer name
           }
-  
+
           // Close the modal
           this.isAssigningTrainer = false;
           this.selectedTrainee = null;
@@ -112,7 +114,6 @@ export class AdminDashboardComponent implements OnInit {
       );
     }
   }
-  
 
   cancelAssign() {
     this.isAssigningTrainer = false;
@@ -123,19 +124,44 @@ export class AdminDashboardComponent implements OnInit {
   assignTrainer(trainee: any) {
     this.selectedTrainee = trainee;
     this.isAssigningTrainer = true;
-    this.isEditingTrainee = false;
+    this.isEditingTrainee = false;  // Ensure isEditingTrainee is false when assigning trainer
   }
 
-  addTrainer() {
-    // Navigate to add trainer page or show a modal
+  openAddTrainerModal() {
+    this.showAddTrainerModal = true;
   }
 
-  addTrainee() {
-    // Navigate to add trainee page or show a modal
+  closeAddTrainerModal() {
+    this.showAddTrainerModal = false;
+  }
+
+  openAddTraineeModal() {
+    this.showAddTraineeModal = true;
+  }
+
+  closeAddTraineeModal() {
+    this.showAddTraineeModal = false;
+  }
+
+  // Close edit modals
+  closeEditTrainerModal() {
+    this.selectedTrainer = null;
+  }
+
+  closeEditTraineeModal() {   this.selectedTrainee = null;   this.isEditingTrainee = false; }
+ 
+
+  handleAddedTrainer(trainer: any) {
+    this.trainers.push(trainer);
+    this.closeAddTrainerModal();
+  }
+
+  handleAddedTrainee(trainee: any) {
+    this.trainees.push(trainee);
+    this.closeAddTraineeModal();
   }
 
   editTrainer(trainer: any) {
-    
     this.selectedTrainer = { ...trainer };
   }
 
@@ -153,7 +179,7 @@ export class AdminDashboardComponent implements OnInit {
   editTrainee(trainee: any) {
     this.selectedTrainee = { ...trainee };
     this.isEditingTrainee = true;  
-    this.isAssigningTrainer = false;
+    this.isAssigningTrainer = false;  // Ensure the Assign Trainer modal is not opened
   }
 
   deleteTrainee(traineeId: number) {
