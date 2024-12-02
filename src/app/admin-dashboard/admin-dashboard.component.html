@@ -35,20 +35,23 @@
       <table class="data-table">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Name</th>
             <th>Email</th>
-            <th>ID</th>
+           
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let trainer of trainers">
+            <td>{{ trainer.id }}</td>
             <td>{{ trainer.username }}</td>
             <td>{{ trainer.email }}</td>
-            <td>{{ trainer.id }}</td>
+            
             <td>
               <button (click)="editTrainer(trainer)">Edit</button>
               <button (click)="deleteTrainer(trainer.id)">Delete</button>
+              <button (click)="openAssignTraineesModal(trainer)">Assign Trainees</button>
             </td>
           </tr>
         </tbody>
@@ -142,4 +145,19 @@
   <button (click)="assignTrainerToTrainee()">Assign</button>
   <button (click)="cancelAssign()">Cancel</button>
 </div>
+</div>
+
+<!-- Modal for Assigning Trainees -->
+<div *ngIf="isAssigningTrainees" class="modal">
+  <div class="modal-content">
+    <h4>Assign Trainees to {{ selectedTrainer?.username }}</h4>
+    <div *ngFor="let trainee of trainees">
+      <label>
+        <input type="checkbox" [(ngModel)]="trainee.selected" />
+        {{ trainee.username }}
+      </label>
+    </div>
+    <button (click)="assignTraineesToTrainer()">Assign</button>
+    <button (click)="cancelAssignTrainees()">Cancel</button>
+  </div>
 </div>

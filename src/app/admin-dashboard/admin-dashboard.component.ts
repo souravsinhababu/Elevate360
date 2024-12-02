@@ -23,6 +23,8 @@ export class AdminDashboardComponent implements OnInit {
   public isEditingTrainee: boolean = false;
   public showAddTrainerModal = false;
   public showAddTraineeModal = false;
+  public isAssigningTrainees: boolean = false;
+
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -114,6 +116,10 @@ export class AdminDashboardComponent implements OnInit {
       );
     }
   }
+  openAssignTraineesModal(trainer: any) {
+    this.selectedTrainer = trainer;
+    this.isAssigningTrainees = true;
+  }
 
   cancelAssign() {
     this.isAssigningTrainer = false;
@@ -175,6 +181,31 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
+  assignTraineesToTrainer() {
+    const selectedTrainees = this.trainees.filter(trainee => trainee.selected);
+
+    selectedTrainees.forEach(trainee => {
+      this.http.put(`${environment.apiUrl}/admin/trainees/${trainee.id}/assign/${this.selectedTrainer.id}`, {}).subscribe(
+        () => {
+          // Update the local list of trainees to reflect their trainer assignment
+          trainee.trainer_name = this.selectedTrainer.username;
+          trainee.selected = false; // Uncheck the box after assigning
+        },
+        (error) => {
+          console.error('Error assigning trainee:', error);
+        }
+      );
+    });
+
+    this.isAssigningTrainees = false;  // Close the modal
+    this.selectedTrainer = null;       // Reset the selected trainer
+  }
+
+  cancelAssignTrainees() {
+    this.isAssigningTrainees = false;
+    this.selectedTrainer = null;
+  }
+
 
   editTrainee(trainee: any) {
     this.selectedTrainee = { ...trainee };
