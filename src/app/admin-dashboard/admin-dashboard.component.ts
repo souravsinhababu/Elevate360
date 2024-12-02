@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
-import { AuthService } from '../auth.servie';
- 
+import { AuthService } from '../auth.servie';  // Adjust the import for your AuthService
+
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
@@ -23,7 +23,9 @@ export class AdminDashboardComponent implements OnInit {
   public isEditingTrainee: boolean = false;
   public showAddTrainerModal = false;
   public showAddTraineeModal = false;
- 
+  public isAssigningTrainees: boolean = false;
+
+
   constructor(private http: HttpClient, private authService: AuthService) {}
  
   ngOnInit(): void {
@@ -48,7 +50,7 @@ export class AdminDashboardComponent implements OnInit {
     this.http.get<any[]>(`${environment.apiUrl}/admin/trainee`).subscribe(
       (data) => {
         this.trainees = data.map(trainee => {
-          // If trainer is null, assign 'Not assigned' to trainer_id
+          // If trainer is null, assign 'Not assigned' to trainer_name
           trainee.trainer_name = trainee.trainer ? trainee.trainer.username : 'Not assigned';
           return trainee;
         });
@@ -102,7 +104,7 @@ export class AdminDashboardComponent implements OnInit {
             assignedTrainee.trainer_id = this.selectedTrainerId;  // Update trainer ID
             assignedTrainee.trainer_name = this.trainers.find(t => t.id === this.selectedTrainerId)?.username || 'Not assigned'; // Update trainer name
           }
- 
+
           // Close the modal
           this.isAssigningTrainer = false;
           this.selectedTrainee = null;
@@ -114,7 +116,11 @@ export class AdminDashboardComponent implements OnInit {
       );
     }
   }
- 
+  openAssignTraineesModal(trainer: any) {
+    this.selectedTrainer = trainer;
+    this.isAssigningTrainees = true;
+  }
+
   cancelAssign() {
     this.isAssigningTrainer = false;
     this.selectedTrainee = null;
@@ -126,40 +132,36 @@ export class AdminDashboardComponent implements OnInit {
     this.isAssigningTrainer = true;
     this.isEditingTrainee = false;  // Ensure isEditingTrainee is false when assigning trainer
   }
-  
-  
+
   openAddTrainerModal() {
     this.showAddTrainerModal = true;
   }
- 
+
   closeAddTrainerModal() {
     this.showAddTrainerModal = false;
   }
- 
+
   openAddTraineeModal() {
     this.showAddTraineeModal = true;
   }
- 
+
   closeAddTraineeModal() {
     this.showAddTraineeModal = false;
   }
- 
+
   // Close edit modals
   closeEditTrainerModal() {
     this.selectedTrainer = null;
-    this.isEditingTrainee = false;
   }
+
+  closeEditTraineeModal() {   this.selectedTrainee = null;   this.isEditingTrainee = false; }
  
-  closeEditTraineeModal() {
-    this.selectedTrainee = null;
-    this.isEditingTrainee = false;
-  }
- 
+
   handleAddedTrainer(trainer: any) {
     this.trainers.push(trainer);
     this.closeAddTrainerModal();
   }
- 
+
   handleAddedTrainee(trainee: any) {
     this.trainees.push(trainee);
     this.closeAddTraineeModal();
@@ -179,11 +181,36 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
- 
+  assignTraineesToTrainer() {
+    const selectedTrainees = this.trainees.filter(trainee => trainee.selected);
+
+    selectedTrainees.forEach(trainee => {
+      this.http.put(`${environment.apiUrl}/admin/trainees/${trainee.id}/assign/${this.selectedTrainer.id}`, {}).subscribe(
+        () => {
+          // Update the local list of trainees to reflect their trainer assignment
+          trainee.trainer_name = this.selectedTrainer.username;
+          trainee.selected = false; // Uncheck the box after assigning
+        },
+        (error) => {
+          console.error('Error assigning trainee:', error);
+        }
+      );
+    });
+
+    this.isAssigningTrainees = false;  // Close the modal
+    this.selectedTrainer = null;       // Reset the selected trainer
+  }
+
+  cancelAssignTrainees() {
+    this.isAssigningTrainees = false;
+    this.selectedTrainer = null;
+  }
+
+
   editTrainee(trainee: any) {
     this.selectedTrainee = { ...trainee };
-    this.isEditingTrainee = true; 
-    this.isAssigningTrainer = false;  
+    this.isEditingTrainee = true;  
+    this.isAssigningTrainer = false;  // Ensure the Assign Trainer modal is not opened
   }
  
   deleteTrainee(traineeId: number) {

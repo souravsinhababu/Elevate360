@@ -22,32 +22,41 @@
     </select>
   </div>
  
+
   <!-- List of Trainers -->
   <div *ngIf="selectedRole === 'Trainer' || selectedRole === 'All'">
+  
     <h3>List of Trainers</h3>
+    <div class="action-buttons">
+      <!-- Add Trainer Button -->
+      <button (click)="openAddTrainerModal()">Add Trainer</button>
+    </div>
     <div *ngIf="trainers.length > 0">
       <table class="data-table">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Name</th>
             <th>Email</th>
-            <th>ID</th>
+           
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let trainer of trainers">
+            <td>{{ trainer.id }}</td>
             <td>{{ trainer.username }}</td>
             <td>{{ trainer.email }}</td>
-            <td>{{ trainer.id }}</td>
+            
             <td>
               <button (click)="editTrainer(trainer)">Edit</button>
               <button (click)="deleteTrainer(trainer.id)">Delete</button>
+              <button (click)="openAssignTraineesModal(trainer)">Assign Trainees</button>
             </td>
           </tr>
         </tbody>
       </table>
-     
+      
     </div>
     <div *ngIf="trainers.length === 0">No trainers found.</div>
   </div>
@@ -55,10 +64,15 @@
   <!-- List of Trainees -->
   <div *ngIf="selectedRole === 'Trainee' || selectedRole === 'All'">
     <h3>List of Trainees</h3>
+    <div class="action-buttons">
+      <!-- Add Trainee Button -->
+      <button (click)="openAddTraineeModal()">Add Trainee</button>
+      </div>
     <div *ngIf="trainees.length > 0">
       <table class="data-table">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Name</th>
             <th>Email</th>
             <th>Trainer Name</th>
@@ -67,11 +81,11 @@
         </thead>
         <tbody>
           <tr *ngFor="let trainee of trainees">
+            <td>{{trainee.id}}</td>
             <td>{{ trainee.username }}</td>
             <td>{{ trainee.email }}</td>
             <td>{{ trainee.trainer_name }}</td>
             <td>
-             
               <button (click)="editTrainee(trainee)">Edit</button>
               <button (click)="deleteTrainee(trainee.id)">Delete</button>
               <button (click)="assignTrainer(trainee)">Assign Trainer</button>
@@ -79,34 +93,18 @@
           </tr>
         </tbody>
       </table>
-     
+      
  
     </div>
     <div *ngIf="trainees.length === 0">No trainees found.</div>
   </div>
+
  
-  <!-- Modal for Assigning Trainer -->
-  <div *ngIf="isAssigningTrainer" class="modal">
-    <div class="modal-content">
-    <h4>Assign Trainer to {{ selectedTrainee?.username }}</h4>
-    <label for="trainer">Select Trainer:</label>
-    <select id="trainer" [(ngModel)]="selectedTrainerId">
-      <option *ngFor="let trainer of trainers" [value]="trainer.id">{{ trainer.username }}</option>
-    </select>
-    <button (click)="assignTrainerToTrainee()">Assign</button>
-    <button (click)="cancelAssign()">Cancel</button>
-  </div>
 </div>
-</div>
+
+
  
-<div class="action-buttons">
-  <!-- Add Trainer Button -->
-  <button (click)="openAddTrainerModal()">Add Trainer</button>
- 
-  <!-- Add Trainee Button -->
-  <button (click)="openAddTraineeModal()">Add Trainee</button>
-  </div>
- 
+  
   <!-- Add Trainer Modal -->
   <div *ngIf="showAddTrainerModal" class="modal">
     <div class="modal-content">
@@ -114,7 +112,7 @@
       <button (click)="closeAddTrainerModal()" class="close-btn">Close</button>
     </div>
   </div>
- 
+
   <!-- Add Trainee Modal -->
   <div *ngIf="showAddTraineeModal" class="modal">
     <div class="modal-content">
@@ -129,13 +127,39 @@
     <button (click)="closeEditTrainerModal()" class="close-btn">Close</button>
   </div>
 </div>
- 
+
 <!-- Edit Trainee Modal -->
 <div *ngIf="selectedTrainee && !isAssigningTrainer" class="modal">
   <div class="modal-content">
     <app-edit-trainee [trainee]="selectedTrainee" (traineeUpdated)="handleUpdatedTrainee($event)"></app-edit-trainee>
-    <button (click)="selectedTrainee = null" class="close-btn">Close</button>
+    <button (click)="closeEditTraineeModal()" class="close-btn">Close</button>
   </div>
 </div>
- 
- 
+
+ <!-- Modal for Assigning Trainer -->
+ <div *ngIf="isAssigningTrainer" class="modal">
+  <div class="modal-content">
+  <h4>Assign Trainer to {{ selectedTrainee?.username }}</h4>
+  <label for="trainer">Select Trainer:</label>
+  <select id="trainer" [(ngModel)]="selectedTrainerId">
+    <option *ngFor="let trainer of trainers" [value]="trainer.id">{{ trainer.username }}</option>
+  </select>
+  <button (click)="assignTrainerToTrainee()">Assign</button>
+  <button (click)="cancelAssign()">Cancel</button>
+</div>
+</div>
+
+<!-- Modal for Assigning Trainees -->
+<div *ngIf="isAssigningTrainees" class="modal">
+  <div class="modal-content">
+    <h4>Assign Trainees to {{ selectedTrainer?.username }}</h4>
+    <div *ngFor="let trainee of trainees">
+      <label>
+        <input type="checkbox" [(ngModel)]="trainee.selected" />
+        {{ trainee.username }}
+      </label>
+    </div>
+    <button (click)="assignTraineesToTrainer()">Assign</button>
+    <button (click)="cancelAssignTrainees()">Cancel</button>
+  </div>
+</div>
