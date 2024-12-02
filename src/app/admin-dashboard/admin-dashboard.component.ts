@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
 import { AuthService } from '../auth.servie';
-
+ 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
@@ -21,14 +21,16 @@ export class AdminDashboardComponent implements OnInit {
   public selectedTrainerId: number | null = null;
   public isAssigningTrainer: boolean = false;
   public isEditingTrainee: boolean = false;
-
+  public showAddTrainerModal = false;
+  public showAddTraineeModal = false;
+ 
   constructor(private http: HttpClient, private authService: AuthService) {}
-
+ 
   ngOnInit(): void {
     this.loadTrainers();
     this.loadTrainees();
   }
-
+ 
   loadTrainers() {
     this.http.get<any[]>(`${environment.apiUrl}/admin/trainers`).subscribe(
       (data) => {
@@ -41,7 +43,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-
+ 
   loadTrainees() {
     this.http.get<any[]>(`${environment.apiUrl}/admin/trainee`).subscribe(
       (data) => {
@@ -58,17 +60,17 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-
+ 
   search() {
     const searchLower = this.searchQuery.toLowerCase();
-
+ 
     if (this.selectedRole === 'Trainer' || this.selectedRole === 'All') {
       this.trainers = this.originalTrainers.filter(trainer =>
         trainer.username.toLowerCase().includes(searchLower) ||
         trainer.email.toLowerCase().includes(searchLower)
       );
     }
-
+ 
     if (this.selectedRole === 'Trainee' || this.selectedRole === 'All') {
       this.trainees = this.originalTrainees.filter(trainee =>
         trainee.username.toLowerCase().includes(searchLower) ||
@@ -76,7 +78,7 @@ export class AdminDashboardComponent implements OnInit {
       );
     }
   }
-
+ 
   filterByRole() {
     if (this.selectedRole === 'Trainer') {
       this.trainers = this.originalTrainers;
@@ -86,10 +88,10 @@ export class AdminDashboardComponent implements OnInit {
       this.trainers = this.originalTrainers;
       this.trainees = this.originalTrainees;
     }
-
+ 
     this.search();  // Reapply search after filtering
   }
-
+ 
   assignTrainerToTrainee() {
     if (this.selectedTrainee && this.selectedTrainerId) {
       this.http.put(`${environment.apiUrl}/admin/trainees/${this.selectedTrainee.id}/assign/${this.selectedTrainerId}`, {}).subscribe(
@@ -100,7 +102,7 @@ export class AdminDashboardComponent implements OnInit {
             assignedTrainee.trainer_id = this.selectedTrainerId;  // Update trainer ID
             assignedTrainee.trainer_name = this.trainers.find(t => t.id === this.selectedTrainerId)?.username || 'Not assigned'; // Update trainer name
           }
-  
+ 
           // Close the modal
           this.isAssigningTrainer = false;
           this.selectedTrainee = null;
@@ -112,33 +114,61 @@ export class AdminDashboardComponent implements OnInit {
       );
     }
   }
-  
-
+ 
   cancelAssign() {
     this.isAssigningTrainer = false;
     this.selectedTrainee = null;
     this.selectedTrainerId = null;
   }
-
+ 
   assignTrainer(trainee: any) {
     this.selectedTrainee = trainee;
     this.isAssigningTrainer = true;
+    this.isEditingTrainee = false;  // Ensure isEditingTrainee is false when assigning trainer
+  }
+  
+  
+  openAddTrainerModal() {
+    this.showAddTrainerModal = true;
+  }
+ 
+  closeAddTrainerModal() {
+    this.showAddTrainerModal = false;
+  }
+ 
+  openAddTraineeModal() {
+    this.showAddTraineeModal = true;
+  }
+ 
+  closeAddTraineeModal() {
+    this.showAddTraineeModal = false;
+  }
+ 
+  // Close edit modals
+  closeEditTrainerModal() {
+    this.selectedTrainer = null;
     this.isEditingTrainee = false;
   }
-
-  addTrainer() {
-    // Navigate to add trainer page or show a modal
+ 
+  closeEditTraineeModal() {
+    this.selectedTrainee = null;
+    this.isEditingTrainee = false;
   }
-
-  addTrainee() {
-    // Navigate to add trainee page or show a modal
+ 
+  handleAddedTrainer(trainer: any) {
+    this.trainers.push(trainer);
+    this.closeAddTrainerModal();
   }
-
+ 
+  handleAddedTrainee(trainee: any) {
+    this.trainees.push(trainee);
+    this.closeAddTraineeModal();
+  }
+ 
   editTrainer(trainer: any) {
-    
     this.selectedTrainer = { ...trainer };
   }
-
+ 
   deleteTrainer(trainerId: number) {
     this.http.delete(`${environment.apiUrl}/admin/trainers/${trainerId}`).subscribe(
       () => {
@@ -149,13 +179,13 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-
+ 
   editTrainee(trainee: any) {
     this.selectedTrainee = { ...trainee };
-    this.isEditingTrainee = true;  
-    this.isAssigningTrainer = false;
+    this.isEditingTrainee = true; 
+    this.isAssigningTrainer = false;  
   }
-
+ 
   deleteTrainee(traineeId: number) {
     this.http.delete(`${environment.apiUrl}/admin/trainees/${traineeId}`).subscribe(
       () => {
@@ -166,7 +196,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-
+ 
   handleUpdatedTrainee(updatedTrainee: any) {
     const index = this.trainees.findIndex(t => t.id === updatedTrainee.id);
     if (index !== -1) {
@@ -174,7 +204,7 @@ export class AdminDashboardComponent implements OnInit {
     }
     this.selectedTrainee = null;  // Reset selected trainee after update
   }
-
+ 
   updateTrainerInDashboard(updatedTrainer: any) {
     const index = this.trainers.findIndex(t => t.id === updatedTrainer.id);
     if (index !== -1) {
@@ -182,7 +212,7 @@ export class AdminDashboardComponent implements OnInit {
     }
     this.selectedTrainer = null;  // Reset selected trainer after update
   }
-
+ 
   logout() {
     this.authService.logout();  // Logout the user
   }
