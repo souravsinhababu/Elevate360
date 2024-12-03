@@ -29,6 +29,7 @@ export class AuthService {
       this.token = null;
       this.userRole = null;
       localStorage.removeItem('authToken');  // Remove token from localStorage
+      localStorage.removeItem('userId');  // Remove userId from localStorage
       this.router.navigate(['/login']);  // Redirect to login page
     }
   }
@@ -56,5 +57,12 @@ export class AuthService {
     }
     return null;
   }
+
+  // Get the stored userId from localStorage
+  getUserId(): number | null {
+    if (this.platformDetectorService.isBrowser()) {
+      return parseInt(localStorage.getItem('userId') || '0', 10);
+    }
+    return null;
+  }
 }
-;
