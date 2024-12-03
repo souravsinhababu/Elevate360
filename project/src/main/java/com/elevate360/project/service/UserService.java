@@ -3,7 +3,11 @@ package com.elevate360.project.service;
 import com.elevate360.project.entity.User;
 import com.elevate360.project.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -11,28 +15,102 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    // Remove BCryptPasswordEncoder dependency if not needed
-    // @Autowired
-    // private BCryptPasswordEncoder passwordEncoder;
-
-    public User signup(User user) {
-        // If you still want password encoding, leave it as it is
-        // user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        // If no encoding is needed, just save the password as plain text
-        if (user.getRole() == null) {
-            user.setRole("TRAINEE");  // default role as trainee
-        }
-
-        return userRepository.save(user);
+    // Get all users by role (e.g., "trainer", "trainee")
+    public List<User> getAllUsersByRole(String role) {
+        return userRepository.findByRole(role);
     }
 
-    public User login(String email, String password) {
+    // Delete user by ID and role
+    public ResponseEntity<Void> deleteUserByIdAndRole(Long id, String role) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent() && role.equals(user.get().getRole())) {
+            userRepository.deleteById(id);
+            return ResponseEntity.noContent().build(); // 204 No Content
+        }
+        return ResponseEntity.status(404).build(); // 404 Not Found
+    }
+
+    // Update user by ID and role
+    public ResponseEntity<User> updateUserByIdAndRole(Long id, User updatedUser, String role) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent() && role.equals(userOptional.get().getRole())) {
+            User user = userOptional.get();
+            // Update the fields from updatedUser
+            user.setUsername(updatedUser.getUsername());
+            user.setEmail(updatedUser.getEmail());
+            user.setPassword(updatedUser.getPassword());
+            user.setSpecialization(updatedUser.getSpecialization());
+            user.setDesignation(updatedUser.getDesignation());
+            userRepository.save(user);
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.status(404).build(); // 404 Not Found
+    }
+
+    // Add a new user (signup)
+    public ResponseEntity<User> signup(User user) {
+        // Check if a user with the same email already exists
+        if (userRepository.findByEmail(user.getEmail()) != null) {
+            return ResponseEntity.status(409).build(); // 409 Conflict if the user already exists
+        }
+
+        if (user.getRole() == null) {
+            user.setRole("TRAINEE"); // Set default role if not provided
+        }
+
+        // Save and return the new user
+        User savedUser = userRepository.save(user);
+        return ResponseEntity.ok(savedUser);
+    }
+
+    // Login method to validate user credentials
+    public ResponseEntity<User> login(String email, String password) {
+        // Find user by email
         User user = userRepository.findByEmail(email);
 
-        if (user != null && user.getPassword().equals(password)) {  // No encryption check now
-            return user;
+        // Check if the user exists and the password matches
+        if (user != null && user.getPassword().equals(password)) {
+            return ResponseEntity.ok(user);
         }
-        return null;  // Invalid credentials
+
+        // Return unauthorized if credentials don't match
+        return ResponseEntity.status(401).build(); // 401 Unauthorized
+    }
+
+    // Add a new user (e.g., for admin to create trainers/trainees)
+    public ResponseEntity<User> addUser(User user) {
+        User savedUser = userRepository.save(user);
+        if (savedUser != null) {
+            return ResponseEntity.ok(savedUser);
+        }
+        return ResponseEntity.status(500).build(); // 500 Internal Server Error
+    }
+
+    // Assign a trainee to a trainer
+    public ResponseEntity<User> assignTraineeToTrainer(Long traineeId, Long trainerId) {
+        Optional<User> traineeOptional = userRepository.findById(traineeId);
+        Optional<User> trainerOptional = userRepository.findById(trainerId);
+
+        if (traineeOptional.isPresent() && trainerOptional.isPresent() &&
+                "trainee".equals(traineeOptional.get().getRole()) && "trainer".equals(trainerOptional.get().getRole())) {
+            User trainee = traineeOptional.get();
+            User trainer = trainerOptional.get();
+
+            // Assign the trainer to the trainee
+            trainee.setTrainer(trainer);
+
+            User updatedTrainee = userRepository.save(trainee);
+            return ResponseEntity.ok(updatedTrainee);
+        }
+        return ResponseEntity.status(404).body(null); // 404 Not Found
+    }
+
+    // Get trainees by trainer ID
+    public List<User> getTraineesByTrainerId(Long trainerId) {
+        Optional<User> trainerOptional = userRepository.findById(trainerId);
+        if (trainerOptional.isPresent() && "trainer".equals(trainerOptional.get().getRole())) {
+            return userRepository.findByTrainer(trainerOptional.get());
+        }
+        return null; // Return null if trainer not found or role mismatch
     }
 }

@@ -52,11 +52,6 @@ public class TrainerController {
         // Fetch trainees assigned to the trainer
         List<User> trainees = userRepository.findTraineesByTrainerId(id);
 
-        // Map trainees to their names (you can modify this based on what details you want)
-//        List<String> traineeNames = trainees.stream()
-//                .map(User::getUsername)  // Adjust based on your User class' field for the name
-//                .collect(Collectors.toList());
-
         List<TraineeDTO> traineeDTOs = trainees.stream()
                 .map(trainee -> new TraineeDTO(trainee.getUsername(), trainee.getEmail(), trainee.getSpecialization()))
                 .collect(Collectors.toList());

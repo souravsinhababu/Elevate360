@@ -16,18 +16,11 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<User> signup(@RequestBody User user) {
-        User savedUser = userService.signup(user);
-        return ResponseEntity.ok(savedUser);
+        return userService.signup(user);
     }
 
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestParam String email, @RequestParam String password) {
-        User loggedInUser = userService.login(email, password);
-
-        if (loggedInUser != null) {
-            return ResponseEntity.ok(loggedInUser);
-        }
-        return ResponseEntity.status(401).build();  // Unauthorized
+        return userService.login(email, password);
     }
 }
-
