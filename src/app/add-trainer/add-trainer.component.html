@@ -1,19 +1,26 @@
 <div class="form-container">
-    <h2>Add Trainer</h2>
-    <form (ngSubmit)="onSubmit()">
+  <h2>Add Trainer</h2>
+  <form (ngSubmit)="onSubmit()">
       <label for="username">Username:</label>
       <input type="text" id="username" [(ngModel)]="trainer.username" name="username" required />
-  
+
       <label for="email">Email:</label>
       <input type="email" id="email" [(ngModel)]="trainer.email" name="email" required />
-  
+
       <label for="password">Password:</label>
       <input type="password" id="password" [(ngModel)]="trainer.password" name="password" required />
-  
+
       <label for="specialization">Specialization:</label>
-      <input type="text" id="specialization" [(ngModel)]="trainer.specialization" name="specialization" required />
-  
+      <div class="radio-group">
+          <input type="radio" id="frontend" [(ngModel)]="trainer.specialization" name="specialization" value="FrontEnd" required #specializationField="ngModel">
+          <label for="frontend">FrontEnd</label>
+
+          <input type="radio" id="backend" [(ngModel)]="trainer.specialization" name="specialization" value="BackEnd" required #specializationField="ngModel">
+          <label for="backend">BackEnd</label>
+      </div>
+
+      <div *ngIf="specializationField.invalid && specializationField.touched" class="error">Specialization is required</div>
+
       <button type="submit">Add Trainer</button>
-    </form>
-  </div>
-  
+  </form>
+</div>

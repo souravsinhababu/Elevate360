@@ -1,5 +1,30 @@
-<div >
-  <p>Welcome, Trainer!</p>
-  <button  (click)="logout()">Logout</button>
+<div>
+  <p>Welcome, Trainer! </p>
+  <button (click)="logout()">Logout</button>
 
+  <div *ngIf="isLoading">Loading trainees...</div>
+
+  <div *ngIf="!isLoading && trainees.length > 0">
+    <h2>Assigned Trainees</h2>
+    <table class="trainee-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Designation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let trainee of trainees">
+          <td>{{ trainee.username }}</td>
+          <td>{{ trainee.email }}</td>
+          <td>{{ trainee.designation }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!isLoading && trainees.length === 0" class="no-trainees-message">
+    <p>No trainees assigned to you.</p>
+  </div>
 </div>

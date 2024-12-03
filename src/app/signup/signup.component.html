@@ -24,13 +24,26 @@
     <input type="password" id="password" [(ngModel)]="password" name="password" required minlength="6" #passwordField="ngModel">
     <div *ngIf="passwordField.invalid && passwordField.touched" class="error">Password is required and must be at least 6 characters</div>
 
-   
-    <!-- Trainer-specific field -->
-    <div *ngIf="role === 'trainer'">
-      <label for="specialization">Specialization:</label>
-      <input type="text" id="specialization" [(ngModel)]="specialization" name="specialization" required #specializationField="ngModel">
-      <div *ngIf="specializationField.invalid && specializationField.touched" class="error">Specialization is required</div>
+<!-- Trainer-specific field -->
+<div *ngIf="role === 'trainer'">
+  <div class="radio-container">
+    <label>Specialization:</label>
+    <div class="radio-options">
+      <label for="frontend">
+        <input type="radio" id="FrontEnd" name="specialization" value="FrontEnd" [(ngModel)]="specialization" required>
+        FrontEnd
+      </label>
+      <label for="backend">
+        <input type="radio" id="BackEnd" name="specialization" value="BackEnd" [(ngModel)]="specialization" required>
+        BackEnd
+      </label>
     </div>
+    <div *ngIf="!specialization && signupForm.submitted" class="error">
+      Specialization is required
+    </div>
+  </div>
+</div>
+
 
     <!-- Trainee-specific fields -->
     <div *ngIf="role === 'trainee'">

@@ -169,6 +169,8 @@ export class AdminDashboardComponent implements OnInit {
  
   editTrainer(trainer: any) {
     this.selectedTrainer = { ...trainer };
+
+    
   }
  
   deleteTrainer(trainerId: number) {

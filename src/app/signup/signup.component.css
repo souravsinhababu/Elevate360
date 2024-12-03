@@ -218,3 +218,58 @@ input.ng-invalid.ng-touched + .error {
 .already-user .g1:active {
   background-color: #e65c00;
 }
+/* Ensure the font is consistent with the rest of the form */
+.radio-container label {
+  font-size: 14px;  /* Matching the font size of other labels */
+  font-weight: bold; /* Matching the font weight */
+  color: #333;  /* Matching the font color */
+}
+
+/* Ensuring radio button options follow the same styling */
+.radio-options {
+  display: flex;
+  gap: 20px; /* Space between radio buttons */
+  flex-direction: row;
+}
+
+.radio-options label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  font-size: 14px; /* Ensuring font size matches others */
+  font-weight: normal; /* Font weight same as other labels */
+  color: #333; /* Font color same as other labels */
+}
+
+.radio-options input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.radio-options input[type="radio"]:checked {
+  transform: scale(1.2); /* Slightly enlarge when selected */
+}
+
+.radio-options input[type="radio"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #ff6600;
+}
+
+/* Ensuring the text for Frontend and Backend is consistent */
+.radio-options label {
+  font-family: "Kanit", sans-serif; /* Use the same font-family as the rest of the form */
+  font-size: 14px; /* Matching the font size of other labels */
+  font-weight: normal; /* Regular weight */
+  color: #333; /* Matching font color */
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: -10px;
+  font-style: italic;
+}

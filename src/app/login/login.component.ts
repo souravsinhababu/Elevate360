@@ -25,13 +25,17 @@ export class LoginComponent {
 
     // Send data as query parameters in the URL for login
     const loginUrl = `${environment.apiUrl}/api/users/login?email=${loginData.email}&password=${loginData.password}`;
+    
+    // Make the HTTP request for login
     this.http.post<any>(loginUrl, {}).subscribe(
       response => {
         const role = response.role;
         const token = response.token;  // Assuming the response includes a token
+        const id = response.id;  // Assuming the response includes the user's id
 
-        // Store token and role in AuthService for session management
-        this.authService.login(token, role);  // Call AuthService to store the user's info
+        // Store token, role, and id in localStorage (or AuthService if needed)
+        this.authService.login(token, role);  // Store token and role in AuthService
+        localStorage.setItem('userId', id.toString());  // Store the user ID in localStorage
 
         // Navigate to the appropriate dashboard based on the role
         if (role === 'trainee') {
