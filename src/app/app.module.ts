@@ -10,7 +10,6 @@ import { TraineeDashboardComponent } from './trainee-dashboard/trainee-dashboard
 import { TrainerDashboardComponent } from './trainer-dashboard/trainer-dashboard.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';  
 import { AppRoutingModule } from './app-routing.module';
-import { HomeComponent } from './home/home.component';
 import { EditTrainerComponent } from './edit-trainer/edit-trainer.component';
 import { EditTraineeComponent } from './edit-trainee/edit-trainee.component';
 import { AddTraineeComponent } from './add-trainee/add-trainee.component';
@@ -26,7 +25,6 @@ import { AddTrainerComponent } from './add-trainer/add-trainer.component';
     TraineeDashboardComponent,
     TrainerDashboardComponent,
     AdminDashboardComponent,
-    HomeComponent,
     EditTrainerComponent,
     EditTraineeComponent,
     AddTraineeComponent,
