@@ -121,7 +121,7 @@
     </div>
   </div>
   <!-- Edit Trainer Modal -->
-<div *ngIf="selectedTrainer" class="modal">
+<div *ngIf="selectedTrainer && !isAssigningTrainees" class="modal">
   <div class="modal-content">
     <app-edit-trainer [trainer]="selectedTrainer" (trainerUpdated)="updateTrainerInDashboard($event)"></app-edit-trainer>
     <button (click)="closeEditTrainerModal()" class="close-btn">Close</button>
