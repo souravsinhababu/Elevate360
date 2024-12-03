@@ -15,5 +15,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.trainer.id = :trainerId AND u.role = 'trainee'")
     List<User> findTraineesByTrainerId(@Param("trainerId") Long trainerId);
+
+    //tariner dashboard
+
+
 }
 

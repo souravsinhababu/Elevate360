@@ -1,5 +1,6 @@
 package com.elevate360.project.controller.dashboard;
 
+import com.elevate360.project.dto.AssignTraineesRequest;
 import com.elevate360.project.entity.User;
 import com.elevate360.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class AdminController {
 
     @PutMapping("/trainers/{id}")
     public ResponseEntity<User> updateTrainer(@PathVariable Long id, @RequestBody User updatedTrainer) {
-        return userService.updateUserByIdAndRole(id, updatedTrainer, "trainer");
+    return userService.updateUserByIdAndRole(id, updatedTrainer, "trainer");
     }
 
     @PutMapping("/trainees/{id}")
@@ -66,5 +67,13 @@ public class AdminController {
     @GetMapping("/trainers/{id}/trainees")
     public List<User> getTraineesByTrainer(@PathVariable Long id) {
         return userService.getTraineesByTrainerId(id);
+    }
+    @PutMapping("/trainers/{trainerId}/assignTrainees")
+    public ResponseEntity<String> assignTraineesToTrainer(
+            @PathVariable Long trainerId,
+            @RequestBody AssignTraineesRequest request) {
+
+        String response = userService.assignTraineesToTrainer(trainerId, request);
+        return ResponseEntity.ok(response);
     }
 }

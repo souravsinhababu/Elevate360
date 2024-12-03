@@ -1,5 +1,7 @@
 package com.elevate360.project.service;
 
+import com.elevate360.project.dto.AssignTraineesRequest;
+import com.elevate360.project.dto.TraineeDTO;
 import com.elevate360.project.entity.User;
 import com.elevate360.project.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -104,6 +107,40 @@ public class UserService {
         }
         return ResponseEntity.status(404).body(null); // 404 Not Found
     }
+    public String assignTraineesToTrainer(Long trainerId, AssignTraineesRequest request) {
+        User trainer = userRepository.findById(trainerId).orElse(null);
+        if (trainer == null || !"trainer".equals(trainer.getRole())) {
+            return "Trainer not found or invalid role";
+        }
+
+        for (Long traineeId : request.getTraineeIds()) {
+            User trainee = userRepository.findById(traineeId).orElse(null);
+            if (trainee != null && "trainee".equals(trainee.getRole())) {
+                trainee.setTrainer(trainer);
+                userRepository.save(trainee);
+            }
+        }
+
+        return "Trainees successfully assigned to trainer";
+    }
+
+    // Get all trainees assigned to a specific trainer
+    public List<TraineeDTO> getTraineesByTrainer(Long trainerId) {
+        User trainer = userRepository.findById(trainerId).orElse(null);
+        if (trainer == null || !"trainer".equals(trainer.getRole())) {
+            return null; // Return null if trainer not found or not a trainer
+        }
+
+        List<User> trainees = userRepository.findTraineesByTrainerId(trainerId);
+
+        return trainees.stream()
+                .map(trainee -> new TraineeDTO(trainee.getUsername(), trainee.getEmail(), trainee.getSpecialization()))
+                .collect(Collectors.toList());
+    }
+
+
+    //Trainer Dashboard
+
 
     // Get trainees by trainer ID
     public List<User> getTraineesByTrainerId(Long trainerId) {
