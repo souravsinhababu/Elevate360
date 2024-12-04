@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../auth.servie';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-trainee-dashboard',

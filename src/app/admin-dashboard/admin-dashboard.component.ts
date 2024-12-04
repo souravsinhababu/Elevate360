@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
-import { AuthService } from '../auth.servie';  // Adjust the import for your AuthService
+import { AuthService } from '../auth.service';  // Adjust the import for your AuthService
 
 @Component({
   selector: 'app-admin-dashboard',
