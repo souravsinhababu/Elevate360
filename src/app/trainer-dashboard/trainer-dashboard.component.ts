@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../auth.servie';
+import { AuthService } from '../auth.service';
 import { environment } from '../../environment'; // Assuming the environment file contains the API URL
 
 @Component({

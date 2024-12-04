@@ -1,11 +1,13 @@
-<div>
-  <p>Welcome, Trainer! </p>
-  <button (click)="logout()">Logout</button>
-
-  <div *ngIf="isLoading">Loading trainees...</div>
+<div class="dashboard-container">
+  <div class="header">
+    <p class="welcome-message">Welcome, Trainer!</p>
+    <button class="logout-button" (click)="logout()">Logout</button>
+  </div>
+  <h2>Welcome to the Trainer Dashboard</h2>
+  <div *ngIf="isLoading" class="loading-message">Loading trainees...</div>
 
   <div *ngIf="!isLoading && trainees.length > 0">
-    <h2>Assigned Trainees</h2>
+    <h3 class="assigned-trainees-header">Assigned Trainees</h3>
     <table class="trainee-table">
       <thead>
         <tr>
