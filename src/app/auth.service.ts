@@ -19,6 +19,7 @@ export class AuthService {
       this.token = token;          // Store token (could be JWT)
       this.userRole = role;        // Store the user's role (admin, trainer, trainee)
       localStorage.setItem('authToken', token);  // Save token to localStorage
+      
     }
   }
 
@@ -30,6 +31,7 @@ export class AuthService {
       this.userRole = null;
       localStorage.removeItem('authToken');  // Remove token from localStorage
       localStorage.removeItem('userId');  // Remove userId from localStorage
+      localStorage.removeItem('username'); //Remove username from localStorage
       this.router.navigate(['/login']);  // Redirect to login page
     }
   }

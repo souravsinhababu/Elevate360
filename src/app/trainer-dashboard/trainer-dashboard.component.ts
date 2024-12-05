@@ -12,6 +12,7 @@ export class TrainerDashboardComponent implements OnInit {
   userId: number | null = null;
   trainees: any[] = [];  // Array to store trainees
   isLoading: boolean = true;  // To show a loading indicator
+  public trainername:string='';
 
   constructor(private authService: AuthService, private http: HttpClient) {}
 
@@ -22,6 +23,10 @@ export class TrainerDashboardComponent implements OnInit {
     if (this.userId) {
       // Fetch trainees assigned to the trainer
       this.fetchTrainees(this.userId);
+    }
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      this.trainername = storedUsername;  // Set the adminname from localStorage
     }
   }
 

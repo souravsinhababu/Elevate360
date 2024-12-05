@@ -7,7 +7,15 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./trainee-dashboard.component.css']
 })
 export class TraineeDashboardComponent {
+  public traineename:string='';
   constructor(private authService: AuthService) {}
+  ngOnInit(): void {
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      this.traineename = storedUsername;  // Set the adminname from localStorage
+    }
+  }
+
 
   logout() {
     this.authService.logout();  // Logout the user
