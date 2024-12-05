@@ -38,16 +38,21 @@ public class User {
     private String role;
 
     private String specialization;
-//     Add this field to the User class
-@ManyToOne
-@JoinColumn(name = "trainer_id")  // foreign key to the trainer (another User)
-@JsonProperty("trainer")  // Will serialize the trainer object as part of the response
-private User trainer;
+    //     Add this field to the User class
+    @ManyToOne
+    @JoinColumn(name = "trainer_id")  // foreign key to the trainer (another User)
+    @JsonProperty("trainer")  // Will serialize the trainer object as part of the response
+    private User trainer;
 
     // Many trainees can be assigned to one trainer (OneToMany)
     @OneToMany(mappedBy = "trainer")
     @JsonIgnore
     private List<User> trainees;
+
+    @ElementCollection
+    @CollectionTable(name = "assigned_courses", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "course_name")
+    private List<String> assignedCourses;
 
     // Getters and Setters
 
@@ -124,6 +129,12 @@ private User trainer;
         this.trainees = trainees;
     }
 
+    public List<String> getAssignedCourses() {
+        return assignedCourses;
+    }
 
+    public void setAssignedCourses(List<String> assignedCourses) {
+        this.assignedCourses = assignedCourses;
+    }
 }
 

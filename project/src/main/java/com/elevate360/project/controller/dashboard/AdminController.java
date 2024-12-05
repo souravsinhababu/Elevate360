@@ -3,6 +3,7 @@ package com.elevate360.project.controller.dashboard;
 import com.elevate360.project.dto.AssignTraineesRequest;
 import com.elevate360.project.entity.User;
 import com.elevate360.project.service.UserService;
+import com.elevate360.project.service.assigncourse.CourseAssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,9 @@ public class AdminController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CourseAssignmentService courseAssignmentService;
 
     @GetMapping("/trainers")
     public List<User> getAllTrainers() {
@@ -75,5 +79,19 @@ public class AdminController {
 
         String response = userService.assignTraineesToTrainer(trainerId, request);
         return ResponseEntity.ok(response);
+    }
+
+    // Assigning course to the trainer
+
+    @PostMapping("/assign/{trainerId}")
+    public ResponseEntity<String> assignCoursesToTrainer(@PathVariable Long trainerId) {
+        try {
+            // Call the service to assign courses to the trainer
+            courseAssignmentService.assignCoursesToTrainer(trainerId);
+            return ResponseEntity.ok("Courses successfully assigned to trainer with ID: " + trainerId);
+        } catch (RuntimeException e) {
+            // Handle error (trainer not found, or other issues)
+            return ResponseEntity.status(400).body("Error assigning courses: " + e.getMessage());
+        }
     }
 }
