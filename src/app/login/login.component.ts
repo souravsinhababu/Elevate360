@@ -19,7 +19,7 @@ export class LoginComponent {
   // Login form submission logic
   onLoginSubmit() {
     const loginData = {
-      email: this.username,  // Assuming username is the email
+      email: this.username,  // username is the email
       password: this.password
     };
 
@@ -30,12 +30,14 @@ export class LoginComponent {
     this.http.post<any>(loginUrl, {}).subscribe(
       response => {
         const role = response.role;
-        const token = response.token;  // Assuming the response includes a token
-        const id = response.id;  // Assuming the response includes the user's id
+        const token = response.token;  //  the response includes a token
+        const id = response.id;  //  the response includes the user's id
+        const name=response.username;
 
-        // Store token, role, and id in localStorage (or AuthService if needed)
+        // Store token, role, and id in localStorage or AuthService 
         this.authService.login(token, role);  // Store token and role in AuthService
         localStorage.setItem('userId', id.toString());  // Store the user ID in localStorage
+        localStorage.setItem('username',name.toString());
 
         // Navigate to the appropriate dashboard based on the role
         if (role === 'trainee') {

@@ -5,7 +5,7 @@ import { SignupComponent } from './signup/signup.component';
 import { TraineeDashboardComponent } from './trainee-dashboard/trainee-dashboard.component'; 
 import { TrainerDashboardComponent } from './trainer-dashboard/trainer-dashboard.component'; 
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component'; 
-import { AuthGuard } from './auth.guard'; // Import the guard
+import { AuthGuard } from './auth.guard'; 
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },

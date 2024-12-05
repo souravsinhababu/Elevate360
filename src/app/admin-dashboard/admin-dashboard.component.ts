@@ -18,12 +18,14 @@ export class AdminDashboardComponent implements OnInit {
   public searchQuery: string = '';
   public selectedTrainer: any;
   public selectedTrainee: any;
+  public adminname:string='';
   public selectedTrainerId: number | null = null;
   public isAssigningTrainer: boolean = false;
   public isEditingTrainee: boolean = false;
   public showAddTrainerModal = false;
   public showAddTraineeModal = false;
   public isAssigningTrainees: boolean = false;
+ 
 
 
   constructor(private http: HttpClient, private authService: AuthService) {}
@@ -31,6 +33,10 @@ export class AdminDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.loadTrainers();
     this.loadTrainees();
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      this.adminname = storedUsername;  // Set the adminname from localStorage
+    }
   }
 
   loadTrainers() {
