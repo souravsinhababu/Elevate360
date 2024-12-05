@@ -180,12 +180,13 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   deleteTrainer(trainerId: number) {
+    
     this.http.delete(`${environment.apiUrl}/admin/trainers/${trainerId}`).subscribe(
       () => {
         this.trainers = this.trainers.filter(trainer => trainer.id !== trainerId);
       },
       (error) => {
-        console.error('Error deleting trainer:', error);
+        alert("Can't delete trainer because he is already assigned to a trainee.");
       }
     );
   }
