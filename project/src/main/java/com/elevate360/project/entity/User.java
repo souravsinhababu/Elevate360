@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Entity
@@ -50,9 +51,13 @@ public class User {
     private List<User> trainees;
 
     @ElementCollection
-    @CollectionTable(name = "assigned_courses", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "course_name")
-    private List<String> assignedCourses;
+    @CollectionTable(
+            name = "assigned_courses",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @MapKeyColumn(name = "course_name")
+    @Column(name = "date_range")
+    private Map<String, String> assignedCourses; // Map where key = course name, value = date range
 
     // Getters and Setters
 
@@ -129,11 +134,11 @@ public class User {
         this.trainees = trainees;
     }
 
-    public List<String> getAssignedCourses() {
+    public Map<String, String> getAssignedCourses() {
         return assignedCourses;
     }
 
-    public void setAssignedCourses(List<String> assignedCourses) {
+    public void setAssignedCourses(Map<String, String> assignedCourses) {
         this.assignedCourses = assignedCourses;
     }
 }

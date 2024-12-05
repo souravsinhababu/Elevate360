@@ -84,14 +84,18 @@ public class AdminController {
     // Assigning course to the trainer
 
     @PostMapping("/assign/{trainerId}")
-    public ResponseEntity<String> assignCoursesToTrainer(@PathVariable Long trainerId) {
+    public ResponseEntity<String> assignCoursesToTrainer(
+            @PathVariable Long trainerId,
+            @RequestParam String startDate,
+            @RequestParam String endDate) {
         try {
-            // Call the service to assign courses to the trainer
-            courseAssignmentService.assignCoursesToTrainer(trainerId);
-            return ResponseEntity.ok("Courses successfully assigned to trainer with ID: " + trainerId);
+            // Call the service to assign courses with the date range to the trainer
+            courseAssignmentService.assignCoursesToTrainer(trainerId, startDate, endDate);
+            return ResponseEntity.ok("Courses successfully assigned to trainer with ID: " + trainerId +
+                    " from " + startDate + " to " + endDate);
         } catch (RuntimeException e) {
-            // Handle error (trainer not found, or other issues)
             return ResponseEntity.status(400).body("Error assigning courses: " + e.getMessage());
         }
     }
+
 }

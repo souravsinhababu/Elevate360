@@ -32,6 +32,4 @@ public class TrainerController {
             return ResponseEntity.notFound().build(); // Return 404 if no trainees found or trainer not found
         }
     }
-
-
 }

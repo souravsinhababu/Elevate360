@@ -9,8 +9,9 @@ import com.elevate360.project.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CourseAssignmentService {
@@ -24,7 +25,7 @@ public class CourseAssignmentService {
     @Autowired
     private TrainingListRepository trainingListRepository;
 
-    public void assignCoursesToTrainer(Long trainerId) {
+    public void assignCoursesToTrainer(Long trainerId, String startDate, String endDate) {
         // Step 1: Fetch the trainer from the User table
         User trainer = userRepository.findById(trainerId).orElseThrow(() -> new RuntimeException("Trainer not found"));
         String trainerSpecialization = trainer.getSpecialization();
@@ -36,25 +37,23 @@ public class CourseAssignmentService {
         // Step 3: Fetch all training lists that belong to this specialization category
         List<TrainingList> trainingLists = trainingListRepository.findByTrainingCategory(trainingCategory);
 
-        // Step 4: Assign courses from the relevant training lists to the trainer
-        List<String> coursesToAssign = new ArrayList<>();
+        // Step 4: Prepare a map of courses and their date ranges to add to the trainer
+        Map<String, String> coursesToAssign = new HashMap<>();
         for (TrainingList trainingList : trainingLists) {
-            // Filter courses from the list based on the trainer's specialization
             for (String course : trainingList.getCourses()) {
-                coursesToAssign.add(course);
+                // Add the course with the specified date range passed from the frontend
+                String dateRange = startDate + " to " + endDate;
+                coursesToAssign.put(course, dateRange);
             }
         }
 
-        // Step 5: Save the assigned courses to the trainer (assuming courses are stored in a list)
-        // We could store these courses directly in the User entity or another related entity
-        // Here we simply assume courses are being added to some list for the trainer.
+        // Step 5: Assign courses and date ranges to the trainer
+        trainer.setAssignedCourses(coursesToAssign);
 
-        // Assuming you would want to print or log the assigned courses for the trainer
-        System.out.println("Courses assigned to trainer " + trainer.getUsername() + ": " + coursesToAssign);
-
-        // Step 6: Save the updated trainer with assigned courses if needed (or just return the courses)
-        trainer.setAssignedCourses(coursesToAssign);  // Assuming you add a field for assigned courses in User
+        // Step 6: Save the updated trainer with assigned courses and date ranges
         userRepository.save(trainer);
+
+        // Log the assigned courses with their date ranges
+        System.out.println("Courses assigned to trainer " + trainer.getUsername() + ": " + coursesToAssign);
     }
 }
-
