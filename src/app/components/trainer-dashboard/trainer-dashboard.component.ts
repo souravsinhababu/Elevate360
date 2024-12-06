@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../core/environment/environment';
-
+import { AuthGuard } from '../../core/guards/auth.guard';
 @Component({
   selector: 'app-trainer-dashboard',
   templateUrl: './trainer-dashboard.component.html',
@@ -14,11 +13,11 @@ export class TrainerDashboardComponent implements OnInit {
   isLoading: boolean = true;  // To show a loading indicator
   public trainername:string='';
 
-  constructor(private authService: AuthService, private http: HttpClient) {}
+  constructor(private authGuard: AuthGuard, private http: HttpClient) {}
 
   ngOnInit(): void {
     // Retrieve the user ID from AuthService (which fetches it from localStorage)
-    this.userId = this.authService.getUserId();
+    this.userId = this.authGuard.getUserId();
 
     if (this.userId) {
       // Fetch trainees assigned to the trainer
@@ -46,6 +45,6 @@ export class TrainerDashboardComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout();  // Logout the user
+    this.authGuard.logout();  // Logout the user
   }
 }

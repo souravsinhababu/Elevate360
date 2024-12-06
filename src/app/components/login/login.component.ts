@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../core/environment/environment';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthGuard } from '../../core/guards/auth.guard';
 
 @Component({
   selector: 'app-login',
@@ -10,36 +11,47 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+  loginForm!: FormGroup;  // Using the '!' operator to assert that this will be initialized
 
-  username: string = '';
-  password: string = '';
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    private authguard: AuthGuard,  // Lowercase 'authguard' here, matching the injected property
+  ) {}
 
-  constructor(private router: Router, private http: HttpClient, private authService: AuthService) {}
+  ngOnInit(): void {
+    // Initialize the form group in ngOnInit
+    this.loginForm = new FormGroup({
+      username: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required, Validators.minLength(1)]),
+    });
+  }
 
   // Login form submission logic
-  onLoginSubmit() {
+  onLoginSubmit(): void {
+    if (this.loginForm.invalid) {
+      return; // Do not proceed if the form is invalid
+    }
+
     const loginData = {
-      email: this.username,  // username is the email
-      password: this.password
+      email: this.loginForm.value.username,
+      password: this.loginForm.value.password
     };
 
-    // Send data as query parameters in the URL for login
     const loginUrl = `${environment.apiUrl}/api/users/login?email=${loginData.email}&password=${loginData.password}`;
-    
-    // Make the HTTP request for login
+
     this.http.post<any>(loginUrl, {}).subscribe(
       response => {
         const role = response.role;
-        const token = response.token;  //  the response includes a token
-        const id = response.id;  //  the response includes the user's id
-        const name=response.username;
+        const token = response.token;
+        const id = response.id;
+        const name = response.username;
 
-        // Store token, role, and id in localStorage or AuthService 
-        this.authService.login(token, role);  // Store token and role in AuthService
-        localStorage.setItem('userId', id.toString());  // Store the user ID in localStorage
-        localStorage.setItem('username',name.toString());
+        this.authguard.login(token, role);  // Corrected to match 'authguard'
+        localStorage.setItem('userId', id.toString());
+        localStorage.setItem('username', name.toString());
+        localStorage.setItem('authToken', token);
 
-        // Navigate to the appropriate dashboard based on the role
         if (role === 'trainee') {
           this.router.navigate(['/trainee-dashboard']);
         } else if (role === 'trainer') {

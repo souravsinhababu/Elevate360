@@ -1,55 +1,65 @@
 <div class="form-container">
   <h2>Sign Up</h2>
 
-  <form #signupForm="ngForm" (ngSubmit)="onSignUpSubmit()">
+  <form [formGroup]="signupForm" (ngSubmit)="onSignUpSubmit()">
+    <!-- Role Selection -->
     <label for="role">Select Role:</label>
-    <select id="role" [(ngModel)]="role" name="role" (change)="roleChanged()" required>
+    <select id="role" formControlName="role" (change)="onRoleChange()" required>
       <option value="">Select Role</option>
       <option value="trainer">Trainer</option>
       <option value="trainee">Trainee</option>
       <option value="admin">Admin</option>
     </select>
-    <div *ngIf="signupForm.submitted && !role" class="error">Role is required</div>
+    <div *ngIf="signupForm.get('role')?.invalid && signupForm.get('role')?.touched" class="error">
+      Role is required
+    </div>
 
     <!-- Common Form Fields -->
     <label for="username">Username:</label>
-    <input type="text" id="username" [(ngModel)]="username" name="username" required minlength="4" #usernameField="ngModel">
-    <div *ngIf="usernameField.invalid && usernameField.touched" class="error">Username is required and must be at least 4 characters</div>
-    
+    <input type="text" id="username" formControlName="username" required minlength="4" />
+    <div *ngIf="signupForm.get('username')?.invalid && signupForm.get('username')?.touched" class="error">
+      Username is required and must be at least 4 characters
+    </div>
+
     <label for="email">Email:</label>
-    <input type="email" id="email" [(ngModel)]="email" name="email" required email #emailField="ngModel">
-    <div *ngIf="emailField.invalid && emailField.touched" class="error">Valid email is required</div>
+    <input type="email" id="email" formControlName="email" required email />
+    <div *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched" class="error">
+      Valid email is required
+    </div>
 
     <label for="password">Password:</label>
-    <input type="password" id="password" [(ngModel)]="password" name="password" required minlength="6" #passwordField="ngModel">
-    <div *ngIf="passwordField.invalid && passwordField.touched" class="error">Password is required and must be at least 6 characters</div>
-
-<!-- Trainer-specific field -->
-<div *ngIf="role === 'trainer'">
-  <div class="radio-container">
-    <label>Specialization:</label>
-    <div class="radio-options">
-      <label for="frontend">
-        <input type="radio" id="FrontEnd" name="specialization" value="FrontEnd" [(ngModel)]="specialization" required>
-        FrontEnd
-      </label>
-      <label for="backend">
-        <input type="radio" id="BackEnd" name="specialization" value="BackEnd" [(ngModel)]="specialization" required>
-        BackEnd
-      </label>
+    <input type="password" id="password" formControlName="password" required minlength="6" />
+    <div *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched" class="error">
+      Password is required and must be at least 6 characters
     </div>
-    <div *ngIf="!specialization && signupForm.submitted" class="error">
-      Specialization is required
-    </div>
-  </div>
-</div>
 
+    <!-- Trainer-specific field -->
+    <div *ngIf="signupForm.get('role')?.value === 'trainer'">
+      <div class="radio-container">
+        <label>Specialization:</label>
+        <div class="radio-options">
+          <label for="frontend">
+            <input type="radio" id="FrontEnd" formControlName="specialization" value="FrontEnd" />
+            FrontEnd
+          </label>
+          <label for="backend">
+            <input type="radio" id="BackEnd" formControlName="specialization" value="BackEnd" />
+            BackEnd
+          </label>
+        </div>
+        <div *ngIf="signupForm.get('specialization')?.invalid && signupForm.get('specialization')?.touched" class="error">
+          Specialization is required
+        </div>
+      </div>
+    </div>
 
     <!-- Trainee-specific fields -->
-    <div *ngIf="role === 'trainee'">
+    <div *ngIf="signupForm.get('role')?.value === 'trainee'">
       <label for="designation">Designation:</label>
-      <input type="text" id="designation" [(ngModel)]="designation" name="designation" required #designationField="ngModel">
-      <div *ngIf="designationField.invalid && designationField.touched" class="error">Designation is required</div>
+      <input type="text" id="designation" formControlName="designation" required />
+      <div *ngIf="signupForm.get('designation')?.invalid && signupForm.get('designation')?.touched" class="error">
+        Designation is required
+      </div>
     </div>
 
     <button type="submit" [disabled]="signupForm.invalid">Submit</button>

@@ -1,26 +1,38 @@
 <div class="modal">
   <h2>Edit Trainer</h2>
-  <form (ngSubmit)="saveTrainer()">
+
+  <form [formGroup]="trainerForm" (ngSubmit)="saveTrainer()">
     <label for="username">Username</label>
-    <input type="text" id="username" [(ngModel)]="trainer.username" name="username" required>
+    <input type="text" id="username" formControlName="username" required />
+    <div *ngIf="trainerForm.get('username')?.invalid && trainerForm.get('username')?.touched" class="error">
+      Username is required
+    </div>
 
     <label for="email">Email</label>
-    <input type="email" id="email" [(ngModel)]="trainer.email" name="email" required>
+    <input type="email" id="email" formControlName="email" required />
+    <div *ngIf="trainerForm.get('email')?.invalid && trainerForm.get('email')?.touched" class="error">
+      A valid email is required
+    </div>
 
     <label for="password">Password</label>
-    <input type="password" id="password" [(ngModel)]="trainer.password" name="password" required>
+    <input type="password" id="password" formControlName="password" required />
+    <div *ngIf="trainerForm.get('password')?.invalid && trainerForm.get('password')?.touched" class="error">
+      Password is required
+    </div>
 
     <label for="specialization">Specialization</label>
     <div class="radio-group">
-      <input type="radio" id="frontend" [(ngModel)]="trainer.specialization" name="specialization" value="FrontEnd" required #specializationField="ngModel">
+      <input type="radio" id="frontend" formControlName="specialization" value="FrontEnd" required />
       <label for="frontend">FrontEnd</label>
 
-      <input type="radio" id="backend" [(ngModel)]="trainer.specialization" name="specialization" value="BackEnd" required #specializationField="ngModel">
+      <input type="radio" id="backend" formControlName="specialization" value="BackEnd" required />
       <label for="backend">BackEnd</label>
     </div>
 
-    <div *ngIf="specializationField.invalid && specializationField.touched" class="error">Specialization is required</div>
+    <div *ngIf="trainerForm.get('specialization')?.invalid && trainerForm.get('specialization')?.touched" class="error">
+      Specialization is required
+    </div>
 
-    <button type="submit">Save Changes</button>
+    <button type="submit" [disabled]="trainerForm.invalid">Save Changes</button>
   </form>
 </div>
