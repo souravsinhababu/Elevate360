@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -84,18 +85,23 @@ public class AdminController {
     // Assigning course to the trainer
 
     @PostMapping("/assign/{trainerId}")
-    public ResponseEntity<String> assignCoursesToTrainer(
+    public ResponseEntity<Object> assignCoursesToTrainer(
             @PathVariable Long trainerId,
-            @RequestParam String startDate,
-            @RequestParam String endDate) {
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate) {
         try {
             // Call the service to assign courses with the date range to the trainer
             courseAssignmentService.assignCoursesToTrainer(trainerId, startDate, endDate);
-            return ResponseEntity.ok("Courses successfully assigned to trainer with ID: " + trainerId +
-                    " from " + startDate + " to " + endDate);
+
+            // Retrieve the updated trainer details
+            User updatedTrainer = courseAssignmentService.getTrainerWithAssignedCourses(trainerId);
+
+            // Construct the response payload
+            return ResponseEntity.ok(updatedTrainer);
         } catch (RuntimeException e) {
             return ResponseEntity.status(400).body("Error assigning courses: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Invalid date format. Please use YYYY-MM-DD.");
         }
     }
-
 }

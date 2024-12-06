@@ -3,15 +3,12 @@ package com.elevate360.project.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-
 
 @Entity
 @Table(name = "user_table")
@@ -39,7 +36,8 @@ public class User {
     private String role;
 
     private String specialization;
-    //     Add this field to the User class
+
+    // Add this field to the User class
     @ManyToOne
     @JoinColumn(name = "trainer_id")  // foreign key to the trainer (another User)
     @JsonProperty("trainer")  // Will serialize the trainer object as part of the response
@@ -55,91 +53,147 @@ public class User {
             name = "assigned_courses",
             joinColumns = @JoinColumn(name = "user_id")
     )
-    @MapKeyColumn(name = "course_name")
-    @Column(name = "date_range")
-    private Map<String, String> assignedCourses; // Map where key = course name, value = date range
+    private List<AssignedCourse> assignedCourses;
 
-    // Getters and Setters
+    @Embeddable
+    public static class AssignedCourse {
+        @Column(name = "course_name")
+        private String courseName;
 
+        @Column(name = "start_date")
+        private LocalDate startDate;
 
+        @Column(name = "end_date")
+        private LocalDate endDate;
+
+        // Getter for courseName
+        public String getCourseName() {
+            return courseName;
+        }
+
+        // Setter for courseName
+        public void setCourseName(String courseName) {
+            this.courseName = courseName;
+        }
+
+        // Getter for startDate
+        public LocalDate getStartDate() {
+            return startDate;
+        }
+
+        // Setter for startDate
+        public void setStartDate(LocalDate startDate) {
+            this.startDate = startDate;
+        }
+
+        // Getter for endDate
+        public LocalDate getEndDate() {
+            return endDate;
+        }
+
+        // Setter for endDate
+        public void setEndDate(LocalDate endDate) {
+            this.endDate = endDate;
+        }
+    }
+
+    // Getter for id
     public Long getId() {
         return id;
     }
 
+    // Setter for id
     public void setId(Long id) {
         this.id = id;
     }
 
-    public @NotBlank @Size(min = 3, max = 50) String getUsername() {
+    // Getter for username
+    public String getUsername() {
         return username;
     }
 
-    public void setUsername(@NotBlank @Size(min = 3, max = 50) String username) {
+    // Setter for username
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public @Email @NotBlank String getEmail() {
+    // Getter for email
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(@Email @NotBlank String email) {
+    // Setter for email
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public @NotBlank String getPassword() {
+    // Getter for password
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(@NotBlank String password) {
+    // Setter for password
+    public void setPassword(String password) {
         this.password = password;
     }
 
+    // Getter for designation
     public String getDesignation() {
         return designation;
     }
 
+    // Setter for designation
     public void setDesignation(String designation) {
         this.designation = designation;
     }
 
+    // Getter for role
     public String getRole() {
         return role;
     }
 
+    // Setter for role
     public void setRole(String role) {
         this.role = role;
     }
 
+    // Getter for specialization
     public String getSpecialization() {
         return specialization;
     }
 
+    // Setter for specialization
     public void setSpecialization(String specialization) {
         this.specialization = specialization;
     }
 
+    // Getter for trainer
     public User getTrainer() {
         return trainer;
     }
 
+    // Setter for trainer
     public void setTrainer(User trainer) {
         this.trainer = trainer;
     }
 
+    // Getter for trainees
     public List<User> getTrainees() {
         return trainees;
     }
 
+    // Setter for trainees
     public void setTrainees(List<User> trainees) {
         this.trainees = trainees;
     }
 
-    public Map<String, String> getAssignedCourses() {
+    // Getter for assignedCourses
+    public List<AssignedCourse> getAssignedCourses() {
         return assignedCourses;
     }
 
-    public void setAssignedCourses(Map<String, String> assignedCourses) {
+    // Setter for assignedCourses
+    public void setAssignedCourses(List<AssignedCourse> assignedCourses) {
         this.assignedCourses = assignedCourses;
     }
 }
-

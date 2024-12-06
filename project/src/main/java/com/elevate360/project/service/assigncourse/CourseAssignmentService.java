@@ -9,9 +9,9 @@ import com.elevate360.project.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CourseAssignmentService {
@@ -25,7 +25,7 @@ public class CourseAssignmentService {
     @Autowired
     private TrainingListRepository trainingListRepository;
 
-    public void assignCoursesToTrainer(Long trainerId, String startDate, String endDate) {
+    public void assignCoursesToTrainer(Long trainerId, LocalDate startDate, LocalDate endDate) {
         // Step 1: Fetch the trainer from the User table
         User trainer = userRepository.findById(trainerId).orElseThrow(() -> new RuntimeException("Trainer not found"));
         String trainerSpecialization = trainer.getSpecialization();
@@ -37,23 +37,32 @@ public class CourseAssignmentService {
         // Step 3: Fetch all training lists that belong to this specialization category
         List<TrainingList> trainingLists = trainingListRepository.findByTrainingCategory(trainingCategory);
 
-        // Step 4: Prepare a map of courses and their date ranges to add to the trainer
-        Map<String, String> coursesToAssign = new HashMap<>();
+        // Step 4: Prepare a list of AssignedCourse objects to add to the trainer
+        List<User.AssignedCourse> assignedCourses = new ArrayList<>();
         for (TrainingList trainingList : trainingLists) {
             for (String course : trainingList.getCourses()) {
-                // Add the course with the specified date range passed from the frontend
-                String dateRange = startDate + " to " + endDate;
-                coursesToAssign.put(course, dateRange);
+                // Create a new AssignedCourse object and set the course, startDate, and endDate
+                User.AssignedCourse assignedCourse = new User.AssignedCourse();
+                assignedCourse.setCourseName(course);
+                assignedCourse.setStartDate(startDate);
+                assignedCourse.setEndDate(endDate);
+
+                // Add the AssignedCourse to the list
+                assignedCourses.add(assignedCourse);
             }
         }
 
-        // Step 5: Assign courses and date ranges to the trainer
-        trainer.setAssignedCourses(coursesToAssign);
+        // Step 5: Assign the list of AssignedCourse objects to the trainer
+        trainer.setAssignedCourses(assignedCourses);
 
         // Step 6: Save the updated trainer with assigned courses and date ranges
         userRepository.save(trainer);
 
         // Log the assigned courses with their date ranges
-        System.out.println("Courses assigned to trainer " + trainer.getUsername() + ": " + coursesToAssign);
+        System.out.println("Courses assigned to trainer " + trainer.getUsername() + ": " + assignedCourses);
+    }
+
+    public User getTrainerWithAssignedCourses(Long trainerId) {
+        return userRepository.findById(trainerId).orElseThrow(() -> new RuntimeException("Trainer not found"));
     }
 }
