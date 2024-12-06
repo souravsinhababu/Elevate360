@@ -16,8 +16,5 @@ export class UserService {
     return this.http.post(`${this.apiUrl}/signup`, user);
   }
 
-  login(email: string, password: string): Observable<any> {
-    const params = new HttpParams().set('email', email).set('password', password);
-    return this.http.post(`${this.apiUrl}/login`, null, { params });
-  }
+
 }

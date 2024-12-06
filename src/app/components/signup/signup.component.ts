@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { UserService } from '../../core/services/user.service';
-import { environment } from '../../core/environment/environment';
+import { MainService } from '../../core/services/main.service';
 
 @Component({
   selector: 'app-signup',
@@ -12,7 +11,7 @@ export class SignupComponent implements OnInit {
   
   signupForm!: FormGroup;  // Declare FormGroup instance
 
-  constructor(private userService: UserService) {}
+  constructor(private MainService: MainService) {}
 
   ngOnInit(): void {
     // Initialize the form group with form controls and validators
@@ -36,7 +35,7 @@ export class SignupComponent implements OnInit {
     }
 
     const user = this.signupForm.value;
-    this.userService.signup(user).subscribe(
+    this.MainService.signup(user).subscribe(
       response => {
         alert('Sign Up Successful!');
         console.log('Signed up user: ', response);

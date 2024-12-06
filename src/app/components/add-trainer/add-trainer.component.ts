@@ -1,7 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { environment } from '../../core/environment/environment';
+import { MainService } from '../../core/services/main.service';  // Import MainService
 
 @Component({
   selector: 'app-add-trainer',
@@ -17,19 +15,21 @@ export class AddTrainerComponent {
     specialization: ''
   };
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private mainService: MainService) {}  // Inject MainService
 
   onSubmit() {
     const trainerData = { ...this.trainer, role: 'trainer' };
-    this.http.post(`${environment.apiUrl}/admin/addtrainer`, trainerData).subscribe(
+    console.log('Trainer data being submitted:', trainerData);  // Log the data to be sent
+
+    this.mainService.addTrainer(trainerData).subscribe(
       (response) => {
         console.log('Trainer added successfully', response);
         alert('Trainer added successfully!');
         this.addTrainer.emit(response);  // Emit the new trainer to the parent component
       },
       (error) => {
-        console.error('Error adding trainer', error);
-        alert('Failed to add trainer.');
+        console.error('Error adding trainer:', error);  // Log detailed error
+        alert(`Failed to add trainer. Error: ${error.message || 'Unknown error'}`);
       }
     );
   }

@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../core/environment/environment';
 import { AuthGuard } from '../../core/guards/auth.guard';
+import { MainService } from '../../core/services/main.service';  // Import the MainService
 
 @Component({
   selector: 'app-login',
@@ -15,8 +14,8 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private http: HttpClient,
     private authguard: AuthGuard,  // Lowercase 'authguard' here, matching the injected property
+    private mainService: MainService  // Inject the MainService
   ) {}
 
   ngOnInit(): void {
@@ -38,10 +37,8 @@ export class LoginComponent {
       password: this.loginForm.value.password
     };
 
-    const loginUrl = `${environment.apiUrl}/api/users/login?email=${loginData.email}&password=${loginData.password}`;
-
-    this.http.post<any>(loginUrl, {}).subscribe(
-      response => {
+    this.mainService.login(loginData).subscribe(
+      (response) => {
         const role = response.role;
         const token = response.token;
         const id = response.id;
@@ -62,7 +59,7 @@ export class LoginComponent {
           alert('Unknown role, please contact the admin.');
         }
       },
-      error => {
+      (error) => {
         alert('Login failed: Incorrect credentials');
       }
     );

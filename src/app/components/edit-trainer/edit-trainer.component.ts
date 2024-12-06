@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl, Validators } from '@angular/forms';  // Import FormGroup and FormControl for reactive forms
-import { environment } from '../../core/environment/environment';
+import { MainService } from '../../core/services/main.service';  // Import MainService
 
 @Component({
   selector: 'app-edit-trainer',
@@ -14,7 +13,7 @@ export class EditTrainerComponent implements OnInit {
 
   trainerForm!: FormGroup;  // FormGroup instance for the form
 
-  constructor(private http: HttpClient) {}
+  constructor(private mainService: MainService) {}  // Inject MainService
 
   ngOnInit(): void {
     // Initialize the form with the trainer data
@@ -31,16 +30,16 @@ export class EditTrainerComponent implements OnInit {
       return;  // If the form is invalid, don't submit
     }
 
-    // Send the updated trainer data to the server
-    this.http.put<any>(`${environment.apiUrl}/admin/trainers/${this.trainer.id}`, this.trainerForm.value)
-      .subscribe(
-        (data) => {
-          this.updateTrainer.emit(data);  // Emit updated trainer data back to parent
-          alert('Trainer updated successfully');
-        },
-        (error) => {
-          console.error('Error updating trainer:', error);
-        }
-      );
+    // Send the updated trainer data to the server using MainService
+    this.mainService.updateTrainer(this.trainer.id, this.trainerForm.value).subscribe(
+      (data) => {
+        this.updateTrainer.emit(data);  // Emit updated trainer data back to parent
+        alert('Trainer updated successfully');
+      },
+      (error) => {
+        console.error('Error updating trainer:', error);
+        alert(`Failed to update trainer. Error: ${error.message || 'Unknown error'}`);
+      }
+    );
   }
 }

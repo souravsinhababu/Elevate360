@@ -11,7 +11,7 @@ export class TraineeDashboardComponent {
   ngOnInit(): void {
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
-      this.traineename = storedUsername;  // Set the adminname from localStorage
+      this.traineename = storedUsername;  // Set the trainer name from localStorage
     }
   }
 
