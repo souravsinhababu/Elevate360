@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../auth.service';
-import { environment } from '../../environment'; // Assuming the environment file contains the API URL
+import { AuthService } from '../../core/services/auth.service';
+import { environment } from '../../core/environment/environment';
 
 @Component({
   selector: 'app-trainer-dashboard',

@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { environment } from '../../environment';
+import { environment } from '../../core/environment/environment';
 
 @Component({
   selector: 'app-add-trainer',

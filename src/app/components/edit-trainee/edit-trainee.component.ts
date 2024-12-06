@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environment';  // Ensure the path to environment is correct
+import { environment } from '../../core/environment/environment';  // Ensure the path to environment is correct
 
 @Component({
   selector: 'app-edit-trainee',

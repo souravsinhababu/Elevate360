@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { UserService } from '../../user.service';  
-import { environment } from '../../environment';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-signup',

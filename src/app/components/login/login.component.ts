@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environment';
-import { AuthService } from '../auth.service';
+import { environment } from '../../core/environment/environment';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',

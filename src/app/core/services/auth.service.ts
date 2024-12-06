@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { PlatformDetectorService } from './platform-detector.service';  // Import PlatformDetectorService
+import { PlatformDetectorService } from './platform-detector.service';
 
 @Injectable({
   providedIn: 'root',
