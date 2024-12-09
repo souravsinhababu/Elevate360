@@ -3,16 +3,20 @@
 
   <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
     
-    <label for="username">Email:</label>
-    <input type="text" id="username" formControlName="username" required />
-    <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="error">
-      enter a valid email
-    </div>
-
-    <label for="password">Password:</label>
-    <input type="password" id="password" formControlName="password" />
-    <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error">
-      Enter Password
+    <div *ngFor="let values of formvalues">
+      <label for="{{values.id}}">{{values.label}}</label>
+      <input
+        type="{{values.type}}"
+        id="{{values.id}}"
+        formControlName="{{values.id}}"
+        [required]="values.required"
+      />
+      <div
+        *ngIf="loginForm.get(values.id)?.invalid && loginForm.get(values.id)?.touched"
+        class="error"
+      >
+        {{ values.errormessage }}
+      </div>
     </div>
 
     <button type="submit" [disabled]="loginForm.invalid">Login</button>
@@ -23,5 +27,3 @@
     <button routerLink="/signup" class="g1">Sign Up</button>
   </div>
 </div>
-
-  

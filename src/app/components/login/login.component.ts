@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthGuard } from '../../core/guards/auth.guard';
 import { MainService } from '../../core/services/main.service';  // Import the MainService
@@ -9,21 +9,45 @@ import { MainService } from '../../core/services/main.service';  // Import the M
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm!: FormGroup;  // Using the '!' operator to assert that this will be initialized
 
+  formvalues = [
+    {
+      label: 'Email:',
+      type: 'text',
+      id: 'username',
+      required: true,
+      errormessage: 'Enter a valid email',
+      validator: [Validators.required, Validators.email]
+    },
+    {
+      label: 'Password:',
+      type: 'password',
+      id: 'password',
+      required: true,
+      errormessage: 'Enter Password',
+      validator: [Validators.required, Validators.minLength(1)]
+    }
+  ];
+
   constructor(
+    private fb: FormBuilder,
     private router: Router,
-    private authguard: AuthGuard,  // Lowercase 'authguard' here, matching the injected property
+    private authguard: AuthGuard,  
     private mainService: MainService  // Inject the MainService
   ) {}
 
   ngOnInit(): void {
-    // Initialize the form group in ngOnInit
-    this.loginForm = new FormGroup({
-      username: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required, Validators.minLength(1)]),
+    // Initialize the form group dynamically based on the d array
+    const controls: { [key: string]: FormControl } = {};  // Define the controls object with an explicit type
+
+    // Populate the controls object based on the `d` array
+    this.formvalues.forEach(field => {
+      controls[field.id] = new FormControl('', field.validator); // Create a new FormControl for each field
     });
+
+    this.loginForm = this.fb.group(controls);  // Create the form group using the dynamically generated controls
   }
 
   // Login form submission logic
