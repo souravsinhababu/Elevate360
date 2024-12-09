@@ -1,7 +1,9 @@
 package com.elevate360.project.controller.dashboard;
 
 import com.elevate360.project.dto.AssignTraineesRequest;
+import com.elevate360.project.dto.CourseHistoryDTO;
 import com.elevate360.project.entity.User;
+import com.elevate360.project.repo.UserRepository;
 import com.elevate360.project.service.UserService;
 import com.elevate360.project.service.assigncourse.CourseAssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class AdminController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private CourseAssignmentService courseAssignmentService;
@@ -99,6 +104,18 @@ public class AdminController {
             return ResponseEntity.status(400).body("Error assigning courses: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(400).body("Invalid date format. Please use YYYY-MM-DD.");
+        }
+    }
+
+    //getting course histoty
+
+    @GetMapping("/course-history")
+    public ResponseEntity<List<CourseHistoryDTO>> getCourseHistories() {
+        try {
+            List<CourseHistoryDTO> courseHistories = userRepository.findAllCourseHistories();
+            return ResponseEntity.ok(courseHistories);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
         }
     }
 }
