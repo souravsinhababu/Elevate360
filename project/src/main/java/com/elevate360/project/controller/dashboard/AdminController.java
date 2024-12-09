@@ -90,14 +90,11 @@ public class AdminController {
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate) {
         try {
-            // Call the service to assign courses with the date range to the trainer
-            courseAssignmentService.assignCoursesToTrainer(trainerId, startDate, endDate);
+            // Call the service to assign courses with the date range to the trainer and return the list of courses
+            List<User.AssignedCourse> assignedCourses = courseAssignmentService.assignCoursesToTrainer(trainerId, startDate, endDate);
 
-            // Retrieve the updated trainer details
-            User updatedTrainer = courseAssignmentService.getTrainerWithAssignedCourses(trainerId);
-
-            // Construct the response payload
-            return ResponseEntity.ok(updatedTrainer);
+            // Return the list of assigned courses along with the dates
+            return ResponseEntity.ok(assignedCourses);
         } catch (RuntimeException e) {
             return ResponseEntity.status(400).body("Error assigning courses: " + e.getMessage());
         } catch (Exception e) {

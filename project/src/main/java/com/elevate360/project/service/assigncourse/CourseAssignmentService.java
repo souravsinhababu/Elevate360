@@ -25,7 +25,7 @@ public class CourseAssignmentService {
     @Autowired
     private TrainingListRepository trainingListRepository;
 
-    public void assignCoursesToTrainer(Long trainerId, LocalDate startDate, LocalDate endDate) {
+    public List<User.AssignedCourse> assignCoursesToTrainer(Long trainerId, LocalDate startDate, LocalDate endDate) {
         // Step 1: Fetch the trainer from the User table
         User trainer = userRepository.findById(trainerId).orElseThrow(() -> new RuntimeException("Trainer not found"));
         String trainerSpecialization = trainer.getSpecialization();
@@ -60,6 +60,9 @@ public class CourseAssignmentService {
 
         // Log the assigned courses with their date ranges
         System.out.println("Courses assigned to trainer " + trainer.getUsername() + ": " + assignedCourses);
+
+        // Return the list of assigned courses
+        return assignedCourses;
     }
 
     public User getTrainerWithAssignedCourses(Long trainerId) {
