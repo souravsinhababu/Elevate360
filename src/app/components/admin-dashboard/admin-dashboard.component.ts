@@ -314,6 +314,10 @@ assignCoursesToTrainer() {
   } else {
       console.error('Please select a trainer, start date, end date, and at least one course.');
   }
+  this.isAssigningCourses = false;
+  this.selectedTrainer = null;
+  this.startDate = '';
+  this.endDate = '';
 }
 
 
