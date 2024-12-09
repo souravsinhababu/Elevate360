@@ -1,0 +1,36 @@
+<div>
+  <h2>Edit Trainee</h2>
+
+  <form [formGroup]="traineeForm" (ngSubmit)="saveTrainee()">
+    <div>
+      <label for="username">Username:</label>
+      <input type="text" id="username" formControlName="username"  />
+      <div *ngIf="traineeForm.get('username')?.invalid && traineeForm.get('username')?.touched" class="error">
+        Username is required
+      </div>
+    </div>
+
+    <div>
+      <label for="email">Email:</label>
+      <input type="email" id="email" formControlName="email"  />
+      <div *ngIf="traineeForm.get('email')?.invalid && traineeForm.get('email')?.touched" class="error">
+        A valid email is required
+      </div>
+    </div>
+
+    <div>
+      <label for="password">Password:</label>
+      <input type="password" id="password" formControlName="password"  />
+      <div *ngIf="traineeForm.get('password')?.invalid && traineeForm.get('password')?.touched" class="error">
+        Password is required
+      </div>
+    </div>
+
+    <div>
+      <label for="designation">Designation:</label>
+      <input type="text" id="designation" formControlName="designation" />
+    </div>
+
+    <button type="submit" [disabled]="traineeForm.invalid">Save</button>
+  </form>
+</div>

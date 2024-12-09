@@ -1,6 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environment';
+import { MainService } from '../../core/services/main.service';  // Import MainService
 
 @Component({
   selector: 'app-add-trainee',
@@ -16,13 +15,13 @@ export class AddTraineeComponent {
     designation: ''
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(private mainService: MainService) {}  // Inject MainService
 
   onSubmit() {
     const traineeData = { ...this.trainee, role: 'trainee' };
     console.log('Trainee data being submitted:', traineeData); // Log the data to be sent
 
-    this.http.post(`${environment.apiUrl}/admin/addtrainee`, traineeData).subscribe(
+    this.mainService.addTrainee(traineeData).subscribe(
       (response) => {
         console.log('Trainee added successfully', response);
         alert('Trainee added successfully!');

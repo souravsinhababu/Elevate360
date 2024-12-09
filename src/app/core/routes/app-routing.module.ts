@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { SignupComponent } from './signup/signup.component';
-import { TraineeDashboardComponent } from './trainee-dashboard/trainee-dashboard.component'; 
-import { TrainerDashboardComponent } from './trainer-dashboard/trainer-dashboard.component'; 
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component'; 
-import { AuthGuard } from './auth.guard'; 
+import { LoginComponent } from '../../components/login/login.component';
+import { SignupComponent } from '../../components/signup/signup.component';
+import { TraineeDashboardComponent } from '../../components/trainee-dashboard/trainee-dashboard.component'; 
+import { TrainerDashboardComponent } from '../../components/trainer-dashboard/trainer-dashboard.component'; 
+import { AdminDashboardComponent } from '../../components/admin-dashboard/admin-dashboard.component'; 
+import { AuthGuard } from '../guards/auth.guard'; 
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },

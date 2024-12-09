@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environment';
-import { AuthService } from '../auth.service';  // Adjust the import for your AuthService
+import { MainService } from '../../core/services/main.service';  // Import the service
+import { AuthGuard } from '../../core/guards/auth.guard';
+import { environment } from '../../core/environment/environment';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -18,18 +18,19 @@ export class AdminDashboardComponent implements OnInit {
   public searchQuery: string = '';
   public selectedTrainer: any;
   public selectedTrainee: any;
-  public adminname:string='';
+  public adminname: string = '';
   public selectedTrainerId: number | null = null;
   public isAssigningTrainer: boolean = false;
   public isEditingTrainee: boolean = false;
   public showAddTrainerModal = false;
   public showAddTraineeModal = false;
   public isAssigningTrainees: boolean = false;
- 
 
+  constructor(
+    private mainService: MainService,  // Inject the service
+    private authGuard: AuthGuard
+  ) {}
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
- 
   ngOnInit(): void {
     this.loadTrainers();
     this.loadTrainees();
@@ -38,9 +39,9 @@ export class AdminDashboardComponent implements OnInit {
       this.adminname = storedUsername;  // Set the adminname from localStorage
     }
   }
- 
+
   loadTrainers() {
-    this.http.get<any[]>(`${environment.apiUrl}/admin/trainers`).subscribe(
+    this.mainService.loadTrainers().subscribe(
       (data) => {
         this.trainers = data;
         this.originalTrainers = [...data]; // Store a copy of the original trainers list
@@ -51,9 +52,9 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
- 
+
   loadTrainees() {
-    this.http.get<any[]>(`${environment.apiUrl}/admin/trainee`).subscribe(
+    this.mainService.loadTrainees().subscribe(
       (data) => {
         this.trainees = data.map(trainee => {
           // If trainer is null, assign 'Not assigned' to trainer_name
@@ -68,17 +69,17 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
- 
+
   search() {
     const searchLower = this.searchQuery.toLowerCase();
- 
+
     if (this.selectedRole === 'Trainer' || this.selectedRole === 'All') {
       this.trainers = this.originalTrainers.filter(trainer =>
         trainer.username.toLowerCase().includes(searchLower) ||
         trainer.email.toLowerCase().includes(searchLower)
       );
     }
- 
+
     if (this.selectedRole === 'Trainee' || this.selectedRole === 'All') {
       this.trainees = this.originalTrainees.filter(trainee =>
         trainee.username.toLowerCase().includes(searchLower) ||
@@ -86,7 +87,7 @@ export class AdminDashboardComponent implements OnInit {
       );
     }
   }
- 
+
   filterByRole() {
     if (this.selectedRole === 'Trainer') {
       this.trainers = this.originalTrainers;
@@ -96,13 +97,13 @@ export class AdminDashboardComponent implements OnInit {
       this.trainers = this.originalTrainers;
       this.trainees = this.originalTrainees;
     }
- 
+
     this.search();  // Reapply search after filtering
   }
- 
+
   assignTrainerToTrainee() {
     if (this.selectedTrainee && this.selectedTrainerId) {
-      this.http.put(`${environment.apiUrl}/admin/trainees/${this.selectedTrainee.id}/assign/${this.selectedTrainerId}`, {}).subscribe(
+      this.mainService.assignTrainerToTrainee(this.selectedTrainee.id, this.selectedTrainerId).subscribe(
         (data) => {
           // Update the trainer for the selected trainee in the local list
           const assignedTrainee = this.trainees.find(t => t.id === this.selectedTrainee.id);
@@ -122,6 +123,7 @@ export class AdminDashboardComponent implements OnInit {
       );
     }
   }
+
   openAssignTraineesModal(trainer: any) {
     this.selectedTrainer = trainer;
     this.isAssigningTrainees = true;
@@ -132,7 +134,7 @@ export class AdminDashboardComponent implements OnInit {
     this.selectedTrainee = null;
     this.selectedTrainerId = null;
   }
- 
+
   assignTrainer(trainee: any) {
     this.selectedTrainee = trainee;
     this.isAssigningTrainer = true;
@@ -160,8 +162,10 @@ export class AdminDashboardComponent implements OnInit {
     this.selectedTrainer = null;
   }
 
-  closeEditTraineeModal() {   this.selectedTrainee = null;   this.isEditingTrainee = false; }
- 
+  closeEditTraineeModal() {   
+    this.selectedTrainee = null;   
+    this.isEditingTrainee = false; 
+  }
 
   handleAddedTrainer(trainer: any) {
     this.trainers.push(trainer);
@@ -172,16 +176,13 @@ export class AdminDashboardComponent implements OnInit {
     this.trainees.push(trainee);
     this.closeAddTraineeModal();
   }
- 
+
   editTrainer(trainer: any) {
     this.selectedTrainer = { ...trainer };
-
-    
   }
- 
+
   deleteTrainer(trainerId: number) {
-    
-    this.http.delete(`${environment.apiUrl}/admin/trainers/${trainerId}`).subscribe(
+    this.mainService.deleteTrainer(trainerId).subscribe(
       () => {
         this.trainers = this.trainers.filter(trainer => trainer.id !== trainerId);
       },
@@ -190,11 +191,12 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
+
   assignTraineesToTrainer() {
     const selectedTrainees = this.trainees.filter(trainee => trainee.selected);
 
     selectedTrainees.forEach(trainee => {
-      this.http.put(`${environment.apiUrl}/admin/trainees/${trainee.id}/assign/${this.selectedTrainer.id}`, {}).subscribe(
+      this.mainService.assignTraineesToTrainer(trainee.id, this.selectedTrainer.id).subscribe(
         () => {
           // Update the local list of trainees to reflect their trainer assignment
           trainee.trainer_name = this.selectedTrainer.username;
@@ -215,15 +217,14 @@ export class AdminDashboardComponent implements OnInit {
     this.selectedTrainer = null;
   }
 
-
   editTrainee(trainee: any) {
     this.selectedTrainee = { ...trainee };
     this.isEditingTrainee = true;  
     this.isAssigningTrainer = false;  // Ensure the Assign Trainer modal is not opened
   }
- 
+
   deleteTrainee(traineeId: number) {
-    this.http.delete(`${environment.apiUrl}/admin/trainees/${traineeId}`).subscribe(
+    this.mainService.deleteTrainee(traineeId).subscribe(
       () => {
         this.trainees = this.trainees.filter(trainee => trainee.id !== traineeId);
       },
@@ -232,7 +233,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
- 
+
   handleUpdatedTrainee(updatedTrainee: any) {
     const index = this.trainees.findIndex(t => t.id === updatedTrainee.id);
     if (index !== -1) {
@@ -240,7 +241,7 @@ export class AdminDashboardComponent implements OnInit {
     }
     this.selectedTrainee = null;  // Reset selected trainee after update
   }
- 
+
   updateTrainerInDashboard(updatedTrainer: any) {
     const index = this.trainers.findIndex(t => t.id === updatedTrainer.id);
     if (index !== -1) {
@@ -248,8 +249,8 @@ export class AdminDashboardComponent implements OnInit {
     }
     this.selectedTrainer = null;  // Reset selected trainer after update
   }
- 
+
   logout() {
-    this.authService.logout();  // Logout the user
+    this.authGuard.logout();  // Logout the user
   }
 }

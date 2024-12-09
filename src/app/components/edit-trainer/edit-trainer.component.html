@@ -1,0 +1,38 @@
+<div class="modal">
+  <h2>Edit Trainer</h2>
+
+  <form [formGroup]="trainerForm" (ngSubmit)="saveTrainer()">
+    <label for="username">Username</label>
+    <input type="text" id="username" formControlName="username" required />
+    <div *ngIf="trainerForm.get('username')?.invalid && trainerForm.get('username')?.touched" class="error">
+      Username is required
+    </div>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" formControlName="email" required />
+    <div *ngIf="trainerForm.get('email')?.invalid && trainerForm.get('email')?.touched" class="error">
+      A valid email is required
+    </div>
+
+    <label for="password">Password</label>
+    <input type="password" id="password" formControlName="password" required />
+    <div *ngIf="trainerForm.get('password')?.invalid && trainerForm.get('password')?.touched" class="error">
+      Password is required
+    </div>
+
+    <label for="specialization">Specialization</label>
+    <div class="radio-group">
+      <input type="radio" id="frontend" formControlName="specialization" value="FrontEnd" required />
+      <label for="frontend">FrontEnd</label>
+
+      <input type="radio" id="backend" formControlName="specialization" value="BackEnd" required />
+      <label for="backend">BackEnd</label>
+    </div>
+
+    <div *ngIf="trainerForm.get('specialization')?.invalid && trainerForm.get('specialization')?.touched" class="error">
+      Specialization is required
+    </div>
+
+    <button type="submit" [disabled]="trainerForm.invalid">Save Changes</button>
+  </form>
+</div>
