@@ -33,7 +33,9 @@
           <tr>
             <th>Name</th>
             <th>Email</th>
+            <th>Assign Courses</th>
             <th>Actions</th>
+            
           </tr>
         </thead>
         <tbody>
@@ -41,10 +43,14 @@
             <td>{{ trainer.username }}</td>
             <td>{{ trainer.email }}</td>
             <td>
+              <button (click)="openAssignCoursesModal(trainer)">Assign Courses</button> <!-- Button for Assigning Courses -->
+            </td>
+            <td>
               <button (click)="editTrainer(trainer)" class="edit">Edit</button>
               <button (click)="deleteTrainer(trainer.id)" class="delete">Delete</button>
               <button (click)="openAssignTraineesModal(trainer)">Assign Trainees</button>
             </td>
+            
           </tr>
         </tbody>
       </table>
@@ -104,7 +110,7 @@
 </div>
 
 <!-- Edit Trainer Modal -->
-<div *ngIf="selectedTrainer && !isAssigningTrainees" class="modal">
+<div *ngIf="selectedTrainer && !isAssigningTrainees && !isAssigningCourses" class="modal">
   <div class="modal-content">
     <app-edit-trainer [trainer]="selectedTrainer" (trainerUpdated)="updateTrainerInDashboard($event)"></app-edit-trainer>
     <button (click)="closeEditTrainerModal()" class="close-btn">Close</button>
@@ -144,5 +150,21 @@
     </div>
     <button (click)="assignTraineesToTrainer()">Assign</button>
     <button (click)="cancelAssignTrainees()">Cancel</button>
+  </div>
+</div>
+
+<!-- Modal for Assigning Courses -->
+<div *ngIf="isAssigningCourses " class="modal">
+  <div class="modal-content">
+    <h4>Assign Courses to {{ selectedTrainer?.username }}</h4>
+    
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate" [(ngModel)]="startDate" />
+
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate" [(ngModel)]="endDate" />
+
+    <button (click)="assignCoursesToTrainer()">Assign</button>
+    <button (click)="cancelAssignCourses()">Cancel</button>
   </div>
 </div>
