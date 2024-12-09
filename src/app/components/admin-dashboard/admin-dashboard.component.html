@@ -157,7 +157,17 @@
 <div *ngIf="isAssigningCourses " class="modal">
   <div class="modal-content">
     <h4>Assign Courses to {{ selectedTrainer?.username }}</h4>
-    
+
+    <div *ngFor="let category of availableCourses">
+      <h5>{{ category.trainingCategory.category }}</h5>
+      <div *ngFor="let course of category.courses">
+        <label>
+          <input type="checkbox" [(ngModel)]="selectedCourses[course]" />
+          {{ course }}
+        </label>
+      </div>
+    </div>
+
     <label for="startDate">Start Date:</label>
     <input type="date" id="startDate" [(ngModel)]="startDate" />
 
