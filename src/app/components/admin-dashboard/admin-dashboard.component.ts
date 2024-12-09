@@ -25,6 +25,9 @@ export class AdminDashboardComponent implements OnInit {
   public showAddTrainerModal = false;
   public showAddTraineeModal = false;
   public isAssigningTrainees: boolean = false;
+  public isAssigningCourses: boolean = false;  // To manage modal visibility
+  public startDate: string = '';  // To bind with the start date input
+  public endDate: string = '';  // To bind with the end date input
 
   constructor(
     private mainService: MainService,  // Inject the service
@@ -126,7 +129,9 @@ export class AdminDashboardComponent implements OnInit {
 
   openAssignTraineesModal(trainer: any) {
     this.selectedTrainer = trainer;
-    this.isAssigningTrainees = true;
+    this.isAssigningTrainees = true;  // Open Assign Trainees modal
+    this.isAssigningCourses = false; // Ensure Assign Courses modal is closed
+    this.isEditingTrainee = false;   // Ensure Edit Trainee modal is closed
   }
 
   cancelAssign() {
@@ -159,7 +164,9 @@ export class AdminDashboardComponent implements OnInit {
 
   // Close edit modals
   closeEditTrainerModal() {
-    this.selectedTrainer = null;
+    this.selectedTrainer = null; // Reset selected trainer
+  this.isAssigningCourses = false; // Ensure no other modals are open
+  this.isAssigningTrainees = false;
   }
 
   closeEditTraineeModal() {   
@@ -249,6 +256,37 @@ export class AdminDashboardComponent implements OnInit {
     }
     this.selectedTrainer = null;  // Reset selected trainer after update
   }
+  openAssignCoursesModal(trainer: any) {
+    this.selectedTrainer = trainer;
+    this.isAssigningCourses = true;
+    this.isAssigningTrainees = false; // Ensure this is not open
+    this.isEditingTrainee = false;   // Ensure the editing trainee modal is not open
+  }
+
+  // Close the modal
+  cancelAssignCourses() {
+    this.isAssigningCourses = false;
+    this.startDate = '';
+    this.endDate = '';
+  }
+
+  // Assign courses to the trainer
+  assignCoursesToTrainer() {
+    if (this.selectedTrainer && this.startDate && this.endDate) {
+      this.mainService.assignCoursesToTrainer(this.selectedTrainer.id, this.startDate, this.endDate).subscribe(
+        (data) => {
+          console.log('Courses assigned successfully', data);
+          this.isAssigningCourses = false;
+          this.startDate = '';
+          this.endDate = '';
+        },
+        (error) => {
+          console.error('Error assigning courses:', error);
+        }
+      );
+    }
+  }
+
 
   logout() {
     this.authGuard.logout();  // Logout the user

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../environment/environment';
 import { Observable } from 'rxjs';
 
@@ -47,6 +47,15 @@ export class MainService {
   // Assign Trainees to Trainer
   assignTraineesToTrainer(traineeId: number, trainerId: number): Observable<any> {
     return this.http.put(`${environment.apiUrl}/admin/trainees/${traineeId}/assign/${trainerId}`, {});
+  }
+  // Assign courses to the trainer
+  assignCoursesToTrainer(trainerId: number, startDate: string, endDate: string): Observable<any> {
+    const url = `${environment.apiUrl}/admin/assign/${trainerId}`;
+    const params = new HttpParams()
+      .set('startDate', startDate)
+      .set('endDate', endDate);
+
+    return this.http.post<any>(url, null, { params });
   }
 
   // Login method for handling login API call
