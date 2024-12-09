@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../environment/environment';
 import { Observable } from 'rxjs';
 
@@ -48,15 +48,19 @@ export class MainService {
   assignTraineesToTrainer(traineeId: number, trainerId: number): Observable<any> {
     return this.http.put(`${environment.apiUrl}/admin/trainees/${traineeId}/assign/${trainerId}`, {});
   }
-  // Assign courses to the trainer
-  assignCoursesToTrainer(trainerId: number, startDate: string, endDate: string): Observable<any> {
-    const url = `${environment.apiUrl}/admin/assign/${trainerId}`;
-    const params = new HttpParams()
-      .set('startDate', startDate)
-      .set('endDate', endDate);
-
-    return this.http.post<any>(url, null, { params });
+  getAvailableCourses() {
+    return this.http.get<any[]>(`${environment.apiUrl}/admin/available-courses`);
   }
+
+  // Method to assign courses to the trainer
+ // In your service (e.g., main.service.ts)
+assignCoursesToTrainer(trainerId: number, courses: string[], startDate: string, endDate: string) {
+  const url = `${environment.apiUrl}/admin/assign/${trainerId}?startDate=${startDate}&endDate=${endDate}`;
+  return this.http.post(url, courses);
+}
+
+  
+  
 
   // Login method for handling login API call
   login(loginData: { email: string, password: string }): Observable<any> {

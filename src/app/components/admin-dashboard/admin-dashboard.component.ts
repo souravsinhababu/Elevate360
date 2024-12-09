@@ -28,6 +28,8 @@ export class AdminDashboardComponent implements OnInit {
   public isAssigningCourses: boolean = false;  // To manage modal visibility
   public startDate: string = '';  // To bind with the start date input
   public endDate: string = '';  // To bind with the end date input
+  public availableCourses: any[] = [];
+  public selectedCourses: any = {};  // To track selected courses
 
   constructor(
     private mainService: MainService,  // Inject the service
@@ -37,6 +39,7 @@ export class AdminDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.loadTrainers();
     this.loadTrainees();
+    this.loadAvailableCourses();
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
       this.adminname = storedUsername;  // Set the adminname from localStorage
@@ -102,6 +105,16 @@ export class AdminDashboardComponent implements OnInit {
     }
 
     this.search();  // Reapply search after filtering
+  }
+  loadAvailableCourses() {
+    this.mainService.getAvailableCourses().subscribe(
+      (data) => {
+        this.availableCourses = data;
+      },
+      (error) => {
+        console.error('Error fetching available courses:', error);
+      }
+    );
   }
 
   assignTrainerToTrainee() {
@@ -261,31 +274,48 @@ export class AdminDashboardComponent implements OnInit {
     this.isAssigningCourses = true;
     this.isAssigningTrainees = false; // Ensure this is not open
     this.isEditingTrainee = false;   // Ensure the editing trainee modal is not open
+    this.selectedCourses = {};
+
   }
 
-  // Close the modal
   cancelAssignCourses() {
     this.isAssigningCourses = false;
     this.startDate = '';
     this.endDate = '';
+ 
+   this.isAssigningTrainees = false; 
+  this.isEditingTrainee = false;     
+  this.selectedTrainer = null;       
   }
 
   // Assign courses to the trainer
-  assignCoursesToTrainer() {
-    if (this.selectedTrainer && this.startDate && this.endDate) {
-      this.mainService.assignCoursesToTrainer(this.selectedTrainer.id, this.startDate, this.endDate).subscribe(
-        (data) => {
-          console.log('Courses assigned successfully', data);
-          this.isAssigningCourses = false;
-          this.startDate = '';
-          this.endDate = '';
-        },
-        (error) => {
-          console.error('Error assigning courses:', error);
-        }
+  // In your component (e.g., admin-dashboard.component.ts)
+assignCoursesToTrainer() {
+  // Get the selected course names that are marked as true
+  const selectedCourseNames = Object.keys(this.selectedCourses).filter(course => this.selectedCourses[course]);
+
+  // Ensure all required fields are present: selectedTrainer, startDate, endDate, and at least one selected course
+  if (this.selectedTrainer && this.startDate && this.endDate && selectedCourseNames.length) {
+      // Call the service method to assign courses to the trainer
+      this.mainService.assignCoursesToTrainer(
+          this.selectedTrainer.id,
+          selectedCourseNames,
+          this.startDate,
+          this.endDate
+      ).subscribe(
+          (data) => {
+              console.log('Courses assigned successfully', data);
+              this.isAssigningCourses = false; // Update the flag for assigning courses
+          },
+          (error) => {
+              console.error('Error assigning courses:', error);
+          }
       );
-    }
+  } else {
+      console.error('Please select a trainer, start date, end date, and at least one course.');
   }
+}
+
 
 
   logout() {
