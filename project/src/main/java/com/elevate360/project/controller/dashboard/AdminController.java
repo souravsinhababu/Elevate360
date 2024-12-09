@@ -1,7 +1,9 @@
 package com.elevate360.project.controller.dashboard;
 
 import com.elevate360.project.dto.AssignTraineesRequest;
+import com.elevate360.project.dto.CourseAssignmentResponse;
 import com.elevate360.project.dto.CourseHistoryDTO;
+import com.elevate360.project.entity.TrainingList;
 import com.elevate360.project.entity.User;
 import com.elevate360.project.repo.UserRepository;
 import com.elevate360.project.service.UserService;
@@ -49,7 +51,7 @@ public class AdminController {
 
     @PutMapping("/trainers/{id}")
     public ResponseEntity<User> updateTrainer(@PathVariable Long id, @RequestBody User updatedTrainer) {
-    return userService.updateUserByIdAndRole(id, updatedTrainer, "trainer");
+        return userService.updateUserByIdAndRole(id, updatedTrainer, "trainer");
     }
 
     @PutMapping("/trainees/{id}")
@@ -78,6 +80,7 @@ public class AdminController {
     public List<User> getTraineesByTrainer(@PathVariable Long id) {
         return userService.getTraineesByTrainerId(id);
     }
+
     @PutMapping("/trainers/{trainerId}/assignTrainees")
     public ResponseEntity<String> assignTraineesToTrainer(
             @PathVariable Long trainerId,
@@ -87,28 +90,38 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
-    // Assigning course to the trainer
+    @GetMapping("/available-courses")
+    public ResponseEntity<List<TrainingList>> getAvailableCourses() {
+        try {
+            List<TrainingList> availableCourses = courseAssignmentService.getAllAvailableCourses();
+            return ResponseEntity.ok(availableCourses);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 
+    // Assigning course to the trainer
     @PostMapping("/assign/{trainerId}")
     public ResponseEntity<Object> assignCoursesToTrainer(
             @PathVariable Long trainerId,
+            @RequestBody List<String> selectedCourses,
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate) {
         try {
-            // Call the service to assign courses with the date range to the trainer and return the list of courses
-            List<User.AssignedCourse> assignedCourses = courseAssignmentService.assignCoursesToTrainer(trainerId, startDate, endDate);
+            // Call the service to assign the selected courses with the date range to the trainer
+            List<User.AssignedCourse> assignedCourses = courseAssignmentService.assignCoursesToTrainer(trainerId, selectedCourses, startDate, endDate);
 
-            // Return the list of assigned courses along with the dates
+            // Return the list of assigned courses
             return ResponseEntity.ok(assignedCourses);
         } catch (RuntimeException e) {
             return ResponseEntity.status(400).body("Error assigning courses: " + e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(400).body("Invalid date format. Please use YYYY-MM-DD.");
+            return ResponseEntity.status(400).body("Invalid input or date format. Please use YYYY-MM-DD.");
         }
     }
 
-    //getting course histoty
 
+    // Getting course history
     @GetMapping("/course-history")
     public ResponseEntity<List<CourseHistoryDTO>> getCourseHistories() {
         try {
