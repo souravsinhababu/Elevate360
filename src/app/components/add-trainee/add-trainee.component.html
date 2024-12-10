@@ -1,19 +1,22 @@
 <div class="form-container">
-    <h2>Add Trainee</h2>
-    <form (ngSubmit)="onSubmit()">
-      <label for="username">Username:</label>
-      <input type="text" id="username" [(ngModel)]="trainee.username" name="username" required />
-  
-      <label for="email">Email:</label>
-      <input type="email" id="email" [(ngModel)]="trainee.email" name="email" required />
-  
-      <label for="password">Password:</label>
-      <input type="password" id="password" [(ngModel)]="trainee.password" name="password" required />
-  
-      <label for="designation">Designation:</label>
-      <input type="text" id="designation" [(ngModel)]="trainee.designation" name="designation" required />
-  
-      <button type="submit">Add Trainee</button>
-    </form>
-  </div>
-  
+  <h2>Add Trainee</h2>
+  <form [formGroup]="addTraineeForm" (ngSubmit)="onSubmit()">
+    
+    <div *ngFor="let field of formFields">
+      <div>
+        <label for="{{field.id}}">{{field.label}}</label>
+        <input 
+          type="{{field.type}}" 
+          [formControlName]="field.id" 
+          [required]="field.required" />
+        
+        <!-- Display error message -->
+        <div *ngIf="addTraineeForm.get(field.id)?.invalid && addTraineeForm.get(field.id)?.touched" class="error">
+          {{field.errormessage}}
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="addTraineeForm.invalid">Add Trainee</button>
+  </form>
+</div>

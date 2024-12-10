@@ -4,7 +4,25 @@
     <button class="logout-button" (click)="logout()">Logout</button>
   </div>
   <h2>Welcome to the Admin Dashboard</h2>
-
+ 
+   <!-- Card Statistics for Total Trainers and Trainees -->
+   <div class="card-statistics">
+    <div class="card">
+      <h3>Total Trainers</h3>
+      <div class="icon">
+        <i class="fa fa-chalkboard-teacher"></i> <!-- Trainer Icon -->
+      </div>
+      <p>{{ trainers.length }}</p>
+    </div>
+    <div class="card">
+      <h3>Total Trainees</h3>
+      <div class="icon">
+        <i class="fa fa-user-graduate"></i> <!-- Trainee Icon -->
+      </div>
+      <p>{{ trainees.length }}</p>
+    </div>
+  </div>
+ 
   <!-- Search and Filter Containers on the Same Line -->
   <div class="search-filter-container">
     <div class="search-container">
@@ -20,7 +38,7 @@
       </select>
     </div>
   </div>
-
+ 
   <!-- List of Trainers -->
   <div *ngIf="selectedRole === 'Trainer' || selectedRole === 'All'">
     <h3>List of Trainers</h3>
@@ -35,7 +53,7 @@
             <th>Email</th>
             <th>Assign Courses</th>
             <th>Actions</th>
-            
+           
           </tr>
         </thead>
         <tbody>
@@ -46,18 +64,30 @@
               <button (click)="openAssignCoursesModal(trainer)">Assign Courses</button> <!-- Button for Assigning Courses -->
             </td>
             <td>
-              <button (click)="editTrainer(trainer)" class="edit">Edit</button>
-              <button (click)="deleteTrainer(trainer.id)" class="delete">Delete</button>
-              <button (click)="openAssignTraineesModal(trainer)">Assign Trainees</button>
-            </td>
-            
+             
+              <!-- Edit Button with Bootstrap Classes -->
+<button (click)="editTrainer(trainer)" class="btn btn-primary edit">
+  <i class="fas fa-pencil-alt"></i> Edit
+</button>
+ 
+<!-- Delete Button with Bootstrap Classes -->
+<button (click)="deleteTrainer(trainer.id)" class="btn btn-danger delete">
+  <i class="fas fa-trash-alt"></i> Delete
+</button>
+ 
+<!-- Assign Button with Bootstrap Classes -->
+<button (click)="openAssignTraineesModal(trainer)" class="btn btn-warning assign">
+  <i class="fas fa-check"></i> Assign Trainee
+</button>
+ </td>
+           
           </tr>
         </tbody>
       </table>
     </div>
     <div *ngIf="trainers.length === 0">No trainers found.</div>
   </div>
-
+ 
   <!-- List of Trainees -->
   <div *ngIf="selectedRole === 'Trainee' || selectedRole === 'All'">
     <h3>List of Trainees</h3>
@@ -80,9 +110,23 @@
             <td>{{ trainee.email }}</td>
             <td>{{ trainee.trainer_name }}</td>
             <td>
-              <button (click)="editTrainee(trainee)" class="edit">Edit</button>
-              <button (click)="deleteTrainee(trainee.id)" class="delete">Delete</button>
-              <button (click)="assignTrainer(trainee)">Assign Trainer</button>
+             
+                <!-- Edit Button with Font Awesome Icon for Trainee -->
+                <button (click)="editTrainee(trainee)" class="btn  btn-primary edit">
+                  <i class="fas fa-pencil-alt"></i> Edit
+                </button>
+             
+                <!-- Delete Button with Font Awesome Icon for Trainee -->
+                <button (click)="deleteTrainee(trainee.id)" class="btn  btn-danger delete">
+                  <i class="fas fa-trash-alt"></i> Delete
+                </button>
+             
+                <!-- Assign Trainer Button with Font Awesome Icon -->
+                <button (click)="assignTrainer(trainee)" class="btn btn-sm btn-info assign">
+                  <i class="fas fa-check"></i> Assign Trainer
+                </button>
+             
+             
             </td>
           </tr>
         </tbody>
@@ -91,7 +135,7 @@
     <div *ngIf="trainees.length === 0">No trainees found.</div>
   </div>
 </div>
-
+ 
 <!-- Modals for Add/Edit/Assign -->
 <!-- Add Trainer Modal -->
 <div *ngIf="showAddTrainerModal" class="modal">
@@ -100,7 +144,7 @@
     <button (click)="closeAddTrainerModal()" class="close-btn">Close</button>
   </div>
 </div>
-
+ 
 <!-- Add Trainee Modal -->
 <div *ngIf="showAddTraineeModal" class="modal">
   <div class="modal-content">
@@ -108,7 +152,7 @@
     <button (click)="closeAddTraineeModal()" class="close-btn">Close</button>
   </div>
 </div>
-
+ 
 <!-- Edit Trainer Modal -->
 <div *ngIf="selectedTrainer && !isAssigningTrainees && !isAssigningCourses" class="modal">
   <div class="modal-content">
@@ -116,7 +160,7 @@
     <button (click)="closeEditTrainerModal()" class="close-btn">Close</button>
   </div>
 </div>
-
+ 
 <!-- Edit Trainee Modal -->
 <div *ngIf="selectedTrainee && !isAssigningTrainer" class="modal">
   <div class="modal-content">
@@ -124,7 +168,7 @@
     <button (click)="closeEditTraineeModal()" class="close-btn">Close</button>
   </div>
 </div>
-
+ 
 <!-- Modal for Assigning Trainer -->
 <div *ngIf="isAssigningTrainer" class="modal">
   <div class="modal-content">
@@ -137,7 +181,7 @@
     <button (click)="cancelAssign()">Cancel</button>
   </div>
 </div>
-
+ 
 <!-- Modal for Assigning Trainees -->
 <div *ngIf="isAssigningTrainees" class="modal">
   <div class="modal-content">
@@ -148,16 +192,16 @@
         {{ trainee.username }}
       </label>
     </div>
-    <button (click)="assignTraineesToTrainer()">Assign</button>
+    <button (click)="assignTraineesToTrainer()" [disabled]="!selectedTrainer">Assign</button>
     <button (click)="cancelAssignTrainees()">Cancel</button>
   </div>
 </div>
-
+ 
 <!-- Modal for Assigning Courses -->
 <div *ngIf="isAssigningCourses " class="modal">
   <div class="modal-content">
     <h4>Assign Courses to {{ selectedTrainer?.username }}</h4>
-
+ 
     <div *ngFor="let category of availableCourses">
       <h5>{{ category.trainingCategory.category }}</h5>
       <div *ngFor="let course of category.courses">
@@ -167,14 +211,17 @@
         </label>
       </div>
     </div>
-
+ 
     <label for="startDate">Start Date:</label>
     <input type="date" id="startDate" [(ngModel)]="startDate" />
-
+ 
     <label for="endDate">End Date:</label>
     <input type="date" id="endDate" [(ngModel)]="endDate" />
-
+ 
     <button (click)="assignCoursesToTrainer()">Assign</button>
     <button (click)="cancelAssignCourses()">Cancel</button>
   </div>
+ 
 </div>
+ 
+ 

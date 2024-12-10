@@ -12,7 +12,7 @@ import { MainService } from '../../core/services/main.service';  // Import the M
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;  // Using the '!' operator to assert that this will be initialized
 
-  formvalues = [
+  formFields = [
     {
       label: 'Email:',
       type: 'text',
@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
     const controls: { [key: string]: FormControl } = {};  // Define the controls object with an explicit type
 
     // Populate the controls object based on the `d` array
-    this.formvalues.forEach(field => {
+    this.formFields.forEach(field => {
       controls[field.id] = new FormControl('', field.validator); // Create a new FormControl for each field
     });
 

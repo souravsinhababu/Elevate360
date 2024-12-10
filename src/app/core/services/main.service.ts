@@ -11,7 +11,7 @@ export class MainService {
   constructor(private http: HttpClient) { }
 
   signup(user: any): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/signup`, user);
+    return this.http.post(`${environment.apiUrl}/api/users/signup`, user);
   }
 
   // Load Trainers

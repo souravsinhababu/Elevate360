@@ -1,26 +1,40 @@
 <div class="form-container">
   <h2>Add Trainer</h2>
-  <form (ngSubmit)="onSubmit()">
-      <label for="username">Username:</label>
-      <input type="text" id="username" [(ngModel)]="trainer.username" name="username" required />
-
-      <label for="email">Email:</label>
-      <input type="email" id="email" [(ngModel)]="trainer.email" name="email" required />
-
-      <label for="password">Password:</label>
-      <input type="password" id="password" [(ngModel)]="trainer.password" name="password" required />
-
-      <label for="specialization">Specialization:</label>
-      <div class="radio-group">
-          <input type="radio" id="frontend" [(ngModel)]="trainer.specialization" name="specialization" value="FrontEnd" required #specializationField="ngModel">
-          <label for="frontend">FrontEnd</label>
-
-          <input type="radio" id="backend" [(ngModel)]="trainer.specialization" name="specialization" value="BackEnd" required #specializationField="ngModel">
-          <label for="backend">BackEnd</label>
+  <form [formGroup]="addTrainerForm" (ngSubmit)="onSubmit()">
+    
+    <div *ngFor="let field of formFields">
+      <div *ngIf="field.type !== 'radio'">
+        <label for="{{field.id}}">{{field.label}}</label>
+        <input 
+          *ngIf="field.type !== 'radio'" 
+          type="{{field.type}}" 
+          [formControlName]="field.id" 
+          [required]="field.required" />
+        
+        <!-- Display error message -->
+        <div *ngIf="addTrainerForm.get(field.id)?.invalid && addTrainerForm.get(field.id)?.touched" class="error">
+          {{field.errormessage}}
+        </div>
       </div>
 
-      <div *ngIf="specializationField.invalid && specializationField.touched" class="error">Specialization is required</div>
+      <!-- Special handling for radio buttons -->
+      <div *ngIf="field.type === 'radio'">
+        <label>{{field.label}}</label>
+        <div *ngFor="let option of field.options">
+          <input 
+            type="radio" 
+            [id]="option" 
+            [formControlName]="field.id" 
+            [value]="option" 
+            [required]="field.required" />
+          <label for="{{option}}">{{option}}</label>
+        </div>
+        <div *ngIf="addTrainerForm.get(field.id)?.invalid && addTrainerForm.get(field.id)?.touched" class="error">
+          {{field.errormessage}}
+        </div>
+      </div>
+    </div>
 
-      <button type="submit">Add Trainer</button>
+    <button type="submit" [disabled]="addTrainerForm.invalid">Add Trainer</button>
   </form>
 </div>

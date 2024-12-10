@@ -13,6 +13,38 @@ export class EditTraineeComponent implements OnInit {
 
   traineeForm!: FormGroup;  // FormGroup instance
 
+  //Define the form fields
+  formFields=[
+    {
+      label:'Username',
+      type:'text',
+      id:'username',
+      required:true,
+      errorMessage:'Username is required'
+    },
+    {
+      label:'Email',
+      type:'email',
+      id:'email',
+      required:true,
+      errorMessage:'A valid email is required'
+    },
+    {
+      label:'Password',
+      type:'password',
+      id:'password',
+      required:true,
+      errorMessage:'Password is required'
+    },
+    {
+      label:'Designation',
+      type:'text',
+      id:'designation',
+      required:false,
+      errorMessage:''
+    }
+  ];
+
   constructor(private mainService: MainService) {}  // Inject MainService
 
   ngOnInit(): void {

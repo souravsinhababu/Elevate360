@@ -3,7 +3,7 @@
 
   <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
     
-    <div *ngFor="let values of formvalues">
+    <div *ngFor="let values of formFields">
       <label for="{{values.id}}">{{values.label}}</label>
       <input
         type="{{values.type}}"

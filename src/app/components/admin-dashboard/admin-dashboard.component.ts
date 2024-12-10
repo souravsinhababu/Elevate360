@@ -54,7 +54,7 @@ export class AdminDashboardComponent implements OnInit {
         this.search();  // Apply search immediately after loading
       },
       (error) => {
-        console.error('Error fetching trainers:', error);
+        // console.error('Error fetching trainers:', error);
       }
     );
   }
@@ -71,7 +71,7 @@ export class AdminDashboardComponent implements OnInit {
         this.search();  // Apply search immediately after loading
       },
       (error) => {
-        console.error('Error fetching trainees:', error);
+        // console.error('Error fetching trainees:', error);
       }
     );
   }
@@ -112,7 +112,7 @@ export class AdminDashboardComponent implements OnInit {
         this.availableCourses = data;
       },
       (error) => {
-        console.error('Error fetching available courses:', error);
+        // console.error('Error fetching available courses:', error);
       }
     );
   }
@@ -134,17 +134,21 @@ export class AdminDashboardComponent implements OnInit {
           this.selectedTrainerId = null;
         },
         (error) => {
-          console.error('Error assigning trainer:', error);
+          // console.error('Error assigning trainer:', error);
         }
       );
     }
   }
 
   openAssignTraineesModal(trainer: any) {
-    this.selectedTrainer = trainer;
-    this.isAssigningTrainees = true;  // Open Assign Trainees modal
-    this.isAssigningCourses = false; // Ensure Assign Courses modal is closed
-    this.isEditingTrainee = false;   // Ensure Edit Trainee modal is closed
+    if (trainer) {
+      this.selectedTrainer = trainer;
+      this.isAssigningTrainees = true;
+      this.isAssigningCourses = false;
+      this.isEditingTrainee = false;
+    } else {
+      // console.error('Invalid trainer passed to the modal');
+    }
   }
 
   cancelAssign() {
@@ -170,6 +174,7 @@ export class AdminDashboardComponent implements OnInit {
   openAddTraineeModal() {
     this.showAddTraineeModal = true;
   }
+  
 
   closeAddTraineeModal() {
     this.showAddTraineeModal = false;
@@ -213,24 +218,31 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   assignTraineesToTrainer() {
+    console.log('Selected Trainer:', this.selectedTrainer); // Add this log to track the state
     const selectedTrainees = this.trainees.filter(trainee => trainee.selected);
-
+  
     selectedTrainees.forEach(trainee => {
-      this.mainService.assignTraineesToTrainer(trainee.id, this.selectedTrainer.id).subscribe(
-        () => {
-          // Update the local list of trainees to reflect their trainer assignment
-          trainee.trainer_name = this.selectedTrainer.username;
-          trainee.selected = false; // Uncheck the box after assigning
-        },
-        (error) => {
-          console.error('Error assigning trainee:', error);
-        }
-      );
+      if (this.selectedTrainer && this.selectedTrainer.username) {
+        this.mainService.assignTraineesToTrainer(trainee.id, this.selectedTrainer.id).subscribe(
+          () => {
+            trainee.trainer_name = this.selectedTrainer.username;
+            trainee.selected = false;  // Uncheck the box after assigning
+          },
+          (error) => {
+            // console.error('Error assigning trainee:', error);
+          }
+        );
+      } else {
+        // console.error('Selected trainer is invalid or null');
+      }
     });
-
+  
     this.isAssigningTrainees = false;  // Close the modal
     this.selectedTrainer = null;       // Reset the selected trainer
   }
+  
+  
+  
 
   cancelAssignTrainees() {
     this.isAssigningTrainees = false;
@@ -249,7 +261,7 @@ export class AdminDashboardComponent implements OnInit {
         this.trainees = this.trainees.filter(trainee => trainee.id !== traineeId);
       },
       (error) => {
-        console.error('Error deleting trainee:', error);
+        // console.error('Error deleting trainee:', error);
       }
     );
   }
@@ -304,15 +316,15 @@ assignCoursesToTrainer() {
           this.endDate
       ).subscribe(
           (data) => {
-              console.log('Courses assigned successfully', data);
+              alert('Courses assigned successfully');
               this.isAssigningCourses = false; // Update the flag for assigning courses
           },
           (error) => {
-              console.error('Error assigning courses:', error);
+              // console.error('Error assigning courses:', error);
           }
       );
   } else {
-      console.error('Please select a trainer, start date, end date, and at least one course.');
+      // console.error('Please select a trainer, start date, end date, and at least one course.');
   }
   this.isAssigningCourses = false;
   this.selectedTrainer = null;

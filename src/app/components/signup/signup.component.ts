@@ -1,6 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { MainService } from '../../core/services/main.service';
+
+interface FormField {
+  label: string;
+  type: string;
+  id: string;
+  required: boolean;
+  errormessage: string;
+  validators: any[];
+  options?: { label: string; value: string }[]; // options property for radio fields
+}
 
 @Component({
   selector: 'app-signup',
@@ -8,34 +18,99 @@ import { MainService } from '../../core/services/main.service';
   styleUrls: ['./signup.component.css']
 })
 export class SignupComponent implements OnInit {
-  
-  signupForm!: FormGroup;  // Declare FormGroup instance
 
-  constructor(private MainService: MainService) {}
+  signupForm!: FormGroup;
+  formFields: FormField[] = [
+    {
+      label: 'Username:',
+      type: 'text',
+      id: 'username',
+      required: true,
+      errormessage: 'Username is required and must be at least 4 characters.',
+      validators: [Validators.required, Validators.minLength(4)]
+    },
+    {
+      label: 'Email:',
+      type: 'email',
+      id: 'email',
+      required: true,
+      errormessage: 'Valid email is required.',
+      validators: [Validators.required, Validators.email]
+    },
+    {
+      label: 'Password:',
+      type: 'password',
+      id: 'password',
+      required: true,
+      errormessage: 'Password is required and must be at least 6 characters.',
+      validators: [Validators.required, Validators.minLength(6)]
+    }
+  ];
+
+  // Specialization options for trainers
+  specializationOptions = [
+    { label: 'FrontEnd', value: 'FrontEnd' },
+    { label: 'BackEnd', value: 'BackEnd' }
+  ];
+
+  roleFields: { role: string; fields: FormField[] }[] = [
+    
+    {
+      role: 'trainee',
+      fields: [
+        {
+          label: 'Designation:',
+          type: 'text',
+          id: 'designation',
+          required: true,
+          errormessage: 'Designation is required.',
+          validators: [Validators.required]
+        }
+      ]
+    }
+  ];
+
+  constructor(private mainService: MainService, private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    // Initialize the form group with form controls and validators
-    this.signupForm = new FormGroup({
-      role: new FormControl('', Validators.required),
-      username: new FormControl('', [Validators.required, Validators.minLength(4)]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-      specialization: new FormControl('', Validators.required),
-      designation: new FormControl('', Validators.required),
-      firstName: new FormControl(''),
-      lastName: new FormControl(''),
-      mobile: new FormControl('')
+    // Initialize the form group with dynamic controls
+    this.signupForm = this.fb.group({});
+
+    // Add common controls dynamically based on the formFields configuration
+    this.formFields.forEach(field => {
+      this.signupForm.addControl(field.id, new FormControl('', field.validators));
     });
+
+    // Add role field as well
+    this.signupForm.addControl('role', new FormControl('', Validators.required));
+
+    // Add specialization control but leave it empty initially
+    this.signupForm.addControl('specialization', new FormControl(''));
+
+    // Initialize other logic as needed
+  }
+
+  // Method to check if the form control is invalid and touched
+  isInvalid(controlName: string): boolean {
+    const control = this.signupForm.get(controlName);
+    return !!(control?.invalid && control?.touched);  // Coerce to boolean
   }
 
   // Handling form submission
   onSignUpSubmit(): void {
     if (this.signupForm.invalid) {
-      return;
+      return;  // Do not proceed if the form is invalid
     }
 
     const user = this.signupForm.value;
-    this.MainService.signup(user).subscribe(
+
+    // Make sure specialization is added if role is 'trainer'
+    if (user.role === 'trainer' && !user.specialization) {
+      alert('Specialization is required for trainers!');
+      return;
+    }
+
+    this.mainService.signup(user).subscribe(
       response => {
         alert('Sign Up Successful!');
         console.log('Signed up user: ', response);
@@ -50,19 +125,41 @@ export class SignupComponent implements OnInit {
   // Reset the dynamic fields based on role selection
   onRoleChange(): void {
     const role = this.signupForm.get('role')?.value;
-    
-    if (role === 'trainer') {
-      this.signupForm.get('specialization')?.setValidators(Validators.required);
-      this.signupForm.get('designation')?.clearValidators();
-    } else if (role === 'trainee') {
-      this.signupForm.get('specialization')?.clearValidators();
-      this.signupForm.get('designation')?.setValidators(Validators.required);
-    } else {
-      this.signupForm.get('specialization')?.clearValidators();
-      this.signupForm.get('designation')?.clearValidators();
+
+    // Reset fields for the current role
+    this.clearRoleSpecificFields();
+
+    const roleField = this.roleFields.find(r => r.role === role);
+
+    if (roleField) {
+      roleField.fields.forEach(field => {
+        this.signupForm.addControl(field.id, new FormControl('', field.validators));
+      });
     }
-    
-    this.signupForm.get('specialization')?.updateValueAndValidity();
-    this.signupForm.get('designation')?.updateValueAndValidity();
+
+    // Specialization logic: add or remove validators based on the role
+    const specializationControl = this.signupForm.get('specialization');
+
+    if (role === 'trainer') {
+      // Make sure specialization is required for trainers
+      specializationControl?.setValidators([Validators.required]);
+    } else {
+      // Clear the specialization validators for other roles
+      specializationControl?.clearValidators();
+    }
+
+    // Update the validity of the specialization control
+    specializationControl?.updateValueAndValidity();
+  }
+
+  // Helper function to clear role-specific fields from the form
+  private clearRoleSpecificFields(): void {
+    this.roleFields.forEach(role => {
+      role.fields.forEach(field => {
+        if (this.signupForm.contains(field.id)) {
+          this.signupForm.removeControl(field.id);
+        }
+      });
+    });
   }
 }

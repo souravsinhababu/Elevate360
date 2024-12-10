@@ -15,50 +15,56 @@
     </div>
 
     <!-- Common Form Fields -->
-    <label for="username">Username:</label>
-    <input type="text" id="username" formControlName="username" required minlength="4" />
-    <div *ngIf="signupForm.get('username')?.invalid && signupForm.get('username')?.touched" class="error">
-      Username is required and must be at least 4 characters
-    </div>
-
-    <label for="email">Email:</label>
-    <input type="email" id="email" formControlName="email" required email />
-    <div *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched" class="error">
-      Valid email is required
-    </div>
-
-    <label for="password">Password:</label>
-    <input type="password" id="password" formControlName="password" required minlength="6" />
-    <div *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched" class="error">
-      Password is required and must be at least 6 characters
-    </div>
-
-    <!-- Trainer-specific field -->
-    <div *ngIf="signupForm.get('role')?.value === 'trainer'">
-      <div class="radio-container">
-        <label>Specialization:</label>
-        <div class="radio-options">
-          <label for="frontend">
-            <input type="radio" id="FrontEnd" formControlName="specialization" value="FrontEnd" />
-            FrontEnd
-          </label>
-          <label for="backend">
-            <input type="radio" id="BackEnd" formControlName="specialization" value="BackEnd" />
-            BackEnd
-          </label>
-        </div>
-        <div *ngIf="signupForm.get('specialization')?.invalid && signupForm.get('specialization')?.touched" class="error">
-          Specialization is required
-        </div>
+    <div *ngFor="let field of formFields">
+      <label for="{{field.id}}">{{field.label}}</label>
+      <input
+        *ngIf="field.type !== 'radio'"
+        type="{{field.type}}"
+        id="{{field.id}}"
+        formControlName="{{field.id}}"
+        [required]="field.required"
+      />
+      <div *ngIf="isInvalid(field.id)" class="error">
+        {{ field.errormessage }}
       </div>
     </div>
 
-    <!-- Trainee-specific fields -->
-    <div *ngIf="signupForm.get('role')?.value === 'trainee'">
-      <label for="designation">Designation:</label>
-      <input type="text" id="designation" formControlName="designation" required />
-      <div *ngIf="signupForm.get('designation')?.invalid && signupForm.get('designation')?.touched" class="error">
-        Designation is required
+    <!-- Specialization for Trainers (Radio buttons) -->
+    <div *ngIf="signupForm.get('role')?.value === 'trainer'">
+      <!-- This ensures specialization only appears when role is 'trainer' -->
+      <label for="specialization">Specialization:</label>
+      <div class="radio-options">
+        <label *ngFor="let option of specializationOptions">
+          <input
+            type="radio"
+            id="{{option.value}}"
+            formControlName="specialization"
+            [value]="option.value"
+          />
+          {{ option.label }}
+        </label>
+      </div>
+      <div *ngIf="isInvalid('specialization')" class="error">
+        Specialization is required.
+      </div>
+    </div>
+
+    <!-- Role-Specific Fields -->
+    <div *ngFor="let roleField of roleFields">
+      <div *ngIf="signupForm.get('role')?.value === roleField.role">
+        <div *ngFor="let field of roleField.fields">
+          <label for="{{field.id}}">{{field.label}}</label>
+          <input
+            *ngIf="field.type !== 'radio'"
+            type="{{field.type}}"
+            id="{{field.id}}"
+            formControlName="{{field.id}}"
+            [required]="field.required"
+          />
+          <div *ngIf="isInvalid(field.id)" class="error">
+            {{ field.errormessage }}
+          </div>
+        </div>
       </div>
     </div>
 

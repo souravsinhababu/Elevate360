@@ -1,89 +1,138 @@
-/* Modal background */
+/* Modal Background */
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Dark background for the modal */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* Ensure modal is above other content */
-  }
-  
-  /* Form container inside the modal */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Dark background for the modal */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure modal is above other content */
+}
+ 
+/* Form Container Inside the Modal */
+.form-container {
+  background-color: #f7faff; /* Light blue background */
+  padding: 20px;
+  border-radius: 10px;  /* Rounded corners */
+  width: 100%;
+  max-width: 450px; /* Limit form width */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Stronger shadow for depth */
+  border: 1px solid #d3d3d3;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+ 
+/* Heading inside the Form */
+.form-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+}
+ 
+/* Label and Input Fields Styling */
+.form-container label {
+  font-size: 14px; /* Smaller label text */
+  color: #333;
+  margin-bottom: 5px;
+  display: block; /* Ensures labels are on their own line */
+}
+ 
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"] {
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 5px;
+  width: 100%;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  box-sizing: border-box; /* Ensure padding is included in the width */
+}
+ 
+/* Radio Button Group Styling */
+.radio-group {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+ 
+.radio-group input[type="radio"] {
+  margin-right: 10px;
+}
+ 
+.radio-group label {
+  font-size: 14px;
+  color: #333;
+}
+ 
+/* Error message for validation */
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+ 
+/* Submit Button Styling */
+.form-container button {
+  font-size: 16px;
+  padding: 12px 20px;
+  border-radius: 5px;
+  border: none;
+  background-color: #4CAF50; /* Green background */
+  color: white;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+ 
+/* Button Hover Effect */
+.form-container button:hover {
+  background-color: #45a049; /* Darker green when hovered */
+}
+ 
+/* Modal close button (if needed) */
+.modal button.close {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  transition: background-color 0.3s ease;
+}
+ 
+.modal button.close:hover {
+  background-color: #e60000;
+}
+ 
+/* Responsiveness for Smaller Screens */
+@media (max-width: 480px) {
   .form-container {
-    background-color: aliceblue;
-    padding: 10px;  /* Reduced padding to make the form smaller */
-    border-radius: 10px;  /* Slightly smaller border radius */
-    width: 100%;
-    max-width: 400px; /* Further limit width to make it smaller */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    border: 1px solid #d3d3d3;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow-y: auto;
-    position: relative; /* To position the close button inside the form */
+      padding: 15px; /* Adjust padding for smaller screens */
+      width: 90%;
   }
-  
-  /* Close button inside the modal */
-  .modal button.close {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 10px 15px; /* Slightly smaller padding */
-    border-radius: 50%;  /* Circular shape */
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-    display: block; /* Ensure it is a block element and stacks below the other buttons */
-    margin-top: 15px; /* Add space between the add button and the close button */
+ 
+  .form-container h2 {
+      font-size: 20px;
   }
-  
-  /* Hover effect for close button */
-  .modal button.close:hover {
-    background-color: #e60000; /* Darker red when hovered */
-  }
-  
-  /* Ensure that the form-container's content doesn't get hidden */
+ 
   .form-container label,
-  .form-container input,
-  .form-container select,
+  .form-container input {
+      font-size: 12px; /* Smaller text on mobile */
+  }
+ 
   .form-container button {
-    z-index: 5000; /* Ensure these elements stay above the modal background */
-    display: block; /* Ensure the label and input elements are on separate lines */
-    width: 70%; /* Make input fields occupy full available width */
-    margin-bottom: 15px; /* Add space between elements */
+      font-size: 14px;
+      padding: 10px;
   }
-  
-  /* Ensure label and input fields are on separate lines */
-  .form-container label {
-    font-size: 14px; /* Smaller label text */
-    margin-bottom: 5px; /* Space between label and input */
-    display: block; /* Ensures labels are on their own line */
-  }
-  
-  .form-container input,
-  .form-container select {
-    font-size: 14px; /* Smaller font size for input fields */
-    padding: 8px; /* Smaller padding */
-    
-    border-radius: 5px; /* Slightly smaller border radius */
-    display: block; /* Ensures input is block level and below the label */
-  }
-  
-  /* Make sure the submit button is aligned properly */
-  .form-container button {
-    font-size: 16px; /* Slightly larger button text */
-    padding: 10px 20px; /* Slightly larger padding for the button */
-    border-radius: 5px;
-    border: none;
-    background-color: #4CAF50; /* Green background */
-    color: white;
-    cursor: pointer;
-  }
-  
-  .form-container button:hover {
-    background-color: #45a049; /* Darker green when hovered */
-  }
-  
+}
+ 
+ 
