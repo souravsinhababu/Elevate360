@@ -55,12 +55,12 @@ export class AdminDashboardComponent implements OnInit {
         this.search();  // Apply search immediately after loading
       },
       (error) => {
-        // console.error('Error fetching trainers:', error);
+        console.error('Error fetching trainers:', error);
       }
     );
   }
 
-  loadTrainees() {
+ loadTrainees() {
     this.mainService.loadTrainees().subscribe(
       (data) => {
         this.trainees = data.map(trainee => {
@@ -73,7 +73,6 @@ export class AdminDashboardComponent implements OnInit {
         this.search();
       },
       (error) => {
-        // Handle error
       }
     );
   }
@@ -85,7 +84,6 @@ export class AdminDashboardComponent implements OnInit {
         this.courseHistory[traineeId] = historyData.assignedCourses || [];
       },
       (error) => {
-        // Handle error if any
       }
     );
   }
@@ -126,7 +124,7 @@ export class AdminDashboardComponent implements OnInit {
         this.availableCourses = data;
       },
       (error) => {
-        // console.error('Error fetching available courses:', error);
+        console.error('Error fetching available courses:', error);
       }
     );
   }
@@ -148,7 +146,7 @@ export class AdminDashboardComponent implements OnInit {
           this.selectedTrainerId = null;
         },
         (error) => {
-          // console.error('Error assigning trainer:', error);
+          console.error('Error assigning trainer:', error);
         }
       );
     }
@@ -161,7 +159,7 @@ export class AdminDashboardComponent implements OnInit {
       this.isAssigningCourses = false;
       this.isEditingTrainee = false;
     } else {
-      // console.error('Invalid trainer passed to the modal');
+      console.error('Invalid trainer passed to the modal');
     }
   }
 
@@ -226,7 +224,7 @@ export class AdminDashboardComponent implements OnInit {
         this.trainers = this.trainers.filter(trainer => trainer.id !== trainerId);
       },
       (error) => {
-        alert("Can't delete trainer because he is already assigned to a trainee.");
+        alert("Trainer is already assiged to Trainee");
       }
     );
   }
@@ -243,11 +241,11 @@ export class AdminDashboardComponent implements OnInit {
             trainee.selected = false;  // Uncheck the box after assigning
           },
           (error) => {
-            // console.error('Error assigning trainee:', error);
+            console.error('Error assigning trainee:', error);
           }
         );
       } else {
-        // console.error('Selected trainer is invalid or null');
+        console.error('Selected trainer is invalid or null');
       }
     });
   
@@ -275,7 +273,7 @@ export class AdminDashboardComponent implements OnInit {
         this.trainees = this.trainees.filter(trainee => trainee.id !== traineeId);
       },
       (error) => {
-        // console.error('Error deleting trainee:', error);
+        alert("Can't delete trainee because he is in training");
       }
     );
   }
@@ -334,11 +332,11 @@ assignCoursesToTrainer() {
               this.isAssigningCourses = false; // Update the flag for assigning courses
           },
           (error) => {
-              // console.error('Error assigning courses:', error);
+              console.error('Error assigning courses:', error);
           }
       );
   } else {
-      // console.error('Please select a trainer, start date, end date, and at least one course.');
+      console.error('Please select a trainer, start date, end date, and at least one course.');
   }
   this.isAssigningCourses = false;
   this.selectedTrainer = null;
