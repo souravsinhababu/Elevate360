@@ -30,6 +30,7 @@ export class AdminDashboardComponent implements OnInit {
   public endDate: string = '';  // To bind with the end date input
   public availableCourses: any[] = [];
   public selectedCourses: any = {};  // To track selected courses
+  public courseHistory: { [traineeId: number]: any[] } = {}; 
 
   constructor(
     private mainService: MainService,  // Inject the service
@@ -63,15 +64,28 @@ export class AdminDashboardComponent implements OnInit {
     this.mainService.loadTrainees().subscribe(
       (data) => {
         this.trainees = data.map(trainee => {
-          // If trainer is null, assign 'Not assigned' to trainer_name
+          // Fetch course history for each trainee
+          this.loadCourseHistory(trainee.id);  // Fetch course history
           trainee.trainer_name = trainee.trainer ? trainee.trainer.username : 'Not assigned';
           return trainee;
         });
-        this.originalTrainees = [...data]; // Store a copy of the original trainees list
-        this.search();  // Apply search immediately after loading
+        this.originalTrainees = [...data];
+        this.search();
       },
       (error) => {
-        // console.error('Error fetching trainees:', error);
+        // Handle error
+      }
+    );
+  }
+
+  loadCourseHistory(traineeId: number) {
+    this.mainService.getCourseHistory(traineeId).subscribe(
+      (historyData) => {
+        // Store the course history by traineeId
+        this.courseHistory[traineeId] = historyData.assignedCourses || [];
+      },
+      (error) => {
+        // Handle error if any
       }
     );
   }

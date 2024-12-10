@@ -88,7 +88,6 @@
     <div *ngIf="trainers.length === 0">No trainers found.</div>
   </div>
  
-  <!-- List of Trainees -->
   <div *ngIf="selectedRole === 'Trainee' || selectedRole === 'All'">
     <h3>List of Trainees</h3>
     <div class="action-buttons">
@@ -101,6 +100,7 @@
             <th>Name</th>
             <th>Email</th>
             <th>Trainer Name</th>
+            <th>History</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -110,23 +110,26 @@
             <td>{{ trainee.email }}</td>
             <td>{{ trainee.trainer_name }}</td>
             <td>
-             
-                <!-- Edit Button with Font Awesome Icon for Trainee -->
-                <button (click)="editTrainee(trainee)" class="btn  btn-primary edit">
-                  <i class="fas fa-pencil-alt"></i> Edit
-                </button>
-             
-                <!-- Delete Button with Font Awesome Icon for Trainee -->
-                <button (click)="deleteTrainee(trainee.id)" class="btn  btn-danger delete">
-                  <i class="fas fa-trash-alt"></i> Delete
-                </button>
-             
-                <!-- Assign Trainer Button with Font Awesome Icon -->
-                <button (click)="assignTrainer(trainee)" class="btn btn-sm btn-info assign">
-                  <i class="fas fa-check"></i> Assign Trainer
-                </button>
-             
-             
+              <!-- Display course history in the History column -->
+              <ul *ngIf="courseHistory[trainee.id] && courseHistory[trainee.id].length">
+                <li *ngFor="let course of courseHistory[trainee.id]">
+                  {{ course.courseName }} ({{ course.startDate }} - {{ course.endDate }})
+                </li>
+              </ul>
+              <div *ngIf="!courseHistory[trainee.id] || !courseHistory[trainee.id].length">
+                No courses assigned yet.
+              </div>
+            </td>
+            <td>
+              <button (click)="editTrainee(trainee)" class="btn btn-primary edit">
+                <i class="fas fa-pencil-alt"></i> Edit
+              </button>
+              <button (click)="deleteTrainee(trainee.id)" class="btn btn-danger delete">
+                <i class="fas fa-trash-alt"></i> Delete
+              </button>
+              <button (click)="assignTrainer(trainee)" class="btn btn-sm btn-info assign">
+                <i class="fas fa-check"></i> Assign Trainer
+              </button>
             </td>
           </tr>
         </tbody>
@@ -134,7 +137,7 @@
     </div>
     <div *ngIf="trainees.length === 0">No trainees found.</div>
   </div>
-</div>
+  
  
 <!-- Modals for Add/Edit/Assign -->
 <!-- Add Trainer Modal -->
