@@ -3,11 +3,14 @@ package com.elevate360.project.controller.dashboard;
 import com.elevate360.project.dto.AssignTraineesRequest;
 import com.elevate360.project.dto.CourseHistoryDTO;
 import com.elevate360.project.dto.CourseHistoryResponse;
+import com.elevate360.project.dto.TrainerTraineeAssignmentDto;
+import com.elevate360.project.entity.TrainerTraineeAssignment;
 import com.elevate360.project.entity.TrainingList;
 import com.elevate360.project.entity.User;
 import com.elevate360.project.repo.UserRepository;
 import com.elevate360.project.service.UserService;
 import com.elevate360.project.service.assigncourse.CourseAssignmentService;
+import com.elevate360.project.service.assigncourse.TrainerTraineeAssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -173,6 +176,20 @@ public class AdminController {
             e.printStackTrace();
             return ResponseEntity.status(500).body(null);  // Return null for internal server error
         }
+    }
+
+    @Autowired
+    private TrainerTraineeAssignmentService service;
+
+    @GetMapping("/assignments")
+    public List<TrainerTraineeAssignment> getAllAssignments() {
+        return service.getAllAssignments();
+    }
+
+    // history
+    @GetMapping("/trainee/{traineeId}")
+    public List<TrainerTraineeAssignmentDto> getAssignmentsByTraineeId(@PathVariable Long traineeId) {
+        return service.getTrainerAndCourses(traineeId);
     }
 
 }
