@@ -1,8 +1,8 @@
 package com.elevate360.project.controller.dashboard;
 
 import com.elevate360.project.dto.AssignTraineesRequest;
-import com.elevate360.project.dto.CourseAssignmentResponse;
 import com.elevate360.project.dto.CourseHistoryDTO;
+import com.elevate360.project.dto.CourseHistoryResponse;
 import com.elevate360.project.entity.TrainingList;
 import com.elevate360.project.entity.User;
 import com.elevate360.project.repo.UserRepository;
@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -73,6 +74,7 @@ public class AdminController {
 
     @PutMapping("/trainees/{traineeId}/assign/{trainerId}")
     public ResponseEntity<User> assignTraineeToTrainer(@PathVariable Long traineeId, @PathVariable Long trainerId) {
+// changes to be made in this controller for further updates
         return userService.assignTraineeToTrainer(traineeId, trainerId);
     }
 
@@ -131,4 +133,49 @@ public class AdminController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+    @GetMapping("/course-history/{traineeId}")
+    public ResponseEntity<CourseHistoryResponse> getCourseHistoriesByTraineeId(@PathVariable Long traineeId) {
+        try {
+            // Step 1: Find the trainer of the given trainee
+            User trainer = userRepository.findTrainerByTraineeId(traineeId);
+
+            // Log for debugging
+            if (trainer == null) {
+                System.out.println("Trainer not found for traineeId: " + traineeId);
+                return ResponseEntity.status(404).body(null);  // Trainer not found, return null or handle appropriately
+            }
+
+            // Log the found trainer
+            System.out.println("Trainer found: " + trainer.getId());
+
+            // Step 2: Fetch the assigned courses of the trainer
+            List<User.AssignedCourse> assignedCourses = userRepository.findAssignedCoursesByTrainerId(trainer.getId());
+
+            // Log for debugging
+            if (assignedCourses.isEmpty()) {
+                System.out.println("No courses found for trainerId: " + trainer.getId());
+                return ResponseEntity.status(200).body(new CourseHistoryResponse(trainer.getUsername(), new ArrayList<>()));  // Return empty list if no courses found
+            }
+
+            // Log the assigned courses
+            System.out.println("Assigned courses found: " + assignedCourses);
+
+            // Create response with trainer's name and assigned courses
+            CourseHistoryResponse response = new CourseHistoryResponse(trainer.getUsername(), assignedCourses);
+
+            // Return the response
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            // Log the exception for debugging purposes
+            System.err.println("Error occurred: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);  // Return null for internal server error
+        }
+    }
+
 }
+
+
+

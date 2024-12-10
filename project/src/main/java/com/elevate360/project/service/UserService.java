@@ -2,12 +2,15 @@ package com.elevate360.project.service;
 
 import com.elevate360.project.dto.AssignTraineesRequest;
 import com.elevate360.project.dto.TraineeDTO;
+import com.elevate360.project.entity.TrainerTraineeAssignment;
 import com.elevate360.project.entity.User;
+import com.elevate360.project.repo.TrainerTraineeAssignmentRepo;
 import com.elevate360.project.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,6 +20,7 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
 
     // Get all users by role (e.g., "trainer", "trainee")
     public List<User> getAllUsersByRole(String role) {
@@ -90,23 +94,121 @@ public class UserService {
     }
 
     // Assign a trainee to a trainer
+//    public ResponseEntity<User> assignTraineeToTrainer(Long traineeId, Long trainerId) {
+//        Optional<User> traineeOptional = userRepository.findById(traineeId);
+//        Optional<User> trainerOptional = userRepository.findById(trainerId);
+//
+//        if (traineeOptional.isPresent() && trainerOptional.isPresent() &&
+//                "trainee".equals(traineeOptional.get().getRole()) && "trainer".equals(trainerOptional.get().getRole())) {
+//            User trainee = traineeOptional.get();
+//            User trainer = trainerOptional.get();
+//
+//            // Assign the trainer to the trainee
+//            trainee.setTrainer(trainer);
+//
+//            User updatedTrainee = userRepository.save(trainee);
+//            return ResponseEntity.ok(updatedTrainee);
+//        }
+//        return ResponseEntity.status(404).body(null); // 404 Not Found
+//    }
+
+//    New code
+    @Autowired
+    private TrainerTraineeAssignmentRepo assignmentRepository;
+
+//     Assign a trainee to a trainer with checking existing assignments
     public ResponseEntity<User> assignTraineeToTrainer(Long traineeId, Long trainerId) {
         Optional<User> traineeOptional = userRepository.findById(traineeId);
         Optional<User> trainerOptional = userRepository.findById(trainerId);
 
         if (traineeOptional.isPresent() && trainerOptional.isPresent() &&
                 "trainee".equals(traineeOptional.get().getRole()) && "trainer".equals(trainerOptional.get().getRole())) {
+
             User trainee = traineeOptional.get();
             User trainer = trainerOptional.get();
 
+            // Check if trainer already has assigned trainees
+            List<User> existingTrainees = userRepository.findByTrainer(trainer);
+
+            if (!existingTrainees.isEmpty()) {
+                // Store the assignment in the new table
+                TrainerTraineeAssignment assignment = new TrainerTraineeAssignment();
+                assignment.setTrainer(trainer);
+                assignment.setTrainee(trainee);
+                assignment.setTrainerName(trainer.getUsername());
+                assignment.setTrainerSpecialization(trainer.getSpecialization());
+
+                assignmentRepository.save(assignment);
+            }
+
             // Assign the trainer to the trainee
             trainee.setTrainer(trainer);
+            userRepository.save(trainee);
 
-            User updatedTrainee = userRepository.save(trainee);
-            return ResponseEntity.ok(updatedTrainee);
+            return ResponseEntity.ok(trainee);
         }
-        return ResponseEntity.status(404).body(null); // 404 Not Found
+
+        return ResponseEntity.status(404).body(null);
     }
+
+
+//    New code 10-12-2024 (past course history)
+//    public ResponseEntity<User> assignTraineeToTrainer(Long traineeId, Long trainerId) {
+//        User trainee = userRepository.findById(traineeId).orElseThrow(() -> new RuntimeException("Trainee not found"));
+//        User trainer = userRepository.findById(trainerId).orElseThrow(() -> new RuntimeException("Trainer not found"));
+//
+//        // Check if the trainee is already assigned to a trainer
+//        if (trainee.getTrainer() != null) {
+//            // Save the course history before updating the trainer
+//            storeCourseHistory(trainee);
+//        }
+//
+//        // Assign the new trainer
+//        trainee.setTrainer(trainer);
+//
+//        // Save the updated trainee
+//        userRepository.save(trainee);
+//
+//        return ResponseEntity.ok(trainee);
+//    }
+
+//    private void storeCourseHistory(User trainee) {
+//        // Create a deep copy of the assignedCourses list to avoid shared references
+//        List<User.AssignedCourse> copiedAssignedCourses = new ArrayList<>();
+//
+//        // Copy each assigned course into the new list (deep copy)
+//        for (User.AssignedCourse course : trainee.getAssignedCourses()) {
+//            User.AssignedCourse copiedCourse = new User.AssignedCourse();
+//            copiedCourse.setCourseName(course.getCourseName());
+//            copiedCourse.setStartDate(course.getStartDate());
+//            copiedCourse.setEndDate(course.getEndDate());
+//            copiedAssignedCourses.add(copiedCourse);
+//        }
+//
+//        // Create a new course history record
+//        TrainerCourseHistory courseHistory = new TrainerCourseHistory();
+//        courseHistory.setTrainee(trainee);
+//        courseHistory.setAssignedCourses(copiedAssignedCourses);  // Use the deep copy
+//
+//        // Save the course history
+//        trainerCourseHistoryRepository.save(courseHistory);
+//    }
+
+    // Method to convert TrainerCourseHistory to response format
+    // Method to convert TrainerCourseHistory to response format
+//    public List<TrainerCourseHistoryResponse> convertToCourseHistoryResponse(List<TrainerCourseHistory> history) {
+//        return history.stream().map(courseHistory -> {
+//            User trainee = courseHistory.getTrainee();
+//            List<User.AssignedCourse> assignedCourses = courseHistory.getAssignedCourses();
+//            return new TrainerCourseHistoryResponse(
+//                    trainee.getId(),
+//                    trainee.getUsername(),
+//                    assignedCourses
+//            );
+//        }).collect(Collectors.toList());
+//    }
+
+
     public String assignTraineesToTrainer(Long trainerId, AssignTraineesRequest request) {
         User trainer = userRepository.findById(trainerId).orElse(null);
         if (trainer == null || !"trainer".equals(trainer.getRole())) {

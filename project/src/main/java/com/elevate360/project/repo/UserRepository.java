@@ -23,6 +23,26 @@ public interface UserRepository extends JpaRepository<User, Long> , CrudReposito
             "FROM User u JOIN u.assignedCourses a")
     List<CourseHistoryDTO> findAllCourseHistories();
 
+    @Query("SELECT u.assignedCourses FROM User u WHERE u.id = :traineeId")
+    List<User.AssignedCourse> findAssignedCoursesByTraineeId(@Param("traineeId") Long traineeId);
+
+//    @Query("SELECT u.assignedCourses FROM User u WHERE u.trainer.id = :trainerId")
+//    List<User.AssignedCourse> findAssignedCoursesByTrainerId(@Param("trainerId") Long trainerId);
+
+    @Query("SELECT u.assignedCourses FROM User u WHERE u.id = :trainerId")
+    List<User.AssignedCourse> findAssignedCoursesByTrainerId(@Param("trainerId") Long trainerId);
+
+
+
+    // Fetch the trainer of a specific trainee
+    @Query("SELECT u.trainer FROM User u WHERE u.id = :traineeId")
+    User findTrainerByTraineeId(@Param("traineeId") Long traineeId);
+
+    // Fetch the AssignedCourses of trainees who have the given trainerId
+//    @Query("SELECT ac FROM AssignedCourse ac WHERE ac.trainer.id = :trainerId")
+//    List<User.AssignedCourse> findAssignedCoursesByTrainerId(@Param("trainerId") Long trainerId);
+
+
 
 }
 
