@@ -11,7 +11,7 @@ export class MainService {
   constructor(private http: HttpClient) { }
 
   signup(user: any): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/signup`, user);
+    return this.http.post(`${environment.apiUrl}/api/users/signup`, user);
   }
 
   // Load Trainers
@@ -59,7 +59,10 @@ assignCoursesToTrainer(trainerId: number, courses: string[], startDate: string, 
   return this.http.post(url, courses);
 }
 
-  
+getCourseHistory(traineeId: number): Observable<any> {
+  return this.http.get<any>(`${environment.apiUrl}/admin/course-history/${traineeId}`);
+}
+
   
 
   // Login method for handling login API call

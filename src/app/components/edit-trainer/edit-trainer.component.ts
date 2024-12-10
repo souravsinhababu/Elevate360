@@ -13,15 +13,48 @@ export class EditTrainerComponent implements OnInit {
 
   trainerForm!: FormGroup;  // FormGroup instance for the form
 
-  constructor(private mainService: MainService) {}  // Inject MainService
+  // Define the form fields
+  formFields = [
+    { 
+      label: 'Username',
+      type: 'text',
+      id: 'username',
+      required: true,
+      errorMessage: 'Username is required' 
+    },
+    { 
+      label: 'Email',
+      type: 'email',
+      id: 'email',
+      required: true,
+      errorMessage: 'A valid email is required'
+    },
+    { 
+      label: 'Password',
+      type: 'password',
+      id: 'password',
+      required: true,
+      errorMessage: 'Password is required'
+    },
+    { 
+      label: 'Specialization',
+      type: 'radio',
+      id: 'specialization',
+      required: true,
+      errorMessage: 'Specialization is required',
+      options: ['FrontEnd', 'BackEnd']
+    }
+  ];
+
+  constructor(private mainService: MainService) {}
 
   ngOnInit(): void {
     // Initialize the form with the trainer data
     this.trainerForm = new FormGroup({
-      username: new FormControl(this.trainer?.username, [Validators.required]),  // Bind the username field with validation
-      email: new FormControl(this.trainer?.email, [Validators.required, Validators.email]),  // Bind email with validation
-      password: new FormControl(this.trainer?.password, [Validators.required]),  // Bind password with validation
-      specialization: new FormControl(this.trainer?.specialization, [Validators.required])  // Bind specialization with validation
+      username: new FormControl(this.trainer?.username, [Validators.required]),
+      email: new FormControl(this.trainer?.email, [Validators.required, Validators.email]),
+      password: new FormControl(this.trainer?.password, [Validators.required]),
+      specialization: new FormControl(this.trainer?.specialization, [Validators.required])
     });
   }
 
