@@ -80,13 +80,35 @@ export class AdminDashboardComponent implements OnInit {
   loadCourseHistory(traineeId: number) {
     this.mainService.getCourseHistory(traineeId).subscribe(
       (historyData) => {
-        // Store the course history by traineeId
-        this.courseHistory[traineeId] = historyData.assignedCourses || [];
+        console.log('API Response:', historyData);  // Log the full response
+  
+        // Assuming that `trainerName` is part of the response and corresponds directly to the trainee's trainer
+        const trainee = this.trainees.find(t => t.id === traineeId);  // Find the trainee by ID
+  
+        // Ensure the trainee's trainerName is correctly mapped
+        const trainerName = trainee ? trainee.trainer_name : '';  // Get trainerName from the trainee object
+  
+        // Now match the trainerName from the API response to find the corresponding history
+        const traineeHistory = historyData.find(
+          (trainer) => trainer.trainerName === trainerName
+        );
+  
+        console.log('Trainee History:', traineeHistory);  // Log the matched trainee history
+  
+        // If a trainer is found, store their assigned courses, otherwise assign an empty array
+        this.courseHistory[traineeId] = traineeHistory ? traineeHistory.assignedCourses : [];
+        console.log('Assigned Courses:', this.courseHistory[traineeId]);  // Log the assigned courses
       },
       (error) => {
+        console.error('Error loading course history', error);
       }
     );
   }
+  
+  
+  
+  
+  
 
   search() {
     const searchLower = this.searchQuery.toLowerCase();
