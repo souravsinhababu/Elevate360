@@ -1,6 +1,7 @@
 package com.elevate360.project.service;
 
 import com.elevate360.project.dto.AssignTraineesRequest;
+import com.elevate360.project.dto.EditProfile.AdminUpdateRequest;
 import com.elevate360.project.dto.TraineeDTO;
 import com.elevate360.project.entity.TrainerTraineeAssignment;
 import com.elevate360.project.entity.User;
@@ -252,4 +253,31 @@ public class UserService {
         }
         return null; // Return null if trainer not found or role mismatch
     }
+
+    // Method to update admin's email and password
+    public ResponseEntity<User> editAdminEmailAndPassword(Long id, AdminUpdateRequest updateRequest) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        // Check if the user exists and is an admin
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            // Ensure the user is an admin
+            if ("admin".equals(user.getRole())) {
+                // Update email and password
+                user.setEmail(updateRequest.getEmail());
+                user.setPassword(updateRequest.getPassword());
+
+                // Save the updated user
+                userRepository.save(user);
+
+                return ResponseEntity.ok(user); // Return the updated admin
+            } else {
+                return ResponseEntity.status(403).build(); // Forbidden if not an admin
+            }
+        }
+
+        return ResponseEntity.status(404).build(); // Not Found if user does not exist
+    }
 }
+

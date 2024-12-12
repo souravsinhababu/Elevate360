@@ -3,6 +3,7 @@ package com.elevate360.project.controller.dashboard;
 import com.elevate360.project.dto.AssignTraineesRequest;
 import com.elevate360.project.dto.CourseHistoryDTO;
 import com.elevate360.project.dto.CourseHistoryResponse;
+import com.elevate360.project.dto.EditProfile.AdminUpdateRequest;
 import com.elevate360.project.dto.TrainerTraineeAssignmentDto;
 import com.elevate360.project.entity.TrainerTraineeAssignment;
 import com.elevate360.project.entity.TrainingList;
@@ -192,6 +193,13 @@ public class AdminController {
     @GetMapping("/trainee/{traineeId}")
     public List<TrainerTraineeAssignmentDto> getAssignmentsByTraineeId(@PathVariable Long traineeId) {
         return service.getTrainerAndCourses(traineeId);
+    }
+
+
+    @PutMapping("/edit-admin/{id}")
+    public ResponseEntity<User> editAdminEmailAndPassword(@PathVariable Long id, @RequestBody AdminUpdateRequest updateRequest) {
+        // Check if the user exists and is an admin
+        return userService.editAdminEmailAndPassword(id, updateRequest);
     }
 
 }

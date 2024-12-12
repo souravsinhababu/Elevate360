@@ -40,6 +40,7 @@ public class User {
     @JsonIgnore
     private String specialization;
 
+
     // Add this field to the User class
     @ManyToOne
     @JoinColumn(name = "trainer_id")  // foreign key to the trainer (another User)
