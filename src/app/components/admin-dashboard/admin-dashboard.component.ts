@@ -82,21 +82,22 @@ export class AdminDashboardComponent implements OnInit {
     this.mainService.getCourseHistory(traineeId).subscribe(
       (historyData) => {
         console.log('API Response:', historyData);  // Log the full response
-  
+    
         // Find the trainee object to extract the trainer's name
         const trainee = this.trainees.find(t => t.id === traineeId);  // Find the trainee by ID
-  
+    
         // Ensure the trainee's trainerName is correctly mapped
         const trainerName = trainee ? trainee.trainer_name : '';  // Get trainerName from the trainee object
-  
+    
         // Find the trainer's course history from the API response
         const traineeHistory = historyData.find(
-          (trainer) => trainer.trainerName === trainerName
-        );
+          (trainerHistory) => trainerHistory.trainerName === trainerName
+        );  
   
         console.log('Trainee History:', traineeHistory);  // Log the matched trainee history
   
-        // If a trainer is found, store their assigned courses along with trainerName, otherwise assign an empty array
+        // If a trainer is found, store their assigned courses along with trainerName
+        // Otherwise, assign an empty array
         this.courseHistory[traineeId] = traineeHistory ? {
           trainerName: trainerName,
           assignedCourses: traineeHistory.assignedCourses
@@ -109,11 +110,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-  
-  
-  
-  
-  
+
 
   search() {
     const searchLower = this.searchQuery.toLowerCase();
