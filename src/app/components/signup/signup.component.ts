@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
-import { MainService } from '../../core/services/main.service';
+import { MainService } from '../../../core/services/main.service';
 
 interface FormField {
   label: string;

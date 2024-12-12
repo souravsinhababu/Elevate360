@@ -9,7 +9,7 @@ import { SignupComponent } from './components/signup/signup.component';
 import { TraineeDashboardComponent } from './components/trainee-dashboard/trainee-dashboard.component';
 import { TrainerDashboardComponent } from './components/trainer-dashboard/trainer-dashboard.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';  
-import { AppRoutingModule } from './core/routes/app-routing.module';
+import { AppRoutingModule } from '../core/routes/app-routing.module';
 import { EditTrainerComponent } from './components/edit-trainer/edit-trainer.component';
 import { EditTraineeComponent } from './components/edit-trainee/edit-trainee.component';
 import { AddTraineeComponent } from './components/add-trainee/add-trainee.component';

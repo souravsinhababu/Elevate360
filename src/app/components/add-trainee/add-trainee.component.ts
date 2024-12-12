@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { MainService } from '../../core/services/main.service';  // Import MainService
+import { MainService } from '../../../core/services/main.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({

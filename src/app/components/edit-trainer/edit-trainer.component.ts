@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';  // Import FormGroup and FormControl for reactive forms
-import { MainService } from '../../core/services/main.service';  // Import MainService
+import { MainService } from '../../../core/services/main.service';
 
 @Component({
   selector: 'app-edit-trainer',
