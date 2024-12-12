@@ -61,9 +61,9 @@ public class UserService {
             return ResponseEntity.status(409).build(); // 409 Conflict if the user already exists
         }
 
-        if (user.getRole() == null) {
+        /*if (user.getRole() == null) {
             user.setRole("TRAINEE"); // Set default role if not provided
-        }
+        }*/
 
         // Save and return the new user
         User savedUser = userRepository.save(user);

@@ -86,6 +86,8 @@ public class AdminController {
         return userService.getTraineesByTrainerId(id);
     }
 
+    //multiple trainee
+
     @PutMapping("/trainers/{trainerId}/assignTrainees")
     public ResponseEntity<String> assignTraineesToTrainer(
             @PathVariable Long trainerId,

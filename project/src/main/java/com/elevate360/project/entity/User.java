@@ -27,14 +27,17 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    @JsonIgnore
     @NotBlank
     private String password;
 
+    @JsonIgnore
     private String designation;
 
     @NotBlank
     private String role;
 
+    @JsonIgnore
     private String specialization;
 
     // Add this field to the User class
