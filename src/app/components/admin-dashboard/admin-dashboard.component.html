@@ -109,37 +109,21 @@
             <td>{{ trainee.email }}</td>
             <td>{{ trainee.trainer_name }}</td>
             <td>
-              <div *ngFor="let trainee of trainees">
-                <!-- Display the trainee's name and trainer -->
-                <h3>{{ trainee.name }} (Trainer: {{ trainee.trainer_name }})</h3>
-              
-                <!-- Check if the course history exists for the trainee and has assigned courses -->
-                <div *ngIf="courseHistory[trainee.id] && courseHistory[trainee.id].assignedCourses.length">
-                  <!-- Display trainer name above the courses -->
-                  <div class="trainer-info">
-                    <strong>{{ courseHistory[trainee.id].trainerName }}</strong>
-                  </div>
-              
-                  <!-- Display the list of assigned courses -->
-                  <ul class="course-list">
-                    <li *ngFor="let course of courseHistory[trainee.id].assignedCourses">
-                      <span class="course-name">{{ course.courseName }}</span>
-                      <span class="course-dates">
-                        ({{ course.startDate | date:'yyyy-MM-dd' }} - {{ course.endDate | date:'yyyy-MM-dd' }})
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              
-                <!-- If there are no courses, show a message -->
-                <div *ngIf="!courseHistory[trainee.id] || !courseHistory[trainee.id].assignedCourses.length" class="no-courses">
-                  No courses assigned yet.
-                </div>
+              <!-- Display course history in the History column -->
+              <div *ngIf="courseHistory[trainee.id] && courseHistory[trainee.id].assignedCourses.length">
+                <!-- Display trainerName along with the courses -->
+                <strong>{{ courseHistory[trainee.id].trainerName }}</strong>
+                <ul>
+                  <li *ngFor="let course of courseHistory[trainee.id].assignedCourses">
+                    {{ course.courseName }} ({{ course.startDate }} - {{ course.endDate }})
+                  </li>
+                </ul>
               </div>
-              
+              <div *ngIf="!courseHistory[trainee.id] || !courseHistory[trainee.id].assignedCourses.length">
+                No courses assigned yet.
+              </div>
             </td>
-            
-            
+           
             <td>
               <button (click)="editTrainee(trainee)" class="btn btn-primary edit">
                 <i class="fas fa-pencil-alt"></i> Edit
@@ -156,8 +140,8 @@
       </table>
     </div>
   </div>
-  
-  
+ 
+ 
  
 <!-- Modals for Add/Edit/Assign -->
 <!-- Add Trainer Modal -->
@@ -246,5 +230,3 @@
   </div>
  
 </div>
- 
- 
