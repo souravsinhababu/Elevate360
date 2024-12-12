@@ -1,5 +1,3 @@
-// course-history.model.ts
-
 export interface Course {
     courseName: string;
     startDate: string;
@@ -12,6 +10,6 @@ export interface Course {
   }
   
   export interface CourseHistory {
-    [key: number]: Course[];
+    [key: number]: TraineeCoursesResponse;
   }
   
