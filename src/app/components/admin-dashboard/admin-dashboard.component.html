@@ -120,6 +120,16 @@
                 </ul>
               </div>
               <div *ngIf="!courseHistory[trainee.id] || !courseHistory[trainee.id].assignedCourses.length">
+              <div *ngIf="courseHistory[trainee.id] && courseHistory[trainee.id].assignedCourses.length">
+                <!-- Display trainerName along with the courses -->
+                <strong>{{ courseHistory[trainee.id].trainerName }}</strong>
+                <ul>
+                  <li *ngFor="let course of courseHistory[trainee.id].assignedCourses">
+                    {{ course.courseName }} ({{ course.startDate }} - {{ course.endDate }})
+                  </li>
+                </ul>
+              </div>
+              <div *ngIf="!courseHistory[trainee.id] || !courseHistory[trainee.id].assignedCourses.length">
                 No courses assigned yet.
               </div>
             </td>
@@ -230,5 +240,3 @@
   </div>
  
 </div>
- 
- 
