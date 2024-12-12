@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { MainService } from '../../core/services/main.service';  // Import MainService
-import { AuthGuard } from '../../core/guards/auth.guard';
+import { MainService } from '../../../core/services/main.service';
+import { AuthGuard } from '../../../core/guards/auth.guard';
 
 @Component({
   selector: 'app-trainer-dashboard',

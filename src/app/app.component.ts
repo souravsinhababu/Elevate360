@@ -8,23 +8,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'User Authentication';
-  isAuthenticated = false;
+  constructor() {}
 
-  constructor(
-    private router: Router
-  ) {}
- 
-
- 
-  login() {
-    this.isAuthenticated = true;
-    this.router.navigate(['/']); 
-  }
- 
-  
-  logout() {
-    this.isAuthenticated = false;
-    this.router.navigate(['/home']); 
-  }
 }

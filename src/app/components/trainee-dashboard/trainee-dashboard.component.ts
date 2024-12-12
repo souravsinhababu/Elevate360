@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthGuard } from '../../core/guards/auth.guard';
+import { AuthGuard } from '../../../core/guards/auth.guard';
 @Component({
   selector: 'app-trainee-dashboard',
   templateUrl: './trainee-dashboard.component.html',

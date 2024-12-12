@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MainService } from '../../core/services/main.service';  // Import the service
-import { AuthGuard } from '../../core/guards/auth.guard';
-import { environment } from '../../core/environment/environment';
+import { MainService } from '../../../core/services/main.service';
+import { AuthGuard } from '../../../core/guards/auth.guard';
+import { environment } from '../../../core/environment/environment';
 
 @Component({
   selector: 'app-admin-dashboard',
