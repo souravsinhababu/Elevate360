@@ -30,7 +30,8 @@ export class AdminDashboardComponent implements OnInit {
   public endDate: string = '';  // To bind with the end date input
   public availableCourses: any[] = [];
   public selectedCourses: any = {};  // To track selected courses
-  public courseHistory: { [traineeId: number]: any[] } = {}; 
+  public courseHistory: { [traineeId: number]: { trainerName: string; assignedCourses: any[] } } = {};
+
 
   constructor(
     private mainService: MainService,  // Inject the service
@@ -80,13 +81,39 @@ export class AdminDashboardComponent implements OnInit {
   loadCourseHistory(traineeId: number) {
     this.mainService.getCourseHistory(traineeId).subscribe(
       (historyData) => {
-        // Store the course history by traineeId
-        this.courseHistory[traineeId] = historyData.assignedCourses || [];
+        console.log('API Response:', historyData);  // Log the full response
+  
+        // Find the trainee object to extract the trainer's name
+        const trainee = this.trainees.find(t => t.id === traineeId);  // Find the trainee by ID
+  
+        // Ensure the trainee's trainerName is correctly mapped
+        const trainerName = trainee ? trainee.trainer_name : '';  // Get trainerName from the trainee object
+  
+        // Find the trainer's course history from the API response
+        const traineeHistory = historyData.find(
+          (trainer) => trainer.trainerName === trainerName
+        );
+  
+        console.log('Trainee History:', traineeHistory);  // Log the matched trainee history
+  
+        // If a trainer is found, store their assigned courses along with trainerName, otherwise assign an empty array
+        this.courseHistory[traineeId] = traineeHistory ? {
+          trainerName: trainerName,
+          assignedCourses: traineeHistory.assignedCourses
+        } : { trainerName: '', assignedCourses: [] };
+  
+        console.log('Assigned Courses:', this.courseHistory[traineeId]);  // Log the assigned courses
       },
       (error) => {
+        console.error('Error loading course history', error);
       }
     );
   }
+  
+  
+  
+  
+  
 
   search() {
     const searchLower = this.searchQuery.toLowerCase();

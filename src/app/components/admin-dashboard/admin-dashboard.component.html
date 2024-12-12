@@ -110,15 +110,20 @@
             <td>{{ trainee.trainer_name }}</td>
             <td>
               <!-- Display course history in the History column -->
-              <ul *ngIf="courseHistory[trainee.id] && courseHistory[trainee.id].length">
-                <li *ngFor="let course of courseHistory[trainee.id]">
-                  {{ course.courseName }} ({{ course.startDate }} - {{ course.endDate }})
-                </li>
-              </ul>
-              <div *ngIf="!courseHistory[trainee.id] || !courseHistory[trainee.id].length">
+              <div *ngIf="courseHistory[trainee.id] && courseHistory[trainee.id].assignedCourses.length">
+                <!-- Display trainerName along with the courses -->
+                <strong>{{ courseHistory[trainee.id].trainerName }}</strong>
+                <ul>
+                  <li *ngFor="let course of courseHistory[trainee.id].assignedCourses">
+                    {{ course.courseName }} ({{ course.startDate }} - {{ course.endDate }})
+                  </li>
+                </ul>
+              </div>
+              <div *ngIf="!courseHistory[trainee.id] || !courseHistory[trainee.id].assignedCourses.length">
                 No courses assigned yet.
               </div>
             </td>
+            
             <td>
               <button (click)="editTrainee(trainee)" class="btn btn-primary edit">
                 <i class="fas fa-pencil-alt"></i> Edit
@@ -134,8 +139,8 @@
         </tbody>
       </table>
     </div>
-    <div *ngIf="trainees.length === 0">No trainees found.</div>
   </div>
+  
   
  
 <!-- Modals for Add/Edit/Assign -->

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environment/environment';
 import { Observable } from 'rxjs';
+import { TraineeCoursesResponse } from '../../components/admin-dashboard/course-history.model';
 
 @Injectable({
   providedIn: 'root'
@@ -53,14 +54,14 @@ export class MainService {
   }
 
   // Method to assign courses to the trainer
- // In your service (e.g., main.service.ts)
+ 
 assignCoursesToTrainer(trainerId: number, courses: string[], startDate: string, endDate: string) {
   const url = `${environment.apiUrl}/admin/assign/${trainerId}?startDate=${startDate}&endDate=${endDate}`;
   return this.http.post(url, courses);
 }
 
-getCourseHistory(traineeId: number): Observable<any> {
-  return this.http.get<any>(`${environment.apiUrl}/admin/course-history/${traineeId}`);
+getCourseHistory(traineeId: number): Observable<TraineeCoursesResponse[]> {
+  return this.http.get<TraineeCoursesResponse[]>(`${environment.apiUrl}/admin/trainee/${traineeId}`);
 }
 
   
