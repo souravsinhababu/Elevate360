@@ -28,8 +28,8 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    @JsonIgnore
     @NotNull
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  // This makes it readable during deserialization but not in response
     private String password;
 
     @JsonIgnore

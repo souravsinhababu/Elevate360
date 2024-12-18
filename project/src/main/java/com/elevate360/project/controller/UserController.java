@@ -17,6 +17,7 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<User> signup(@RequestBody User user) {
         // Ensure the user does not already exist by email
+        System.out.println(user.getPassword());
         if (userService.findByEmail(user.getEmail()) != null) {
             return ResponseEntity.status(409).build(); // 409 Conflict if the user already exists
         }
