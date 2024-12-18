@@ -23,6 +23,7 @@ export class AdminDashboardComponent implements OnInit {
   public isEditingTrainee: boolean = false;
   public showAddTrainerModal = false;
   public showAddTraineeModal = false;
+  hasError: boolean = false;
   public showEditTraineeModal = false;
   public showEditTrainerModal = false;
   public isAssigningTrainees: boolean = false;
@@ -164,26 +165,7 @@ export class AdminDashboardComponent implements OnInit {
   }
  
  
-  assignTrainerToTrainee() {
-    if (this.selectedTrainee && this.selectedTrainerId) {
-      this.mainService.assignTrainerToTrainee(this.selectedTrainee.id, this.selectedTrainerId).subscribe(
-        (data) => {
-          const assignedTrainee = this.trainees.find(t => t.id === this.selectedTrainee.id);
-          if (assignedTrainee) {
-            assignedTrainee.trainer_id = this.selectedTrainerId;
-            assignedTrainee.trainer_name = this.trainers.find(t => t.id === this.selectedTrainerId)?.username || 'Not assigned';
-          }
  
-          this.isAssigningTrainer = false;
-          this.selectedTrainee = null;
-          this.selectedTrainerId = null;
-        },
-        (error) => {
-          console.error('Error assigning trainer:', error);
-        }
-      );
-    }
-  }
  
   openAssignTraineesModal(trainer: any) {
     if (trainer) {
@@ -202,10 +184,39 @@ export class AdminDashboardComponent implements OnInit {
     this.selectedTrainerId = null;
   }
  
-  assignTrainer(trainee: any) {
+ 
+  unassignTrainer(trainee: any) {
     this.selectedTrainee = trainee;
     this.isAssigningTrainer = true;
     this.isEditingTrainee = false;
+  }
+  
+  // New method for unassigning the trainer
+  unassignTrainerFromTrainee() {
+    if (this.selectedTrainee) {
+      this.mainService.unassignTrainerFromTrainee(this.selectedTrainee.id).subscribe(
+        (response) => {
+          // Update the trainee's information after unassigning
+          const unassignedTrainee = this.trainees.find(t => t.id === this.selectedTrainee.id);
+          if (unassignedTrainee) {
+            unassignedTrainee.trainer_name = 'Not assigned'; // Or any other default value
+            unassignedTrainee.trainer_id = null;
+          }
+  
+          // Close the modal and reset selection
+          this.isAssigningTrainer = false;
+          this.selectedTrainee = null;
+        },
+        (error) => {
+        }
+      );
+    }
+  }
+  
+  // Cancel the action
+  cancelUnassign() {
+    this.isAssigningTrainer = false;
+    this.selectedTrainee = null;
   }
  
   openAddTrainerModal() {
@@ -275,7 +286,7 @@ export class AdminDashboardComponent implements OnInit {
             trainee.selected = false;
           },
           (error) => {
-            console.error('Error assigning trainee:', error);
+            // console.error('Error assigning trainee:', error);
           }
         );
       } else {

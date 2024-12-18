@@ -345,3 +345,7 @@ button.assign {
 .role-buttons button.active:hover {
   background-color: #218838; /* Darker green on hover */
 }
+.error-icon {
+  color: red; /* Set color for the wrong mark icon */
+  margin-left: 10px; /* Space between the button text and the wrong mark */
+}

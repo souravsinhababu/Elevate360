@@ -128,9 +128,9 @@
               <button (click)="deleteTrainee(trainee.id)" class="btn btn-danger delete">
                 <i class="fas fa-trash-alt"></i> Delete
               </button>
-              <button (click)="assignTrainer(trainee)" class="btn btn-sm btn-info assign">
-                <i class="fas fa-check"></i> Assign Trainer
-              </button>
+              <button (click)="unassignTrainer(trainee)" class="btn btn-sm btn-info assign">
+                <i class="fas fa-check"></i> Unassign Trainer
+              </button>              
             </td>
           </tr>
         </tbody>
@@ -176,15 +176,12 @@
   <!-- Modal for Assigning Trainer -->
   <div *ngIf="isAssigningTrainer" class="modal">
     <div class="modal-content">
-      <h4>Assign Trainer to {{ selectedTrainee?.username }}</h4>
-      <label for="trainer">Select Trainer:</label>
-      <select id="trainer" [(ngModel)]="selectedTrainerId">
-        <option *ngFor="let trainer of trainers" [value]="trainer.id">{{ trainer.username }}</option>
-      </select>
-      <button (click)="assignTrainerToTrainee()">Assign</button>
-      <button (click)="cancelAssign()">Cancel</button>
+      <h4>Unassign Trainer from {{ selectedTrainee?.username }}</h4>
+      <button (click)="unassignTrainerFromTrainee()">Unassign</button>
+      <button (click)="cancelUnassign()">Cancel</button>
     </div>
   </div>
+  
  
   <!-- Modal for Assigning Trainees -->
   <div *ngIf="isAssigningTrainees" class="modal">

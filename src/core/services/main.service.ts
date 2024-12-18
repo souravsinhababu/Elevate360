@@ -30,11 +30,10 @@ export class MainService {
     return this.http.get<any[]>(`${environment.apiUrl}/trainer/${trainerId}/trainees`);
   }
 
-  // Assign Trainer to Trainee
-  assignTrainerToTrainee(traineeId: number, trainerId: number): Observable<any> {
-    return this.http.put(`${environment.apiUrl}/admin/trainees/${traineeId}/assign/${trainerId}`, {});
+  unassignTrainerFromTrainee(traineeId: number): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/admin/trainees/${traineeId}/unassignTrainer`, {});
   }
-
+  
   // Delete Trainer
   deleteTrainer(trainerId: number): Observable<any> {
     return this.http.delete(`${environment.apiUrl}/admin/trainers/${trainerId}`);
