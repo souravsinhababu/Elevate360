@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
 import { MainService } from '../../../core/services/main.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -7,7 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   templateUrl: './add-trainer.component.html',
   styleUrls: ['./add-trainer.component.css']
 })
-export class AddTrainerComponent implements OnInit {
+export class AddTrainerComponent implements OnInit, OnChanges {
   @Input() trainerData: any; // Used for Edit mode
   @Output() addTrainer = new EventEmitter<any>();  // Emit newly added trainer data
   @Output() updateTrainer = new EventEmitter<any>(); // Emit updated trainer data
@@ -31,6 +31,13 @@ export class AddTrainerComponent implements OnInit {
       errormessage: 'Email is required'
     },
     { 
+      label: 'Password:',
+      type: 'password',
+      id: 'password',
+      required: true,
+      errormessage: 'Password is required'
+    },
+    { 
       label: 'Specialization:',
       type: 'radio',
       id: 'specialization',
@@ -44,6 +51,7 @@ export class AddTrainerComponent implements OnInit {
     this.addTrainerForm = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
       specialization: ['', Validators.required]
     });
   }
@@ -55,6 +63,20 @@ export class AddTrainerComponent implements OnInit {
       this.addTrainerForm.patchValue({
         username: this.trainerData.username,
         email: this.trainerData.email,
+        password: this.trainerData.password,
+        specialization: this.trainerData.specialization
+      });
+    }
+  }
+
+  ngOnChanges(): void {
+    // Handle changes to trainerData, which is used in both Add and Edit mode
+    if (this.trainerData) {
+      this.isEditMode = true;
+      this.addTrainerForm.patchValue({
+        username: this.trainerData.username,
+        email: this.trainerData.email,
+        password: this.trainerData.password,
         specialization: this.trainerData.specialization
       });
     }

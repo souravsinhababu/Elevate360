@@ -17,6 +17,7 @@ export class AddTraineeComponent {
   formFields = [
     { label: 'Username:', type: 'text', id: 'username', required: true, errormessage: 'Username is required' },
     { label: 'Email:', type: 'email', id: 'email', required: true, errormessage: 'Email is required' },
+    { label: 'Password:', type: 'password', id: 'password', required: true, errormessage: 'Password is required' },
     { label: 'Designation:', type: 'text', id: 'designation', required: true, errormessage: 'Designation is required' }
   ];
 
@@ -24,6 +25,7 @@ export class AddTraineeComponent {
     this.traineeForm = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
       designation: ['', Validators.required]
     });
   }
@@ -34,6 +36,7 @@ export class AddTraineeComponent {
       this.traineeForm.patchValue({
         username: this.traineeData.username,
         email: this.traineeData.email,
+        password: this.traineeData.password,
         designation: this.traineeData.designation
       });
     }

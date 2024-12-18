@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MainService } from '../../../core/services/main.service';
+import { Router } from '@angular/router';
 
 interface FormField {
   label: string;
@@ -75,7 +76,7 @@ export class SignupComponent implements OnInit {
     }
   ];
 
-  constructor(private mainService: MainService, private fb: FormBuilder) { }
+  constructor(private mainService: MainService, private fb: FormBuilder, private router:Router) { }
 
   ngOnInit(): void {
     // Initialize the form group with dynamic controls
@@ -125,6 +126,7 @@ export class SignupComponent implements OnInit {
       response => {
         alert('Sign Up Successful!');
         console.log('Signed up user: ', response);
+        this.router.navigate(['/login']);
       },
       error => {
         alert('Sign Up Failed! Please try again.');

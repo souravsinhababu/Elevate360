@@ -1,12 +1,10 @@
-<!-- admin-dashboard.component.html -->
-
 <div class="dashboard-container">
   <div class="header">
     <p class="welcome-message">Welcome, {{ adminname }}!</p>
     <button class="logout-button" (click)="logout()">Logout</button>
   </div>
   <h2>Welcome to the Admin Dashboard</h2>
-
+ 
   <!-- Card Statistics for Total Trainers and Trainees -->
   <div class="card-statistics">
     <div class="card">
@@ -24,25 +22,15 @@
       <p>{{ trainees.length }}</p>
     </div>
   </div>
-
-  <!-- Search and Filter Containers on the Same Line -->
-  <div class="search-filter-container">
-    <div class="search-container">
-      <label for="search">Search: </label>
-      <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="search()" id="search" />
-    </div>
-    <div class="filter-container">
-      <label for="role">Filter by Role: </label>
-      <select id="role" [(ngModel)]="selectedRole" (change)="filterByRole()">
-        <option value="All">All</option>
-        <option value="Trainer">Trainer</option>
-        <option value="Trainee">Trainee</option>
-      </select>
-    </div>
+ 
+  <!-- Buttons to show Trainers and Trainees -->
+  <div class="role-buttons">
+    <button (click)="showTrainers()">Show Trainers</button>
+    <button (click)="showTrainees()">Show Trainees</button>
   </div>
-
+ 
   <!-- List of Trainers -->
-  <div *ngIf="selectedRole === 'Trainer' || selectedRole === 'All'">
+  <div *ngIf="isTrainerVisible">
     <h3>List of Trainers</h3>
     <div class="action-buttons">
       <button (click)="openAddTrainerModal()">Add Trainer</button>
@@ -81,9 +69,9 @@
     </div>
     <div *ngIf="trainers.length === 0">No trainers found.</div>
   </div>
-
+ 
   <!-- List of Trainees -->
-  <div *ngIf="selectedRole === 'Trainee' || selectedRole === 'All'">
+  <div *ngIf="isTraineeVisible">
     <h3>List of Trainees</h3>
     <div class="action-buttons">
       <button (click)="openAddTraineeModal()">Add Trainee</button>
@@ -133,8 +121,8 @@
       </table>
     </div>
   </div>
-
-  <!-- Modals for Add/Edit/Assign -->
+ 
+  <!-- Modals for Add/Edit/Assign (Same as previous code) -->
   <!-- Add Trainer Modal -->
   <div *ngIf="showAddTrainerModal" class="modal">
     <div class="modal-content">
@@ -142,7 +130,7 @@
       <button (click)="closeAddTrainerModal()" class="close-btn">Close</button>
     </div>
   </div>
-
+ 
   <!-- Add Trainee Modal -->
   <div *ngIf="showAddTraineeModal" class="modal">
     <div class="modal-content">
@@ -150,7 +138,7 @@
       <button (click)="closeAddTraineeModal()" class="close-btn">Close</button>
     </div>
   </div>
-
+ 
   <!-- Edit Trainee Modal -->
   <div *ngIf="showEditTraineeModal" class="modal">
     <div class="modal-content">
@@ -159,7 +147,7 @@
       <button (click)="closeEditTraineeModal()" class="close-btn">Close</button>
     </div>
   </div>
-
+ 
   <!-- Edit Trainer Modal -->
   <div *ngIf="showEditTrainerModal" class="modal">
     <div class="modal-content">
@@ -168,7 +156,7 @@
       <button (click)="closeEditTrainerModal()" class="close-btn">Close</button>
     </div>
   </div>
-
+ 
   <!-- Modal for Assigning Trainer -->
   <div *ngIf="isAssigningTrainer" class="modal">
     <div class="modal-content">
@@ -181,7 +169,7 @@
       <button (click)="cancelAssign()">Cancel</button>
     </div>
   </div>
-
+ 
   <!-- Modal for Assigning Trainees -->
   <div *ngIf="isAssigningTrainees" class="modal">
     <div class="modal-content">
@@ -196,7 +184,7 @@
       <button (click)="cancelAssignTrainees()">Cancel</button>
     </div>
   </div>
-
+ 
   <!-- Modal for Assigning Courses -->
 <div *ngIf="isAssigningCourses" class="modal">
   <div class="modal-content">
@@ -210,14 +198,11 @@
         </label>
       </div>
     </div>
-    <label for="startDate">Start Date:</label>
-    <input type="date" id="startDate" [(ngModel)]="startDate" />
- 
-    <label for="endDate">End Date:</label>
-    <input type="date" id="endDate" [(ngModel)]="endDate" />
     <button (click)="assignCoursesToTrainer()">Assign</button>
     <button (click)="cancelAssignCourses()">Cancel</button>
   </div>
 </div>
-
+ 
 </div>
+ 
+ 

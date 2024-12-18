@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MainService } from '../../../core/services/main.service';
 import { AuthGuard } from '../../../core/guards/auth.guard';
-
+ 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
@@ -32,13 +32,15 @@ export class AdminDashboardComponent implements OnInit {
   public availableCourses: any[] = [];
   public selectedCourses: any = {};  // To track selected courses
   public courseHistory: { [traineeId: number]: { trainerName: string; assignedCourses: any[] } } = {};
-
+  public isTrainerVisible: boolean = true;
+  public isTraineeVisible: boolean = false;
   constructor(
     private mainService: MainService,  // Inject the service
     private authGuard: AuthGuard
   ) {}
-
+ 
   ngOnInit(): void {
+    console.log('Admin Dashboard Loaded');
     this.loadTrainers();
     this.loadTrainees();
     this.loadAvailableCourses();
@@ -47,7 +49,7 @@ export class AdminDashboardComponent implements OnInit {
       this.adminname = storedUsername;  // Set the adminname from localStorage
     }
   }
-
+ 
   loadTrainers() {
     this.mainService.loadTrainers().subscribe(
       (data) => {
@@ -60,7 +62,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-
+ 
   loadTrainees() {
     this.mainService.loadTrainees().subscribe(
       (data) => {
@@ -78,29 +80,29 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-
+ 
   loadCourseHistory(traineeId: number) {
     this.mainService.getCourseHistory(traineeId).subscribe(
       (historyData) => {
         // console.log('API Response:', historyData);  // Log the full response
-
+ 
         // Find the trainee object to extract the trainer's name
         const trainee = this.trainees.find(t => t.id === traineeId);  // Find the trainee by ID
         const trainerName = trainee ? trainee.trainer_name : '';  // Get trainerName from the trainee object
-
+ 
         // Find the trainer's course history from the API response
         const traineeHistory = historyData.find(
           (trainer) => trainer.trainerName === trainerName
         );
-
+ 
         // console.log('Trainee History:', traineeHistory);  // Log the matched trainee history
-
+ 
         // If a trainer is found, store their assigned courses along with trainerName, otherwise assign an empty array
         this.courseHistory[traineeId] = traineeHistory ? {
           trainerName: trainerName,
           assignedCourses: traineeHistory.assignedCourses
         } : { trainerName: '', assignedCourses: [] };
-
+ 
         // console.log('Assigned Courses:', this.courseHistory[traineeId]);  // Log the assigned courses
       },
       (error) => {
@@ -108,17 +110,17 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-
+ 
   search() {
     const searchLower = this.searchQuery.toLowerCase();
-
+ 
     if (this.selectedRole === 'Trainer' || this.selectedRole === 'All') {
       this.trainers = this.originalTrainers.filter(trainer =>
         trainer.username.toLowerCase().includes(searchLower) ||
         trainer.email.toLowerCase().includes(searchLower)
       );
     }
-
+ 
     if (this.selectedRole === 'Trainee' || this.selectedRole === 'All') {
       this.trainees = this.originalTrainees.filter(trainee =>
         trainee.username.toLowerCase().includes(searchLower) ||
@@ -126,7 +128,7 @@ export class AdminDashboardComponent implements OnInit {
       );
     }
   }
-
+ 
   filterByRole() {
     if (this.selectedRole === 'Trainer') {
       this.trainers = this.originalTrainers;
@@ -136,13 +138,14 @@ export class AdminDashboardComponent implements OnInit {
       this.trainers = this.originalTrainers;
       this.trainees = this.originalTrainees;
     }
-
+ 
     this.search();  // Reapply search after filtering
   }
-
+ 
   loadAvailableCourses() {
     this.mainService.getAvailableCourses().subscribe(
       (data) => {
+        console.log("Available Courses Data:", data);  // Debugging line
         this.availableCourses = data;
       },
       (error) => {
@@ -150,8 +153,17 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-  
-
+  showTrainers() {
+    this.isTrainerVisible = true;
+    this.isTraineeVisible = false;
+  }
+ 
+  showTrainees() {
+    this.isTrainerVisible = false;
+    this.isTraineeVisible = true;
+  }
+ 
+ 
   assignTrainerToTrainee() {
     if (this.selectedTrainee && this.selectedTrainerId) {
       this.mainService.assignTrainerToTrainee(this.selectedTrainee.id, this.selectedTrainerId).subscribe(
@@ -161,7 +173,7 @@ export class AdminDashboardComponent implements OnInit {
             assignedTrainee.trainer_id = this.selectedTrainerId;
             assignedTrainee.trainer_name = this.trainers.find(t => t.id === this.selectedTrainerId)?.username || 'Not assigned';
           }
-
+ 
           this.isAssigningTrainer = false;
           this.selectedTrainee = null;
           this.selectedTrainerId = null;
@@ -172,7 +184,7 @@ export class AdminDashboardComponent implements OnInit {
       );
     }
   }
-
+ 
   openAssignTraineesModal(trainer: any) {
     if (trainer) {
       this.selectedTrainer = trainer;
@@ -183,63 +195,64 @@ export class AdminDashboardComponent implements OnInit {
       console.error('Invalid trainer passed to the modal');
     }
   }
-
+ 
   cancelAssign() {
     this.isAssigningTrainer = false;
     this.selectedTrainee = null;
     this.selectedTrainerId = null;
   }
-
+ 
   assignTrainer(trainee: any) {
     this.selectedTrainee = trainee;
     this.isAssigningTrainer = true;
     this.isEditingTrainee = false;
   }
-
+ 
   openAddTrainerModal() {
+    console.log("Hello");
     this.showAddTrainerModal = true;
   }
-
+ 
   closeAddTrainerModal() {
     this.showAddTrainerModal = false;
   }
-
+ 
   openAddTraineeModal() {
     this.showAddTraineeModal = true;
   }
-
+ 
   closeAddTraineeModal() {
     this.showAddTraineeModal = false;
   }
-
+ 
   closeEditTrainerModal() {
     this.selectedTrainer = null;
     this.showEditTrainerModal = false;
     this.isAssigningCourses = false;
     this.isAssigningTrainees = false;
   }
-
+ 
   closeEditTraineeModal() {
     this.showEditTraineeModal = false;
     this.selectedTrainee = null;
   }
-
+ 
   handleAddedTrainer(trainer: any) {
     this.trainers.push(trainer);
     this.closeAddTrainerModal();
   }
-
+ 
   handleAddedTrainee(trainee: any) {
     this.trainees.push(trainee);
     this.closeAddTraineeModal();
   }
-
+ 
   editTrainer(trainer: any) {
     this.selectedTrainer = { ...trainer };
     this.showEditTrainerModal = true;
-  
+ 
   }
-
+ 
   deleteTrainer(trainerId: number) {
     this.mainService.deleteTrainer(trainerId).subscribe(
       () => {
@@ -250,10 +263,10 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-
+ 
   assignTraineesToTrainer() {
     const selectedTrainees = this.trainees.filter(trainee => trainee.selected);
-
+ 
     selectedTrainees.forEach(trainee => {
       if (this.selectedTrainer && this.selectedTrainer.username) {
         this.mainService.assignTraineesToTrainer(trainee.id, this.selectedTrainer.id).subscribe(
@@ -269,23 +282,23 @@ export class AdminDashboardComponent implements OnInit {
         console.error('Selected trainer is invalid or null');
       }
     });
-
+ 
     this.isAssigningTrainees = false;
     this.selectedTrainer = null;
   }
-
+ 
   cancelAssignTrainees() {
     this.isAssigningTrainees = false;
     this.selectedTrainer = null;
   }
-
+ 
   editTrainee(trainee: any) {
     this.selectedTrainee = trainee;
     this.showEditTraineeModal = true;
     this.isEditingTrainee = true;
     this.isAssigningTrainer = false;
   }
-
+ 
   deleteTrainee(traineeId: number) {
     this.mainService.deleteTrainee(traineeId).subscribe(
       () => {
@@ -296,16 +309,16 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-
+ 
   handleUpdatedTrainee(updatedTrainee: any) {
     const index = this.trainees.findIndex(t => t.id === updatedTrainee.id);
     if (index !== -1) {
       this.trainees[index] = updatedTrainee;
     }
-
+ 
     this.closeEditTraineeModal();
   }
-
+ 
   updateTrainerInDashboard(updatedTrainer: any) {
     const index = this.trainers.findIndex(t => t.id === updatedTrainer.id);
     if (index !== -1) {
@@ -313,7 +326,7 @@ export class AdminDashboardComponent implements OnInit {
     }
     this.showEditTrainerModal = false;
   }
-
+ 
   openAssignCoursesModal(trainer: any) {
     this.selectedTrainer = trainer;
     this.isAssigningCourses = true;
@@ -321,7 +334,7 @@ export class AdminDashboardComponent implements OnInit {
     this.isEditingTrainee = false;
     this.selectedCourses = {};
   }
-
+ 
   cancelAssignCourses() {
     this.isAssigningCourses = false;
     this.startDate = '';
@@ -330,10 +343,10 @@ export class AdminDashboardComponent implements OnInit {
     this.isEditingTrainee = false;
     this.selectedTrainer = null;
   }
-
+ 
   assignCoursesToTrainer() {
     const selectedCourseNames = Object.keys(this.selectedCourses).filter(course => this.selectedCourses[course]);
-
+ 
     if (this.selectedTrainer && this.startDate && this.endDate && selectedCourseNames.length) {
       this.mainService.assignCoursesToTrainer(
         this.selectedTrainer.id,
@@ -352,19 +365,21 @@ export class AdminDashboardComponent implements OnInit {
     } else {
       console.error('Please select a trainer, start date, end date, and at least one course.');
     }
-
+ 
     this.isAssigningCourses = false;
     this.selectedTrainer = null;
     this.startDate = '';
     this.endDate = '';
   }
-
+ 
   logout() {
     this.authGuard.logout();  // Logout the user
   }
-
+ 
   openEditTrainerModal(trainer: any) {
     this.selectedTrainer = trainer;
     this.showEditTrainerModal = true;
   }
 }
+ 
+ 
