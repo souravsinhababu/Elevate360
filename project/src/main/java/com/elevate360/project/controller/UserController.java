@@ -16,7 +16,16 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<User> signup(@RequestBody User user) {
-        return userService.signup(user);
+        // Ensure the user does not already exist by email
+        if (userService.findByEmail(user.getEmail()) != null) {
+            return ResponseEntity.status(409).build(); // 409 Conflict if the user already exists
+        }
+
+        // Call the service to save the user
+        User savedUser = userService.signup(user);
+
+        // Return the created user in the response body
+        return ResponseEntity.status(201).body(savedUser);
     }
 
     @PostMapping("/login")

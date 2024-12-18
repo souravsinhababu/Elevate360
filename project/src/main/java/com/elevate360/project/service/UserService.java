@@ -66,19 +66,17 @@ public class UserService {
 
 
     // Add a new user (signup)
-    public ResponseEntity<User> signup(User user) {
-        // Check if a user with the same email already exists
-        if (userRepository.findByEmail(user.getEmail()) != null) {
-            return ResponseEntity.status(409).build(); // 409 Conflict if the user already exists
-        }
 
-        /*if (user.getRole() == null) {
-            user.setRole("TRAINEE"); // Set default role if not provided
-        }*/
 
-        // Save and return the new user
-        User savedUser = userRepository.save(user);
-        return ResponseEntity.ok(savedUser);
+// Method to check if the user exists by email
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    // Method to signup the user
+    public User signup(User user) {
+        // You can also hash the password before saving (considering security)
+        return userRepository.save(user);
     }
 
     // Login method to validate user credentials
