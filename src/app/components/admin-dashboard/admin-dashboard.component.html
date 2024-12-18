@@ -210,6 +210,11 @@
         </label>
       </div>
     </div>
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate" [(ngModel)]="startDate" />
+ 
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate" [(ngModel)]="endDate" />
     <button (click)="assignCoursesToTrainer()">Assign</button>
     <button (click)="cancelAssignCourses()">Cancel</button>
   </div>

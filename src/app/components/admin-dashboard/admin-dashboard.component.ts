@@ -39,7 +39,6 @@ export class AdminDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('Admin Dashboard Loaded');
     this.loadTrainers();
     this.loadTrainees();
     this.loadAvailableCourses();
@@ -144,7 +143,6 @@ export class AdminDashboardComponent implements OnInit {
   loadAvailableCourses() {
     this.mainService.getAvailableCourses().subscribe(
       (data) => {
-        console.log("Available Courses Data:", data);  // Debugging line
         this.availableCourses = data;
       },
       (error) => {
@@ -199,7 +197,6 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   openAddTrainerModal() {
-    console.log("Hello");
     this.showAddTrainerModal = true;
   }
 
