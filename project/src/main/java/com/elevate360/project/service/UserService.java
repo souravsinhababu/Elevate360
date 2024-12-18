@@ -102,30 +102,11 @@ public class UserService {
         return ResponseEntity.status(500).build(); // 500 Internal Server Error
     }
 
-    // Assign a trainee to a trainer
-//    public ResponseEntity<User> assignTraineeToTrainer(Long traineeId, Long trainerId) {
-//        Optional<User> traineeOptional = userRepository.findById(traineeId);
-//        Optional<User> trainerOptional = userRepository.findById(trainerId);
-//
-//        if (traineeOptional.isPresent() && trainerOptional.isPresent() &&
-//                "trainee".equals(traineeOptional.get().getRole()) && "trainer".equals(trainerOptional.get().getRole())) {
-//            User trainee = traineeOptional.get();
-//            User trainer = trainerOptional.get();
-//
-//            // Assign the trainer to the trainee
-//            trainee.setTrainer(trainer);
-//
-//            User updatedTrainee = userRepository.save(trainee);
-//            return ResponseEntity.ok(updatedTrainee);
-//        }
-//        return ResponseEntity.status(404).body(null); // 404 Not Found
-//    }
-
 //    New code
     @Autowired
     private TrainerTraineeAssignmentRepo assignmentRepository;
 
-//     Assign a trainee to a trainer with checking existing assignments
+     //Assign a trainee to a trainer with checking existing assignments
     public ResponseEntity<User> assignTraineeToTrainer(Long traineeId, Long trainerId) {
         Optional<User> traineeOptional = userRepository.findById(traineeId);
         Optional<User> trainerOptional = userRepository.findById(trainerId);
@@ -160,88 +141,22 @@ public class UserService {
         return ResponseEntity.status(404).body(null);
     }
 
+    // Method to unassign the trainer from the trainee
+    public String unassignTrainerFromTrainee(Long traineeId) {
+        // Fetch the trainee from the database
+        User trainee = userRepository.findById(traineeId)
+                .orElseThrow(() -> new RuntimeException("Trainee not found"));
 
-//    New code 10-12-2024 (past course history)
-//    public ResponseEntity<User> assignTraineeToTrainer(Long traineeId, Long trainerId) {
-//        User trainee = userRepository.findById(traineeId).orElseThrow(() -> new RuntimeException("Trainee not found"));
-//        User trainer = userRepository.findById(trainerId).orElseThrow(() -> new RuntimeException("Trainer not found"));
-//
-//        // Check if the trainee is already assigned to a trainer
-//        if (trainee.getTrainer() != null) {
-//            // Save the course history before updating the trainer
-//            storeCourseHistory(trainee);
-//        }
-//
-//        // Assign the new trainer
-//        trainee.setTrainer(trainer);
-//
-//        // Save the updated trainee
-//        userRepository.save(trainee);
-//
-//        return ResponseEntity.ok(trainee);
-//    }
-
-//    private void storeCourseHistory(User trainee) {
-//        // Create a deep copy of the assignedCourses list to avoid shared references
-//        List<User.AssignedCourse> copiedAssignedCourses = new ArrayList<>();
-//
-//        // Copy each assigned course into the new list (deep copy)
-//        for (User.AssignedCourse course : trainee.getAssignedCourses()) {
-//            User.AssignedCourse copiedCourse = new User.AssignedCourse();
-//            copiedCourse.setCourseName(course.getCourseName());
-//            copiedCourse.setStartDate(course.getStartDate());
-//            copiedCourse.setEndDate(course.getEndDate());
-//            copiedAssignedCourses.add(copiedCourse);
-//        }
-//
-//        // Create a new course history record
-//        TrainerCourseHistory courseHistory = new TrainerCourseHistory();
-//        courseHistory.setTrainee(trainee);
-//        courseHistory.setAssignedCourses(copiedAssignedCourses);  // Use the deep copy
-//
-//        // Save the course history
-//        trainerCourseHistoryRepository.save(courseHistory);
-//    }
-
-    // Method to convert TrainerCourseHistory to response format
-    // Method to convert TrainerCourseHistory to response format
-//    public List<TrainerCourseHistoryResponse> convertToCourseHistoryResponse(List<TrainerCourseHistory> history) {
-//        return history.stream().map(courseHistory -> {
-//            User trainee = courseHistory.getTrainee();
-//            List<User.AssignedCourse> assignedCourses = courseHistory.getAssignedCourses();
-//            return new TrainerCourseHistoryResponse(
-//                    trainee.getId(),
-//                    trainee.getUsername(),
-//                    assignedCourses
-//            );
-//        }).collect(Collectors.toList());
-//    }
-
-
-    //assign trainees in one api call
-
-    public String assignTraineesToTrainer(Long trainerId, AssignTraineesRequest request) {
-        // Find the trainer
-        User trainer = userRepository.findById(trainerId).orElse(null);
-        if (trainer == null || !"trainer".equals(trainer.getRole())) {
-            return "Trainer not found or invalid role";
+        // Check if the trainee has a trainer assigned
+        if (trainee.getTrainer() != null) {
+            // Unassign the trainer (set trainer to null)
+            trainee.setTrainer(null);
+            userRepository.save(trainee);  // Save the updated trainee
+            return "Trainer successfully unassigned from the trainee.";
+        } else {
+            // If the trainee does not have a trainer assigned
+            return "Trainee is not assigned to any trainer.";
         }
-
-        // Get all trainees from the list of traineeIds in a single database query
-        List<User> trainees = userRepository.findAllById(request.getTraineeIds());
-
-        // Filter only valid trainees with the "trainee" role
-        List<User> validTrainees = trainees.stream()
-                .filter(trainee -> "trainee".equals(trainee.getRole()))
-                .collect(Collectors.toList());
-
-        // Assign the trainer to all valid trainees
-        validTrainees.forEach(trainee -> trainee.setTrainer(trainer));
-
-        // Save all updated trainees in one batch operation
-        userRepository.saveAll(validTrainees);
-
-        return "Trainees successfully assigned to trainer";
     }
 
 

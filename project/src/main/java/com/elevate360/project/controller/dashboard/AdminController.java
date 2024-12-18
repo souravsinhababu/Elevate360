@@ -87,26 +87,17 @@ public class AdminController {
         return userService.getTraineesByTrainerId(id);
     }
 
-    //multiple trainee
+    //unassign from trainee
 
-//    @PutMapping("/trainers/{trainerId}/assignTrainees")
-//    public ResponseEntity<String> assignTraineesToTrainer(
-//            @PathVariable Long trainerId,
-//            @RequestBody AssignTraineesRequest request) {
-//
-//        String response = userService.assignTraineesToTrainer(trainerId, request);
-//        return ResponseEntity.ok(response);
-//    }
+    @PutMapping("/trainees/{traineeId}/unassignTrainer")
+    public ResponseEntity<String> unassignTrainerFromTrainee(
+            @PathVariable Long traineeId) {
 
-    @PutMapping("/trainers/{trainerId}/assignTrainees")
-    public ResponseEntity<String> assignTraineesToTrainer(
-            @PathVariable Long trainerId,
-            @RequestBody AssignTraineesRequest request) {
-
-        // Call the service to assign all trainees in one batch
-        String response = userService.assignTraineesToTrainer(trainerId, request);
-        return ResponseEntity.ok(response);
+        // Call the service to unassign the trainer from the trainee
+        String response = userService.unassignTrainerFromTrainee(traineeId);
+        return ResponseEntity.ok(response);  // Return the response from the service
     }
+
 
 
     @GetMapping("/available-courses")
