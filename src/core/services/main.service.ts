@@ -71,13 +71,11 @@ export class MainService {
     return this.http.get<TraineeCoursesResponse[]>(`${environment.apiUrl}/admin/trainee/${traineeId}`);
   }
 
-  // Login method (sending sensitive data in body instead of headers)
-  login(loginData: { email: string, password: string }): Observable<any> {
-    const loginUrl = `${environment.apiUrl}/api/users/login`;
-    const body = { email: loginData.email, password: loginData.password };
-    return this.http.post<any>(loginUrl, body);
-  }
-
+// Login method for handling login API call
+login(loginData: { email: string, password: string }): Observable<any> {
+  const loginUrl = `${environment.apiUrl}/api/users/login?email=${loginData.email}&password=${loginData.password}`;
+  return this.http.post<any>(loginUrl, {});
+}
   // Add Trainee method (sending data as form data to avoid preflight)
   addTrainee(traineeData: { username: string, email: string, password: string, designation: string, role: string }): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'); ///x-www-form-urlencoded -  avoid triggering CORS preflight requests
