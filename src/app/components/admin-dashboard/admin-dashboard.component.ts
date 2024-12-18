@@ -381,5 +381,3 @@ export class AdminDashboardComponent implements OnInit {
     this.showEditTrainerModal = true;
   }
 }
- 
- 
