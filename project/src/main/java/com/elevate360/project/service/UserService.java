@@ -43,17 +43,27 @@ public class UserService {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent() && role.equals(userOptional.get().getRole())) {
             User user = userOptional.get();
-            // Update the fields from updatedUser
+
+            // Only update allowed fields and ignore @JsonIgnore fields like password, etc.
             user.setUsername(updatedUser.getUsername());
             user.setEmail(updatedUser.getEmail());
-            user.setPassword(updatedUser.getPassword());
-            user.setSpecialization(updatedUser.getSpecialization());
-            user.setDesignation(updatedUser.getDesignation());
+
+            // Avoid updating fields that are sensitive
+            if (updatedUser.getSpecialization() != null) {
+                user.setSpecialization(updatedUser.getSpecialization());
+            }
+
+            if (updatedUser.getDesignation() != null) {
+                user.setDesignation(updatedUser.getDesignation());
+            }
+
+            // Save the updated user
             userRepository.save(user);
             return ResponseEntity.ok(user);
         }
         return ResponseEntity.status(404).build(); // 404 Not Found
     }
+
 
     // Add a new user (signup)
     public ResponseEntity<User> signup(User user) {
@@ -210,22 +220,32 @@ public class UserService {
 //    }
 
 
+    //assign trainees in one api call
+
     public String assignTraineesToTrainer(Long trainerId, AssignTraineesRequest request) {
+        // Find the trainer
         User trainer = userRepository.findById(trainerId).orElse(null);
         if (trainer == null || !"trainer".equals(trainer.getRole())) {
             return "Trainer not found or invalid role";
         }
 
-        for (Long traineeId : request.getTraineeIds()) {
-            User trainee = userRepository.findById(traineeId).orElse(null);
-            if (trainee != null && "trainee".equals(trainee.getRole())) {
-                trainee.setTrainer(trainer);
-                userRepository.save(trainee);
-            }
-        }
+        // Get all trainees from the list of traineeIds in a single database query
+        List<User> trainees = userRepository.findAllById(request.getTraineeIds());
+
+        // Filter only valid trainees with the "trainee" role
+        List<User> validTrainees = trainees.stream()
+                .filter(trainee -> "trainee".equals(trainee.getRole()))
+                .collect(Collectors.toList());
+
+        // Assign the trainer to all valid trainees
+        validTrainees.forEach(trainee -> trainee.setTrainer(trainer));
+
+        // Save all updated trainees in one batch operation
+        userRepository.saveAll(validTrainees);
 
         return "Trainees successfully assigned to trainer";
     }
+
 
     // Get all trainees assigned to a specific trainer
     public List<TraineeDTO> getTraineesByTrainer(Long trainerId) {
