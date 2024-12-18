@@ -25,9 +25,18 @@
  
   <!-- Buttons to show Trainers and Trainees -->
   <div class="role-buttons">
-    <button (click)="showTrainers()">Show Trainers</button>
-    <button (click)="showTrainees()">Show Trainees</button>
+    <button 
+      (click)="showTrainers()" 
+      [class.active]="isTrainerVisible">
+      Show Trainers
+    </button>
+    <button 
+      (click)="showTrainees()" 
+      [class.active]="isTraineeVisible">
+      Show Trainees
+    </button>
   </div>
+  
  
   <!-- List of Trainers -->
   <div *ngIf="isTrainerVisible">
@@ -198,6 +207,11 @@
         </label>
       </div>
     </div>
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate" [(ngModel)]="startDate" />
+ 
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate" [(ngModel)]="endDate" />
     <button (click)="assignCoursesToTrainer()">Assign</button>
     <button (click)="cancelAssignCourses()">Cancel</button>
   </div>
