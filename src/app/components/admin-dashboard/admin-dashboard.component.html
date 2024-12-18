@@ -36,7 +36,14 @@
       Show Trainees
     </button>
   </div>
-  
+    <!-- Search and Filter Containers on the Same Line -->
+    <div class="search-filter-container">
+      <div class="search-container">
+        <label for="search">Search: </label>
+        <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="search()" id="search" />
+      </div>
+    </div>
+   
  
   <!-- List of Trainers -->
   <div *ngIf="isTrainerVisible">
