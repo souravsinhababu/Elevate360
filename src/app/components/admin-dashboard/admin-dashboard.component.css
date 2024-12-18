@@ -320,17 +320,3 @@ button.assign {
 .close-btn:hover {
   background-color: #e60000;
 }
-/* Responsive adjustments for Assign Courses Modal */
-@media (max-width: 768px) {
-  .modal-content {
-    padding: 15px;
-    max-width: 90%;
-  }
-  .modal-content button {
-    padding: 8px 12px;
-  }
-  .modal-content h5 {
-    font-size: 14px;
-  }
-}
- 
