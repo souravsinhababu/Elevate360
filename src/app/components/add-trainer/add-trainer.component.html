@@ -24,7 +24,6 @@
 
       <!-- Special handling for radio buttons (specialization) -->
       <div *ngIf="field.type === 'radio'">
-        <label>{{ field.label }}</label>
         <div *ngFor="let option of field.options">
           <input
             type="radio"
