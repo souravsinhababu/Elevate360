@@ -31,6 +31,8 @@
   margin-bottom: 20px;
   color: #333;
   font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 /* Label and Input Fields Styling */
@@ -41,6 +43,7 @@
   display: block; /* Ensures labels are on their own line */
 }
 
+/* Text input fields */
 .form-container input[type="text"],
 .form-container input[type="email"],
 .form-container input[type="password"] {
@@ -51,6 +54,16 @@
   margin-bottom: 15px;
   border: 1px solid #ccc;
   box-sizing: border-box; /* Ensure padding is included in the width */
+  background-color: #ffffff; /* Slightly brighter background */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-container input[type="text"]:focus,
+.form-container input[type="email"]:focus,
+.form-container input[type="password"]:focus {
+  border-color: #4CAF50; /* Green border when focused */
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Soft green glow */
+  outline: none;
 }
 
 /* Radio Button Group Styling */
@@ -87,6 +100,8 @@
   cursor: pointer;
   width: 100%;
   transition: background-color 0.3s ease;
+  margin-top: 20px;
+  letter-spacing: 1px;
 }
 
 /* Button Hover Effect */
@@ -116,21 +131,21 @@
 /* Responsiveness for Smaller Screens */
 @media (max-width: 480px) {
   .form-container {
-      padding: 15px; /* Adjust padding for smaller screens */
-      width: 90%;
+    padding: 15px; /* Adjust padding for smaller screens */
+    width: 90%;
   }
 
   .form-container h2 {
-      font-size: 20px;
+    font-size: 20px;
   }
 
   .form-container label,
   .form-container input {
-      font-size: 12px; /* Smaller text on mobile */
+    font-size: 12px; /* Smaller text on mobile */
   }
 
   .form-container button {
-      font-size: 14px;
-      padding: 10px;
+    font-size: 14px;
+    padding: 10px;
   }
 }

@@ -39,6 +39,7 @@ export class AdminDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log('Admin Dashboard Loaded');
     this.loadTrainers();
     this.loadTrainees();
     this.loadAvailableCourses();
@@ -82,7 +83,7 @@ export class AdminDashboardComponent implements OnInit {
   loadCourseHistory(traineeId: number) {
     this.mainService.getCourseHistory(traineeId).subscribe(
       (historyData) => {
-        console.log('API Response:', historyData);  // Log the full response
+        // console.log('API Response:', historyData);  // Log the full response
 
         // Find the trainee object to extract the trainer's name
         const trainee = this.trainees.find(t => t.id === traineeId);  // Find the trainee by ID
@@ -93,7 +94,7 @@ export class AdminDashboardComponent implements OnInit {
           (trainer) => trainer.trainerName === trainerName
         );
 
-        console.log('Trainee History:', traineeHistory);  // Log the matched trainee history
+        // console.log('Trainee History:', traineeHistory);  // Log the matched trainee history
 
         // If a trainer is found, store their assigned courses along with trainerName, otherwise assign an empty array
         this.courseHistory[traineeId] = traineeHistory ? {
@@ -101,7 +102,7 @@ export class AdminDashboardComponent implements OnInit {
           assignedCourses: traineeHistory.assignedCourses
         } : { trainerName: '', assignedCourses: [] };
 
-        console.log('Assigned Courses:', this.courseHistory[traineeId]);  // Log the assigned courses
+        // console.log('Assigned Courses:', this.courseHistory[traineeId]);  // Log the assigned courses
       },
       (error) => {
         console.error('Error loading course history', error);
@@ -143,6 +144,7 @@ export class AdminDashboardComponent implements OnInit {
   loadAvailableCourses() {
     this.mainService.getAvailableCourses().subscribe(
       (data) => {
+        console.log("Available Courses Data:", data);  // Debugging line
         this.availableCourses = data;
       },
       (error) => {
@@ -150,6 +152,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
+  
 
   assignTrainerToTrainee() {
     if (this.selectedTrainee && this.selectedTrainerId) {
