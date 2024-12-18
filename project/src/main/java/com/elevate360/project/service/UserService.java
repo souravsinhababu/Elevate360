@@ -30,6 +30,7 @@ public class UserService {
 
     // Delete user by ID and role
     public ResponseEntity<Void> deleteUserByIdAndRole(Long id, String role) {
+
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent() && role.equals(user.get().getRole())) {
             userRepository.deleteById(id);
@@ -152,6 +153,8 @@ public class UserService {
             // Unassign the trainer (set trainer to null)
             trainee.setTrainer(null);
             userRepository.save(trainee);  // Save the updated trainee
+
+            // Trainee Trainee assignment table (make it as Zero)
             return "Trainer successfully unassigned from the trainee.";
         } else {
             // If the trainee does not have a trainer assigned

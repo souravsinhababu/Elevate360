@@ -29,6 +29,9 @@ public class AdminController {
     private UserService userService;
 
     @Autowired
+    private TrainerTraineeAssignmentService trainerTraineeAssignmentService;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -95,6 +98,7 @@ public class AdminController {
 
         // Call the service to unassign the trainer from the trainee
         String response = userService.unassignTrainerFromTrainee(traineeId);
+        trainerTraineeAssignmentService.deleteAssignmentsByTraineeId(traineeId);
         return ResponseEntity.ok(response);  // Return the response from the service
     }
 

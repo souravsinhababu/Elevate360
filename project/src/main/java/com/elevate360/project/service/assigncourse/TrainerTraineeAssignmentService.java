@@ -3,6 +3,7 @@ package com.elevate360.project.service.assigncourse;
 import com.elevate360.project.dto.TrainerTraineeAssignmentDto;
 import com.elevate360.project.entity.TrainerTraineeAssignment;
 import com.elevate360.project.repo.TrainerTraineeAssignmentRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -84,5 +85,13 @@ public class TrainerTraineeAssignmentService {
         }
 
         return resultList;
+    }
+
+//    Delete the data from the trainer trainee assignment table
+
+    @Transactional
+    public void deleteAssignmentsByTraineeId(Long traineeId) {
+        repository.deleteByTraineeId(traineeId);
+        System.out.println("Deleted from trainer trainee assigment repo");
     }
 }
