@@ -1,8 +1,55 @@
 <div class="dashboard-container">
-  <div class="header">
-    <p class="welcome-message">Welcome, {{ adminname }}!</p>
+  <!-- Modal for Edit Admin Details -->
+<div *ngIf="showEditAdminModal" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <h3>Edit Admin Details</h3>
+ 
+    <form [formGroup]="editAdminForm" (ngSubmit)="onEditAdminSubmit()" class="edit-form">
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        id="email"
+        formControlName="email"
+        required
+        placeholder="Enter new email"
+      />
+      <div *ngIf="isInvalid('email')" class="error">
+        Please enter a valid email.
+      </div>
+ 
+      <label for="password">Password:</label>
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        required
+        placeholder="Enter new password"
+      />
+      <div *ngIf="isInvalid('password')" class="error">
+        Password is required and should be at least 6 characters.
+      </div>
+ 
+      <!-- Buttons inside the form -->
+      <div class="button-container">
+        <button class="edit-password-button" (click)="openEditAdminModal()">Update</button>
+        <button type="button" (click)="closeEditAdminModal()" class="close-btn">Close</button>
+      </div>
+    </form>
+  </div>
+</div>
+ 
+<div class="header">
+  <p class="welcome-message">Welcome, {{ adminname }}!</p>
+  
+  <!-- Wrap the buttons in a container for alignment -->
+  <div class="button-container">
+    <button class="edit-password-button" (click)="openEditAdminModal()">Edit</button>
     <button class="logout-button" (click)="logout()">Logout</button>
   </div>
+</div>
+
+ 
   <h2>Welcome to the Admin Dashboard</h2>
  
   <!-- Card Statistics for Total Trainers and Trainees -->

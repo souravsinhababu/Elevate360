@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MainService } from '../../../core/services/main.service';
 import { AuthGuard } from '../../../core/guards/auth.guard';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
  
 @Component({
   selector: 'app-admin-dashboard',
@@ -35,22 +37,90 @@ export class AdminDashboardComponent implements OnInit {
   public courseHistory: { [traineeId: number]: { trainerName: string; assignedCourses: any[] } } = {};
   public isTrainerVisible: boolean = true;
   public isTraineeVisible: boolean = false;
-  // Flags to track if trainers and trainees have been loaded
-  traineesLoaded = false;
+ 
+ 
+  editAdminForm!: FormGroup;  // Form to edit admin details
+  showEditAdminModal = false;
+  public adminId: number | undefined;
+  traineesLoaded: any;
+ 
   constructor(
-    private mainService: MainService,  // Inject the service
-    private authGuard: AuthGuard
+    private fb: FormBuilder,
+    private mainService: MainService,  // Inject MainService for API calls
+    private authGuard: AuthGuard, // Inject AuthGuard for logout
+    private router: Router
   ) {}
  
   ngOnInit(): void {
-    // console.log('Admin Dashboard Loaded');
+    console.log('Admin Dashboard Loaded');
     this.loadTrainers();
-    // this.loadTrainees();
+    this.loadTrainees();
     this.loadAvailableCourses();
+   
+    // Retrieve admin name and ID dynamically (example from localStorage)
     const storedUsername = localStorage.getItem('username');
-    this.adminname = storedUsername ?? 'Default Admin';
-
+    const storedAdminId = localStorage.getItem('userId');
+   
+    if (storedUsername) {
+      this.adminname = storedUsername;  // Set the adminname from localStorage
+    }
+    // You can also store the admin ID in localStorage after login
+    if (storedAdminId) {
+      this.adminId = parseInt(storedAdminId, 10);  // Parse adminId from localStorage
+      console.log('Parsed Admin ID:', this.adminId); // Log parsed admin ID to verify
+    } else {
+      console.error('Admin ID is not available in localStorage!');
+    }
+ 
+    this.editAdminForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
   }
+  isInvalid(controlName: string): boolean {
+    const control = this.editAdminForm.get(controlName);
+    return !!(control?.invalid && control?.touched);  // Return true if invalid and touched
+  }
+ 
+  openEditAdminModal(): void {
+    this.showEditAdminModal = true;
+    console.log('Modal is open:', this.showEditAdminModal);
+  }
+ 
+  closeEditAdminModal(): void {
+    this.showEditAdminModal = false;
+  }
+ 
+  // Handle form submission for editing admin details
+  onEditAdminSubmit(): void {
+    if (this.editAdminForm.invalid) {
+      return; // Don't proceed if form is invalid
+    }
+ 
+    if (!this.adminId) {
+      alert('Admin ID not found!');
+      return;
+    }
+ 
+    const updateRequest = {
+      email: this.editAdminForm.value.email,
+      password: this.editAdminForm.value.password
+    };
+ 
+    // Call the API to update admin details using the dynamically fetched adminId
+    this.mainService.editAdminDetails(this.adminId, updateRequest).subscribe(
+      (response) => {
+        alert('Admin details updated successfully!');
+        this.closeEditAdminModal();  // Close the modal after successful update
+      },
+      (error) => {
+        alert('Failed to update admin details!');
+        console.error(error);
+      }
+    );
+  }
+ 
+ 
  
   loadTrainers() {
     this.mainService.loadTrainers().subscribe({

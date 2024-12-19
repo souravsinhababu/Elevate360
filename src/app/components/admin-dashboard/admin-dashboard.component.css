@@ -37,27 +37,134 @@ button.assign {
 /* Header Section */
 .header {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Space between the welcome message and the buttons */
   align-items: center;
   margin-bottom: 20px;
 }
+
 .welcome-message {
   font-size: 24px;
   font-weight: bold;
   color: #333;
 }
-.logout-button {
+
+/* Button container to align buttons horizontally */
+.button-container {
+  display: flex; /* Aligns buttons in a row */
+  gap: 10px; /* Adds space between the buttons */
+}
+/* Overall form styling */
+.edit-form {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Label styling */
+.edit-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+/* Input field styling */
+.edit-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* Placeholder styling */
+.edit-form input::placeholder {
+  color: #888;
+}
+
+/* Error message styling */
+.error {
+  color: #d9534f;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Button container styling */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* Button styling */
+.edit-password-button, .close-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: none;
+}
+
+/* Update button styling */
+.edit-password-button {
+  background-color: #5cb85c;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.edit-password-button:hover {
+  background-color: #4cae4c;
+}
+
+/* Close button styling */
+.close-btn {
+  background-color: #d9534f;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.close-btn:hover {
+  background-color: #c9302c;
+}
+
+/* Focused input field styling */
+.edit-form input:focus {
+  border-color: #5bc0de;
+  outline: none;
+  box-shadow: 0 0 5px rgba(91, 192, 222, 0.5);
+}
+/* Styling for the Edit and Logout buttons */
+.logout-button, .edit-password-button {
   padding: 10px 15px;
-  background-color: #007bff;
   color: white;
   border: none;
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s ease;
 }
+
+.logout-button {
+  background-color: #007bff;
+}
+
 .logout-button:hover {
   background-color: #0056b3;
 }
+
+.edit-password-button {
+  background-color: #007bff;
+}
+
+.edit-password-button:hover {
+  background-color: #0056b3;
+}
+
+
 /* Card Statistics */
 .card-statistics {
   display: flex;
