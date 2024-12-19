@@ -9,7 +9,10 @@ import com.elevate360.project.repo.TrainerTraineeAssignmentRepo;
 import com.elevate360.project.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +24,10 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+
+    @Autowired
+    private JavaMailSender emailSender;
 
 
     // Get all users by role (e.g., "trainer", "trainee")
@@ -95,13 +102,15 @@ public class UserService {
     }
 
     // Add a new user (e.g., for admin to create trainers/trainees)
-    public ResponseEntity<User> addUser(User user) {
-        User savedUser = userRepository.save(user);
-        if (savedUser != null) {
-            return ResponseEntity.ok(savedUser);
-        }
-        return ResponseEntity.status(500).build(); // 500 Internal Server Error
-    }
+
+
+//    public ResponseEntity<User> addUser(User user) {
+//        User savedUser = userRepository.save(user);
+//        if (savedUser != null) {
+//            return ResponseEntity.ok(savedUser);
+//        }
+//        return ResponseEntity.status(500).build(); // 500 Internal Server Error
+//    }
 
 //    New code
     @Autowired
@@ -214,6 +223,46 @@ public class UserService {
         }
 
         return ResponseEntity.status(404).build(); // Not Found if user does not exist
+    }
+
+    //sending mail
+    // Method to send signup link
+    public void sendSignupLink(User user) {
+        // Generate a signup URL (can include a token for user verification if necessary)
+        String signupUrl = generateSignupUrl(user.getEmail());
+
+        // Create email content
+        String subject = "Complete Your Signup";
+        String text = "Hello " + user.getUsername() + ",\n\n" +
+                "Please complete your registration by clicking the following link:\n" +
+                signupUrl;
+
+        // Send email
+        sendEmail(user.getEmail(), subject, text);
+    }
+
+    // Helper method to generate signup URL (it could include a token for validation)
+    private String generateSignupUrl(String email) {
+        // You can use a simple query parameter to pass the email, or include a token if required
+        return UriComponentsBuilder.fromHttpUrl("http://localhost:8080/signup")
+                .queryParam("email", email)  // Pass email as a query parameter
+                .toUriString();
+    }
+
+    // Method to send the email
+    private void sendEmail(String to, String subject, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
+        message.setFrom("your-email@gmail.com");  // Replace with your email
+
+        try {
+            emailSender.send(message);
+            System.out.println("Email sent successfully to " + to);
+        } catch (Exception e) {
+            System.out.println("Failed to send email: " + e.getMessage());
+        }
     }
 }
 

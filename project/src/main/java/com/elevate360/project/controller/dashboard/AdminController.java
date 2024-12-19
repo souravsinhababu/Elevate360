@@ -67,16 +67,29 @@ public class AdminController {
         return userService.updateUserByIdAndRole(id, updatedTrainee, "trainee");
     }
 
-    @PostMapping("/addtrainer")
-    public ResponseEntity<User> addTrainer(@RequestBody User user) {
-        user.setRole("trainer");
-        return userService.addUser(user);
-    }
+//    @PostMapping("/addtrainer")
+//    public ResponseEntity<User> addTrainer(@RequestBody User user) {
+//        user.setRole("trainer");
+//        return userService.addUser(user);
+//    }
+//
+//    @PostMapping("/addtrainee")
+//    public ResponseEntity<User> addTrainee(@RequestBody User user) {
+//        user.setRole("trainee");
+//        return userService.addUser(user);
+//    }
 
-    @PostMapping("/addtrainee")
-    public ResponseEntity<User> addTrainee(@RequestBody User user) {
-        user.setRole("trainee");
-        return userService.addUser(user);
+
+
+    @PostMapping("/send-signup-link")
+    public ResponseEntity<String> sendSignupLink(@RequestBody User user) {
+        try {
+            // Generate the signup link and send the email
+            userService.sendSignupLink(user);
+            return ResponseEntity.ok("Signup link sent to " + user.getEmail());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Failed to send signup link.");
+        }
     }
 
     @PutMapping("/trainees/{traineeId}/assign/{trainerId}")
