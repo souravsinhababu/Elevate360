@@ -54,7 +54,7 @@ export class AdminDashboardComponent implements OnInit {
   ngOnInit(): void {
     console.log('Admin Dashboard Loaded');
     this.loadTrainers();
-    this.loadTrainees();
+    // this.loadTrainees();
     this.loadAvailableCourses();
    
     // Retrieve admin name and ID dynamically (example from localStorage)

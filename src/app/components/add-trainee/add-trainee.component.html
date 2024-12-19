@@ -1,29 +1,31 @@
 <div class="trainee-form">
   <h2>{{ traineeData ? 'Edit Trainee' : 'Add Trainee' }}</h2>
-
+ 
   <!-- Form to add or edit trainee -->
   <form [formGroup]="traineeForm" (ngSubmit)="onSubmit()">
     <!-- Loop through form fields dynamically -->
     <div *ngFor="let field of formFields">
       <label [for]="field.id">{{ field.label }}</label>
-      
-      <input 
-        [type]="field.type" 
-        [formControlName]="field.id" 
-        [id]="field.id" 
-        [required]="field.required" 
+     
+      <input
+        [type]="field.type"
+        [formControlName]="field.id"
+        [id]="field.id"
+        [required]="field.required"
+        [readonly]="field.id === 'role'"  
       />
-
+ 
       <!-- Show error message if field is invalid and touched -->
       <div *ngIf="traineeForm.get(field.id)?.invalid && traineeForm.get(field.id)?.touched">
         <small class="error-message">{{ field.errormessage }}</small>
       </div>
     </div>
-
+ 
     <!-- Submit button -->
     <button type="submit" [disabled]="traineeForm.invalid">
       {{ traineeData ? 'Update' : 'Add' }} Trainee
     </button>
   </form>
 </div>
-
+ 
+ 

@@ -1,13 +1,13 @@
 <div class="trainer-form">
   <h2>{{ isEditMode ? 'Edit Trainer' : 'Add Trainer' }}</h2>
-
+ 
   <!-- Form to add or edit trainer -->
   <form [formGroup]="addTrainerForm" (ngSubmit)="onSubmit()">
     <!-- Loop through form fields dynamically -->
     <div *ngFor="let field of formFields">
       <label [for]="field.id">{{ field.label }}</label>
-
-      <!-- Input fields for text, email, password -->
+ 
+      <!-- Input fields for text, email -->
       <div *ngIf="field.type !== 'radio'">
         <input
           [type]="field.type"
@@ -15,36 +15,20 @@
           [id]="field.id"
           [required]="field.required"
         />
-
+ 
         <!-- Show error message if field is invalid and touched -->
         <div *ngIf="addTrainerForm.get(field.id)?.invalid && addTrainerForm.get(field.id)?.touched">
           <small class="error-message">{{ field.errormessage }}</small>
         </div>
       </div>
-
-      <!-- Special handling for radio buttons (specialization) -->
-      <div *ngIf="field.type === 'radio'">
-        <div *ngFor="let option of field.options">
-          <input
-            type="radio"
-            [id]="option"
-            [formControlName]="field.id"
-            [value]="option"
-            [required]="field.required"
-          />
-          <label for="{{option}}">{{option}}</label>
-        </div>
-
-        <!-- Show error message if radio field is invalid and touched -->
-        <div *ngIf="addTrainerForm.get(field.id)?.invalid && addTrainerForm.get(field.id)?.touched" class="error">
-          {{ field.errormessage }}
-        </div>
-      </div>
+ 
     </div>
-
+ 
     <!-- Submit button -->
     <button type="submit" [disabled]="addTrainerForm.invalid">
       {{ isEditMode ? 'Save Changes' : 'Add Trainer' }}
     </button>
   </form>
 </div>
+ 
+ 
