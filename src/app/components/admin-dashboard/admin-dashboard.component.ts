@@ -296,6 +296,7 @@ export class AdminDashboardComponent implements OnInit {
     this.isAssigningTrainer = false;
     this.selectedTrainee = null;
   }
+  
  
   openAddTrainerModal() {
     this.showAddTrainerModal = true;
