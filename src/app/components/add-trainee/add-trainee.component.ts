@@ -48,30 +48,30 @@ export class AddTraineeComponent {
     if (this.traineeData) {
       // Edit existing trainee
       const traineeId = this.traineeData.id;  // Ensure `id` is available in `traineeData`
-      this.mainService.updateTrainee(traineeId, traineeData).subscribe(
-        (response) => {
+      this.mainService.updateTrainee(traineeId, traineeData).subscribe({
+       next: (response) => {
           console.log('Trainee updated successfully', response);
           alert('Trainee updated successfully!');
           this.addTrainee.emit(response);  // Emit the updated trainee data
         },
-        (error) => {
+       error: (error) => {
           console.error('Error updating trainee:', error);
           alert(`Failed to update trainee. Error: ${error.message || 'Unknown error'}`);
         }
-      );
+    });
     } else {
       // Add new trainee
-      this.mainService.addTrainee(traineeData).subscribe(
-        (response) => {
+      this.mainService.addTrainee(traineeData).subscribe({
+        next:(response) => {
           console.log('Trainee added successfully', response);
           alert('Trainee added successfully!');
           this.addTrainee.emit(response);  // Emit the new trainee data
         },
-        (error) => {
+        error:(error) => {
           console.error('Error adding trainee:', error);
           alert(`Failed to add trainee. Error: ${error.message || 'Unknown error'}`);
         }
-      );
+     } );
     }
   }
 }

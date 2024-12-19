@@ -32,16 +32,16 @@ export class TrainerDashboardComponent implements OnInit {
 
   // Method to fetch trainees assigned to the trainer using MainService
   fetchTrainees(trainerId: number): void {
-    this.mainService.getTraineesByTrainer(trainerId).subscribe(
-      (data) => {
+    this.mainService.getTraineesByTrainer(trainerId).subscribe({
+    next:  (data) => {
         this.trainees = data;  // Store trainees data
         this.isLoading = false; // Hide loading indicator
       },
-      (error) => {
+     error: (error) => {
         console.error('Error fetching trainees:', error);
         this.isLoading = false; // Hide loading indicator even if there's an error
       }
-    );
+  });
   }
 
   logout() {

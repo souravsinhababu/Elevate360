@@ -88,30 +88,30 @@ export class AddTrainerComponent implements OnInit, OnChanges {
     if (this.isEditMode) {
       // If in Edit mode, update the existing trainer
       trainerData.id = this.trainerData.id;  // Include trainer ID for updating
-      this.mainService.updateTrainer(this.trainerData.id, trainerData).subscribe(
-        (response) => {
+      this.mainService.updateTrainer(this.trainerData.id, trainerData).subscribe({
+       next: (response) => {
           console.log('Trainer updated successfully', response);
           alert('Trainer updated successfully!');
           this.updateTrainer.emit(response); // Emit the updated trainer data
         },
-        (error) => {
+       error: (error) => {
           console.error('Error updating trainer:', error);
           alert(`Failed to update trainer. Error: ${error.message || 'Unknown error'}`);
         }
-      );
+    });
     } else {
       // If in Add mode, add a new trainer
-      this.mainService.addTrainer(trainerData).subscribe(
-        (response) => {
+      this.mainService.addTrainer(trainerData).subscribe({
+       next: (response) => {
           console.log('Trainer added successfully', response);
           alert('Trainer added successfully!');
           this.addTrainer.emit(response); // Emit the newly added trainer data
         },
-        (error) => {
+       error: (error) => {
           console.error('Error adding trainer:', error);
           alert(`Failed to add trainer. Error: ${error.message || 'Unknown error'}`);
         }
-      );
+     } );
     }
   }
 }

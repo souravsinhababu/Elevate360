@@ -122,17 +122,17 @@ export class SignupComponent implements OnInit {
       return;
     }
 
-    this.mainService.signup(user).subscribe(
-      response => {
+    this.mainService.signup(user).subscribe({
+     next: response => {
         alert('Sign Up Successful!');
         console.log('Signed up user: ', response);
         this.router.navigate(['/login']);
       },
-      error => {
+     error: error => {
         alert('Sign Up Failed! Please try again.');
         console.error(error);
       }
-    );
+   } );
   }
 
   // Reset the dynamic fields based on role selection

@@ -90,4 +90,8 @@ getCourseHistory(traineeId: number): Observable<TraineeCoursesResponse[]> {
   updateTrainer(trainerId: number, trainerData: { username: string, email: string, password: string, specialization: string }): Observable<any> {
     return this.http.put(`${environment.apiUrl}/admin/trainers/${trainerId}`, trainerData);
   }
+  editAdminDetails(adminId: number, adminData: { email: string, password: string }): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/admin/edit-admin/${adminId}`, adminData);
+  }
+ 
 }

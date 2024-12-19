@@ -36,7 +36,6 @@ export class AdminDashboardComponent implements OnInit {
   public isTrainerVisible: boolean = true;
   public isTraineeVisible: boolean = false;
   // Flags to track if trainers and trainees have been loaded
-  trainersLoaded = false;
   traineesLoaded = false;
   constructor(
     private mainService: MainService,  // Inject the service
@@ -49,27 +48,26 @@ export class AdminDashboardComponent implements OnInit {
     // this.loadTrainees();
     this.loadAvailableCourses();
     const storedUsername = localStorage.getItem('username');
-    if (storedUsername) {
-      this.adminname = storedUsername;  // Set the adminname from localStorage
-    }
+    this.adminname = storedUsername ?? 'Default Admin';
+
   }
  
   loadTrainers() {
-    this.mainService.loadTrainers().subscribe(
-      (data) => {
+    this.mainService.loadTrainers().subscribe({
+      next:(data) => {
         this.trainers = data;
         this.originalTrainers = [...data]; // Store a copy of the original trainers list
         this.search();  // Apply search immediately after loading
       },
-      (error) => {
+      error:(error) => {
         console.error('Error fetching trainers:', error);
       }
-    );
+  });
   }
 
   loadTrainees() {
-    this.mainService.loadTrainees().subscribe(
-      (data) => {
+    this.mainService.loadTrainees().subscribe({
+      next:(data) => {
         this.trainees = data.map(trainee => {
           // Fetch course history for each trainee
           this.loadCourseHistory(trainee.id);  // Fetch course history
@@ -79,16 +77,16 @@ export class AdminDashboardComponent implements OnInit {
         this.originalTrainees = [...data];
         this.search();
       },
-      (error) => {
+     error: (error) => {
         console.error('Error fetching trainees:', error);
       }
-    );
+  });
   }
 
  
   loadCourseHistory(traineeId: number) {
-    this.mainService.getCourseHistory(traineeId).subscribe(
-      (historyData) => {
+    this.mainService.getCourseHistory(traineeId).subscribe({
+      next:(historyData) => {
         // console.log('API Response:', historyData);  // Log the full response
  
         // Find the trainee object to extract the trainer's name
@@ -100,7 +98,7 @@ export class AdminDashboardComponent implements OnInit {
           (trainer) => trainer.trainerName === trainerName
         );
  
-        // console.log('Trainee History:', traineeHistory);  // Log the matched trainee history
+        // console.log('Trainee History:', traineeHistory);  
  
         // If a trainer is found, store their assigned courses along with trainerName, otherwise assign an empty array
         this.courseHistory[traineeId] = traineeHistory ? {
@@ -108,28 +106,28 @@ export class AdminDashboardComponent implements OnInit {
           assignedCourses: traineeHistory.assignedCourses
         } : { trainerName: '', assignedCourses: [] };
  
-        // console.log('Assigned Courses:', this.courseHistory[traineeId]);  // Log the assigned courses
+        // console.log('Assigned Courses:', this.courseHistory[traineeId]);  
       },
-      (error) => {
+     error: (error) => {
         console.error('Error loading course history', error);
       }
-    );
+   } );
   }
  
   search() {
     const searchLower = this.searchQuery.toLowerCase();
- 
+  
     if (this.selectedRole === 'Trainer' || this.selectedRole === 'All') {
       this.trainers = this.originalTrainers.filter(trainer =>
-        trainer.username.toLowerCase().includes(searchLower) ||
-        trainer.email.toLowerCase().includes(searchLower)
+        trainer?.username?.toLowerCase().includes(searchLower) ||
+        trainer?.email?.toLowerCase().includes(searchLower)
       );
     }
- 
+  
     if (this.selectedRole === 'Trainee' || this.selectedRole === 'All') {
       this.trainees = this.originalTrainees.filter(trainee =>
-        trainee.username.toLowerCase().includes(searchLower) ||
-        trainee.email.toLowerCase().includes(searchLower)
+        trainee?.username?.toLowerCase().includes(searchLower) ||
+        trainee?.email?.toLowerCase().includes(searchLower)
       );
     }
   }
@@ -148,15 +146,15 @@ export class AdminDashboardComponent implements OnInit {
   }
  
   loadAvailableCourses() {
-    this.mainService.getAvailableCourses().subscribe(
-      (data) => {
-        // console.log("Available Courses Data:", data);  // Debugging line
+    this.mainService.getAvailableCourses().subscribe({
+      next:(data) => {
+        // console.log("Available Courses Data:", data);  
         this.availableCourses = data;
       },
-      (error) => {
+     error: (error) => {
         console.error('Error fetching available courses:', error);
       }
-    );
+  });
   }
   showTrainers() {
     this.isTrainerVisible = true;
@@ -167,7 +165,7 @@ export class AdminDashboardComponent implements OnInit {
     this.isTrainerVisible = false;
     this.isTraineeVisible = true;
     
-    // Only load trainees if not already loaded
+    // Only load trainees if not already 
     if (!this.traineesLoaded) {
       this.loadTrainees();
       this.traineesLoaded = true;  // Set the flag to true after loading
@@ -203,8 +201,8 @@ export class AdminDashboardComponent implements OnInit {
   // New method for unassigning the trainer
   unassignTrainerFromTrainee() {
     if (this.selectedTrainee) {
-      this.mainService.unassignTrainerFromTrainee(this.selectedTrainee.id).subscribe(
-        (response) => {
+      this.mainService.unassignTrainerFromTrainee(this.selectedTrainee.id).subscribe({
+       next: (response) => {
           // Update the trainee's information after unassigning
           const unassignedTrainee = this.trainees.find(t => t.id === this.selectedTrainee.id);
           if (unassignedTrainee) {
@@ -216,9 +214,10 @@ export class AdminDashboardComponent implements OnInit {
           this.isAssigningTrainer = false;
           this.selectedTrainee = null;
         },
-        (error) => {
+        error:(error) => {
+          console.log(error);
         }
-      );
+     } );
     }
   }
   
@@ -273,15 +272,16 @@ export class AdminDashboardComponent implements OnInit {
   }
  
   deleteTrainer(trainerId: number) {
-    this.mainService.deleteTrainer(trainerId).subscribe(
-      () => {
+    this.mainService.deleteTrainer(trainerId).subscribe({
+      next: () => {
         this.trainers = this.trainers.filter(trainer => trainer.id !== trainerId);
       },
-      (error) => {
+      error: () => {
         alert("Trainer is already assigned to Trainee");
       }
-    );
+    });
   }
+  
  
   assignTraineesToTrainer() {
     const selectedTrainees = this.trainees.filter(trainee => trainee.selected);
@@ -292,9 +292,6 @@ export class AdminDashboardComponent implements OnInit {
           () => {
             trainee.trainer_name = this.selectedTrainer.username;
             trainee.selected = false;
-          },
-          (error) => {
-            // console.error('Error assigning trainee:', error);
           }
         );
       } else {
@@ -317,18 +314,16 @@ export class AdminDashboardComponent implements OnInit {
     this.isEditingTrainee = true;
     this.isAssigningTrainer = false;
   }
- 
   deleteTrainee(traineeId: number) {
     this.mainService.deleteTrainee(traineeId).subscribe(
-      () => {
-        this.trainees = this.trainees.filter(trainee => trainee.id !== traineeId);
-      },
-      (error) => {
-        alert("Can't delete trainee because he is in training");
+      (resp) => {
+        alert("Trainee Deleted Successfully!");
       }
     );
   }
- 
+  
+  
+  
   handleUpdatedTrainee(updatedTrainee: any) {
     const index = this.trainees.findIndex(t => t.id === updatedTrainee.id);
     if (index !== -1) {
@@ -372,15 +367,15 @@ export class AdminDashboardComponent implements OnInit {
         selectedCourseNames,
         this.startDate,
         this.endDate
-      ).subscribe(
-        () => {
+      ).subscribe({
+       next: () => {
           alert('Courses assigned successfully');
           this.isAssigningCourses = false;
         },
-        (error) => {
+       error: (error) => {
           console.error('Error assigning courses:', error);
         }
-      );
+    });
     } else {
       console.error('Please select a trainer, start date, end date, and at least one course.');
     }
