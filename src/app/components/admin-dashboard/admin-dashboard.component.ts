@@ -35,15 +35,18 @@ export class AdminDashboardComponent implements OnInit {
   public courseHistory: { [traineeId: number]: { trainerName: string; assignedCourses: any[] } } = {};
   public isTrainerVisible: boolean = true;
   public isTraineeVisible: boolean = false;
+  // Flags to track if trainers and trainees have been loaded
+  trainersLoaded = false;
+  traineesLoaded = false;
   constructor(
     private mainService: MainService,  // Inject the service
     private authGuard: AuthGuard
   ) {}
  
   ngOnInit(): void {
-    console.log('Admin Dashboard Loaded');
+    // console.log('Admin Dashboard Loaded');
     this.loadTrainers();
-    this.loadTrainees();
+    // this.loadTrainees();
     this.loadAvailableCourses();
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
@@ -63,7 +66,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
- 
+
   loadTrainees() {
     this.mainService.loadTrainees().subscribe(
       (data) => {
@@ -81,6 +84,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
+
  
   loadCourseHistory(traineeId: number) {
     this.mainService.getCourseHistory(traineeId).subscribe(
@@ -146,7 +150,7 @@ export class AdminDashboardComponent implements OnInit {
   loadAvailableCourses() {
     this.mainService.getAvailableCourses().subscribe(
       (data) => {
-        console.log("Available Courses Data:", data);  // Debugging line
+        // console.log("Available Courses Data:", data);  // Debugging line
         this.availableCourses = data;
       },
       (error) => {
@@ -158,15 +162,20 @@ export class AdminDashboardComponent implements OnInit {
     this.isTrainerVisible = true;
     this.isTraineeVisible = false;
   }
- 
+
   showTrainees() {
     this.isTrainerVisible = false;
     this.isTraineeVisible = true;
+    
+    // Only load trainees if not already loaded
+    if (!this.traineesLoaded) {
+      this.loadTrainees();
+      this.traineesLoaded = true;  // Set the flag to true after loading
+    }
   }
+
  
- 
- 
- 
+
   openAssignTraineesModal(trainer: any) {
     if (trainer) {
       this.selectedTrainer = trainer;
@@ -220,7 +229,6 @@ export class AdminDashboardComponent implements OnInit {
   }
  
   openAddTrainerModal() {
-    console.log("Hello");
     this.showAddTrainerModal = true;
   }
  

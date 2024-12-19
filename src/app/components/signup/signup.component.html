@@ -31,7 +31,6 @@
 
     <!-- Specialization for Trainers (Radio buttons) -->
     <div *ngIf="signupForm.get('role')?.value === 'trainer'">
-      <!-- This ensures specialization only appears when role is 'trainer' -->
       <label for="specialization">Specialization:</label>
       <div class="radio-options">
         <label *ngFor="let option of specializationOptions">
