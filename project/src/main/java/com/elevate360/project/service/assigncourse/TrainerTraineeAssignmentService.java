@@ -56,7 +56,7 @@ public class TrainerTraineeAssignmentService {
 //    }
 
     public List<TrainerTraineeAssignmentDto> getTrainerAndCourses(Long traineeId) {
-        // Fetch the raw data from the repository
+        // Fetch the raw data from the repository (assumes only one call to the repository)
         List<Object[]> result = repository.findTrainerAndCourses(traineeId);
 
         // A map to hold the grouped data by trainer name
@@ -72,7 +72,7 @@ public class TrainerTraineeAssignmentService {
             // Create a CourseDetailsDto object for each course
             TrainerTraineeAssignmentDto.CourseDetailsDto courseDetails = new TrainerTraineeAssignmentDto.CourseDetailsDto(courseName, startDate, endDate);
 
-            // Group by trainer name
+            // Group courses by trainer name
             trainerCoursesMap.computeIfAbsent(trainerName, k -> new ArrayList<>()).add(courseDetails);
         }
 
@@ -84,8 +84,10 @@ public class TrainerTraineeAssignmentService {
             resultList.add(new TrainerTraineeAssignmentDto(trainerName, courses));
         }
 
+        // Return the final list, all data is processed in one call
         return resultList;
     }
+
 
 //    Delete the data from the trainer trainee assignment table
 

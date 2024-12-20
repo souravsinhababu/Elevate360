@@ -1,10 +1,7 @@
 package com.elevate360.project.controller.dashboard;
 
-import com.elevate360.project.dto.AssignTraineesRequest;
-import com.elevate360.project.dto.CourseHistoryDTO;
-import com.elevate360.project.dto.CourseHistoryResponse;
+import com.elevate360.project.dto.*;
 import com.elevate360.project.dto.EditProfile.AdminUpdateRequest;
-import com.elevate360.project.dto.TrainerTraineeAssignmentDto;
 import com.elevate360.project.entity.TrainerTraineeAssignment;
 import com.elevate360.project.entity.TrainingList;
 import com.elevate360.project.entity.User;
@@ -42,10 +39,34 @@ public class AdminController {
         return userService.getAllUsersByRole("trainer");
     }
 
+//    @GetMapping("/trainee")
+//    public List<User> getAllTrainees() {
+//        return userService.getAllUsersByRole("trainee");
+//    }
     @GetMapping("/trainee")
-    public List<User> getAllTrainees() {
-        return userService.getAllUsersByRole("trainee");
+    public List<TraineeWithAssignmentsDto> getAllTraineesWithAssignments() {
+        // Step 1: Fetch all trainees
+        List<User> trainees = userService.getAllUsersByRole("trainee");
+
+        // Step 2: Create a list to hold the combined results
+        List<TraineeWithAssignmentsDto> result = new ArrayList<>();
+
+        // Step 3: For each trainee, fetch their assignments
+        for (User trainee : trainees) {
+            // Fetch assignments for the current trainee
+            List<TrainerTraineeAssignmentDto> assignments = service.getTrainerAndCourses(trainee.getId());
+
+            // Combine the trainee and their assignments into a single DTO
+            TraineeWithAssignmentsDto traineeWithAssignments = new TraineeWithAssignmentsDto(trainee, assignments);
+
+            // Add the combined result to the final list
+            result.add(traineeWithAssignments);
+        }
+
+        // Step 4: Return the combined list of trainees and their assignments
+        return result;
     }
+
 
     @DeleteMapping("/trainers/{id}")
     public ResponseEntity<Void> deleteTrainer(@PathVariable Long id) {
