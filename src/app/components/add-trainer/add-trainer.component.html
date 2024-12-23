@@ -1,34 +1,22 @@
-<div class="trainer-form">
-  <h2>{{ isEditMode ? 'Edit Trainer' : 'Add Trainer' }}</h2>
+<h2>{{ isEditMode ? 'Edit Trainer' : 'Add Trainer' }}</h2>
  
-  <!-- Form to add or edit trainer -->
-  <form [formGroup]="addTrainerForm" (ngSubmit)="onSubmit()">
-    <!-- Loop through form fields dynamically -->
-    <div *ngFor="let field of formFields">
-      <label [for]="field.id">{{ field.label }}</label>
- 
-      <!-- Input fields for text, email -->
-      <div *ngIf="field.type !== 'radio'">
-        <input
-          [type]="field.type"
-          [formControlName]="field.id"
-          [id]="field.id"
-          [required]="field.required"
-        />
- 
-        <!-- Show error message if field is invalid and touched -->
-        <div *ngIf="addTrainerForm.get(field.id)?.invalid && addTrainerForm.get(field.id)?.touched">
-          <small class="error-message">{{ field.errormessage }}</small>
-        </div>
-      </div>
- 
+<form [formGroup]="trainerForm" (ngSubmit)="onSubmit()">
+  <div *ngFor="let field of formFields">
+    <label [for]="field.id">{{ field.label }}</label>
+    <input
+      [type]="field.type"
+      [formControlName]="field.id"
+      [id]="field.id"
+      [required]="field.required"
+    />
+    <div *ngIf="trainerForm.get(field.id)?.invalid && trainerForm.get(field.id)?.touched">
+      <span class="error-message">{{ field.errormessage }}</span>
     </div>
+  </div>
  
-    <!-- Submit button -->
-    <button type="submit" [disabled]="addTrainerForm.invalid">
-      {{ isEditMode ? 'Save Changes' : 'Add Trainer' }}
-    </button>
-  </form>
-</div>
+  <button type="submit" [disabled]="trainerForm.invalid">
+    {{ isEditMode ? 'Save Changes' : 'Add Trainer' }}
+  </button>
+</form>
  
  
