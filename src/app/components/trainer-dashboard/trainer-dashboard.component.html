@@ -1,79 +1,92 @@
 <div class="dashboard-container">
+  <!-- Header Section -->
   <div class="header">
     <p class="welcome-message">Welcome, {{trainername}}!</p>
     <button class="logout-button" (click)="logout()">Logout</button>
   </div>
-  <h2>Welcome to the Trainer Dashboard</h2>
+
+  <h2>Trainer Dashboard</h2>
+
+  <!-- Loading Message -->
   <div *ngIf="isLoading" class="loading-message">Loading trainees...</div>
- 
+
+  <!-- Trainee List Section -->
   <div *ngIf="!isLoading && trainees.length > 0">
-    <h3 class="assigned-trainees-header">Assigned Trainees</h3>
-    <table class="trainee-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let trainee of trainees">
-          <td>{{ trainee.username }}</td>
-          <td>{{ trainee.email }}</td>
-        </tr>
-      </tbody>
-    </table>
-  
-    <!-- Courses Heading -->
-    <h3 class="courses-heading">Courses</h3>
-  
-    <!-- Tabs for Ongoing, Upcoming, and History -->
-    <div class="tabs">
-      <button (click)="selectTab('ongoing')" [class.active]="selectedTab === 'ongoing'">Ongoing</button>
-      <button (click)="selectTab('upcoming')" [class.active]="selectedTab === 'upcoming'">Upcoming</button>
-      <button (click)="selectTab('history')" [class.active]="selectedTab === 'history'">History</button>
-    </div>
-  
-    <!-- Ongoing Courses -->
-    <div *ngIf="selectedTab === 'ongoing'">
-      <h4>Ongoing Courses</h4>
-      <ul>
-        <li *ngFor="let course of uniqueAssignedCourses">
-          <div *ngIf="isOngoing(course)">
-            <strong>{{ course.courseName }}</strong> (Start: {{ course.startDate }}, End: {{ course.endDate }})
-          </div>
-        </li>
-      </ul>
-    </div>
-  
-    <!-- Upcoming Courses -->
-    <div *ngIf="selectedTab === 'upcoming'">
-      <h4>Upcoming Courses</h4>
-      <ul>
-        <li *ngFor="let course of uniqueAssignedCourses">
-          <div *ngIf="isUpcoming(course)">
-            <strong>{{ course.courseName }}</strong> (Start: {{ course.startDate }}, End: {{ course.endDate }})
-          </div>
-        </li>
-      </ul>
-    </div>
-  
-    <!-- History (Completed Courses) -->
-    <div *ngIf="selectedTab === 'history'">
-      <h4>Completed Courses</h4>
-      <ul>
-        <li *ngFor="let course of uniqueAssignedCourses">
-          <div *ngIf="isCompleted(course)">
-            <strong>{{ course.courseName }}</strong> (Start: {{ course.startDate }}, End: {{ course.endDate }})
-          </div>
-        </li>
-      </ul>
-    </div>
+    <section class="assigned-trainees">
+      <h3 class="assigned-trainees-header">Assigned Trainees</h3>
+      <table class="trainee-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let trainee of trainees">
+            <td>{{ trainee.username }}</td>
+            <td>{{ trainee.email }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Courses Section -->
+    <section class="courses">
+      <h3 class="courses-heading">Courses</h3>
+
+      <!-- Tabs for Ongoing, Upcoming, and History -->
+      <div class="tabs">
+        <button (click)="selectTab('ongoing')" [class.active]="selectedTab === 'ongoing'">Ongoing</button>
+        <button (click)="selectTab('upcoming')" [class.active]="selectedTab === 'upcoming'">Upcoming</button>
+        <button (click)="selectTab('history')" [class.active]="selectedTab === 'history'">History</button>
+      </div>
+
+      <!-- Ongoing Courses -->
+      <div *ngIf="selectedTab === 'ongoing'" class="tab-content">
+      
+        <ul *ngIf="hasOngoingCourses()">
+          <h4>Ongoing Courses</h4>
+          <li *ngFor="let course of uniqueAssignedCourses">
+            <div *ngIf="isOngoing(course)">
+              <strong>{{ course.courseName }}</strong> (Start: {{ course.startDate }}, End: {{ course.endDate }})
+            </div>
+          </li>
+        </ul>
+        <p *ngIf="!hasOngoingCourses()">No Courses</p>
+      </div>
+
+      <!-- Upcoming Courses -->
+      <div *ngIf="selectedTab === 'upcoming'" class="tab-content">
+       
+        <ul *ngIf="hasUpcomingCourses()">
+          <h4>Upcoming Courses</h4>
+          <li *ngFor="let course of uniqueAssignedCourses">
+            <div *ngIf="isUpcoming(course)">
+              <strong>{{ course.courseName }}</strong> (Start: {{ course.startDate }}, End: {{ course.endDate }})
+            </div>
+          </li>
+        </ul>
+        <p *ngIf="!hasUpcomingCourses()">No Courses</p>
+      </div>
+
+      <!-- Completed Courses -->
+      <div *ngIf="selectedTab === 'history'" class="tab-content">
+        
+        <ul *ngIf="hasCompletedCourses()">
+          <h4>Completed Courses</h4>
+          <li *ngFor="let course of uniqueAssignedCourses">
+            <div *ngIf="isCompleted(course)">
+              <strong>{{ course.courseName }}</strong> (Start: {{ course.startDate }}, End: {{ course.endDate }})
+            </div>
+          </li>
+        </ul>
+        <p *ngIf="!hasCompletedCourses()">No Courses</p>
+      </div>
+    </section>
   </div>
-  
- 
+
+  <!-- No Trainees Message -->
   <div *ngIf="!isLoading && trainees.length === 0" class="no-trainees-message">
     <p>No trainees assigned to you.</p>
   </div>
 </div>
- 
- 

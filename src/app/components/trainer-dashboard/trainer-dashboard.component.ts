@@ -79,6 +79,17 @@ export class TrainerDashboardComponent implements OnInit {
     const startDate = new Date(course.startDate);
     return currentDate < startDate; // Check if the course start date is in the future
   }
+  hasOngoingCourses(): boolean {
+    return this.uniqueAssignedCourses.some(course => this.isOngoing(course));
+  }
+
+  hasUpcomingCourses(): boolean {
+    return this.uniqueAssignedCourses.some(course => this.isUpcoming(course));
+  }
+
+  hasCompletedCourses(): boolean {
+    return this.uniqueAssignedCourses.some(course => this.isCompleted(course));
+  }
 
   // Method to determine if a course is completed (i.e., endDate is before the current date)
   isCompleted(course: any): boolean {
