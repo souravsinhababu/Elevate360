@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MainService } from '../../../core/services/main.service';
+import { Router } from '@angular/router';
 
 interface FormField {
   label: string;
@@ -8,7 +9,7 @@ interface FormField {
   id: string;
   required: boolean;
   errormessage: string;
-  validators: any[];
+  validators: any[];  // Will include the custom validator
   options?: { label: string; value: string }[]; // options property for radio fields
 }
 
@@ -20,14 +21,20 @@ interface FormField {
 export class SignupComponent implements OnInit {
 
   signupForm!: FormGroup;
+
   formFields: FormField[] = [
     {
       label: 'Username:',
       type: 'text',
       id: 'username',
       required: true,
-      errormessage: 'Username is required and must be at least 4 characters.',
-      validators: [Validators.required, Validators.minLength(4)]
+      errormessage: 'Username is required and must be only alphabets.',
+      validators: [
+        Validators.required, 
+        Validators.minLength(1),
+        Validators.maxLength(50), 
+        this.alphabeticValidator()  //custom validator for using only alphabets
+      ]
     },
     {
       label: 'Email:',
@@ -42,8 +49,8 @@ export class SignupComponent implements OnInit {
       type: 'password',
       id: 'password',
       required: true,
-      errormessage: 'Password is required and must be at least 6 characters.',
-      validators: [Validators.required, Validators.minLength(6)]
+      errormessage: 'Password is required.',
+      validators: [Validators.required]
     }
   ];
 
@@ -54,7 +61,6 @@ export class SignupComponent implements OnInit {
   ];
 
   roleFields: { role: string; fields: FormField[] }[] = [
-    
     {
       role: 'trainee',
       fields: [
@@ -70,7 +76,7 @@ export class SignupComponent implements OnInit {
     }
   ];
 
-  constructor(private mainService: MainService, private fb: FormBuilder) { }
+  constructor(private mainService: MainService, private fb: FormBuilder, private router:Router) { }
 
   ngOnInit(): void {
     // Initialize the form group with dynamic controls
@@ -86,8 +92,14 @@ export class SignupComponent implements OnInit {
 
     // Add specialization control but leave it empty initially
     this.signupForm.addControl('specialization', new FormControl(''));
+  }
 
-    // Initialize other logic as needed
+  // Custom Validator for Alphabetic Characters Only
+  alphabeticValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const isValid = /^[A-Za-z]+$/.test(control.value);  // Checks only alphabetic characters
+      return isValid ? null : { 'alphabetic': true };  // Return error object if invalid
+    };
   }
 
   // Method to check if the form control is invalid and touched
@@ -110,16 +122,17 @@ export class SignupComponent implements OnInit {
       return;
     }
 
-    this.mainService.signup(user).subscribe(
-      response => {
+    this.mainService.signup(user).subscribe({
+     next: response => {
         alert('Sign Up Successful!');
         console.log('Signed up user: ', response);
+        this.router.navigate(['/login']);
       },
-      error => {
+     error: error => {
         alert('Sign Up Failed! Please try again.');
         console.error(error);
       }
-    );
+   } );
   }
 
   // Reset the dynamic fields based on role selection

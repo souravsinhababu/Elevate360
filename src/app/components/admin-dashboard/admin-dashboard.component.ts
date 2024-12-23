@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MainService } from '../../../core/services/main.service';
 import { AuthGuard } from '../../../core/guards/auth.guard';
-import { environment } from '../../../core/environment/environment';
-
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+ 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
@@ -24,6 +25,9 @@ export class AdminDashboardComponent implements OnInit {
   public isEditingTrainee: boolean = false;
   public showAddTrainerModal = false;
   public showAddTraineeModal = false;
+  hasError: boolean = false;
+  public showEditTraineeModal = false;
+  public showEditTrainerModal = false;
   public isAssigningTrainees: boolean = false;
   public isAssigningCourses: boolean = false;  // To manage modal visibility
   public startDate: string = '';  // To bind with the start date input
@@ -31,39 +35,109 @@ export class AdminDashboardComponent implements OnInit {
   public availableCourses: any[] = [];
   public selectedCourses: any = {};  // To track selected courses
   public courseHistory: { [traineeId: number]: { trainerName: string; assignedCourses: any[] } } = {};
-
-
+  public isTrainerVisible: boolean = true;
+  public isTraineeVisible: boolean = false;
+ 
+ 
+  editAdminForm!: FormGroup;  // Form to edit admin details
+  showEditAdminModal = false;
+  public adminId: number | undefined;
+  traineesLoaded: any;
+ 
   constructor(
-    private mainService: MainService,  // Inject the service
-    private authGuard: AuthGuard
+    private fb: FormBuilder,
+    private mainService: MainService,  // Inject MainService for API calls
+    private authGuard: AuthGuard, // Inject AuthGuard for logout
+    private router: Router
   ) {}
  
   ngOnInit(): void {
+    console.log('Admin Dashboard Loaded');
     this.loadTrainers();
-    this.loadTrainees();
+    // this.loadTrainees();
     this.loadAvailableCourses();
+   
+    // Retrieve admin name and ID dynamically (example from localStorage)
     const storedUsername = localStorage.getItem('username');
+    const storedAdminId = localStorage.getItem('userId');
+   
     if (storedUsername) {
       this.adminname = storedUsername;  // Set the adminname from localStorage
     }
+    // You can also store the admin ID in localStorage after login
+    if (storedAdminId) {
+      this.adminId = parseInt(storedAdminId, 10);  // Parse adminId from localStorage
+      console.log('Parsed Admin ID:', this.adminId); // Log parsed admin ID to verify
+    } else {
+      console.error('Admin ID is not available in localStorage!');
+    }
+ 
+    this.editAdminForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
+  isInvalid(controlName: string): boolean {
+    const control = this.editAdminForm.get(controlName);
+    return !!(control?.invalid && control?.touched);  // Return true if invalid and touched
   }
  
-  loadTrainers() {
-    this.mainService.loadTrainers().subscribe(
-      (data) => {
-        this.trainers = data;
-        this.originalTrainers = [...data]; // Store a copy of the original trainers list
-        this.search();  // Apply search immediately after loading
+  openEditAdminModal(): void {
+    this.showEditAdminModal = true;
+    console.log('Modal is open:', this.showEditAdminModal);
+  }
+ 
+  closeEditAdminModal(): void {
+    this.showEditAdminModal = false;
+  }
+ 
+  // Handle form submission for editing admin details
+  onEditAdminSubmit(): void {
+    if (this.editAdminForm.invalid) {
+      return; // Don't proceed if form is invalid
+    }
+ 
+    if (!this.adminId) {
+      alert('Admin ID not found!');
+      return;
+    }
+ 
+    const updateRequest = {
+      email: this.editAdminForm.value.email,
+      password: this.editAdminForm.value.password
+    };
+ 
+    // Call the API to update admin details using the dynamically fetched adminId
+    this.mainService.editAdminDetails(this.adminId, updateRequest).subscribe(
+      (response) => {
+        alert('Admin details updated successfully!');
+        this.closeEditAdminModal();  // Close the modal after successful update
       },
       (error) => {
-        console.error('Error fetching trainers:', error);
+        alert('Failed to update admin details!');
+        console.error(error);
       }
     );
   }
  
- loadTrainees() {
-    this.mainService.loadTrainees().subscribe(
-      (data) => {
+ 
+ 
+  loadTrainers() {
+    this.mainService.loadTrainers().subscribe({
+      next:(data) => {
+        this.trainers = data;
+        this.originalTrainers = [...data]; // Store a copy of the original trainers list
+        this.search();  // Apply search immediately after loading
+      },
+      error:(error) => {
+        console.error('Error fetching trainers:', error);
+      }
+  });
+  }
+
+  loadTrainees() {
+    this.mainService.loadTrainees().subscribe({
+      next:(data) => {
         this.trainees = data.map(trainee => {
           // Fetch course history for each trainee
           this.loadCourseHistory(trainee.id);  // Fetch course history
@@ -73,62 +147,57 @@ export class AdminDashboardComponent implements OnInit {
         this.originalTrainees = [...data];
         this.search();
       },
-      (error) => {
+     error: (error) => {
+        console.error('Error fetching trainees:', error);
       }
-    );
+  });
   }
+
  
   loadCourseHistory(traineeId: number) {
-    this.mainService.getCourseHistory(traineeId).subscribe(
-      (historyData) => {
-        console.log('API Response:', historyData);  // Log the full response
-  
+    this.mainService.getCourseHistory(traineeId).subscribe({
+      next:(historyData) => {
+        // console.log('API Response:', historyData);  // Log the full response
+ 
         // Find the trainee object to extract the trainer's name
         const trainee = this.trainees.find(t => t.id === traineeId);  // Find the trainee by ID
- 
-        // Ensure the trainee's trainerName is correctly mapped
         const trainerName = trainee ? trainee.trainer_name : '';  // Get trainerName from the trainee object
-  
+ 
         // Find the trainer's course history from the API response
         const traineeHistory = historyData.find(
           (trainer) => trainer.trainerName === trainerName
         );
  
-        console.log('Trainee History:', traineeHistory);  // Log the matched trainee history
-  
+        // console.log('Trainee History:', traineeHistory);  
+ 
         // If a trainer is found, store their assigned courses along with trainerName, otherwise assign an empty array
         this.courseHistory[traineeId] = traineeHistory ? {
           trainerName: trainerName,
           assignedCourses: traineeHistory.assignedCourses
         } : { trainerName: '', assignedCourses: [] };
-  
-        console.log('Assigned Courses:', this.courseHistory[traineeId]);  // Log the assigned courses
+ 
+        // console.log('Assigned Courses:', this.courseHistory[traineeId]);  
       },
-      (error) => {
+     error: (error) => {
         console.error('Error loading course history', error);
       }
-    );
+   } );
   }
- 
- 
- 
- 
- 
  
   search() {
     const searchLower = this.searchQuery.toLowerCase();
- 
+  
     if (this.selectedRole === 'Trainer' || this.selectedRole === 'All') {
       this.trainers = this.originalTrainers.filter(trainer =>
-        trainer.username.toLowerCase().includes(searchLower) ||
-        trainer.email.toLowerCase().includes(searchLower)
+        trainer?.username?.toLowerCase().includes(searchLower) ||
+        trainer?.email?.toLowerCase().includes(searchLower)
       );
     }
- 
+  
     if (this.selectedRole === 'Trainee' || this.selectedRole === 'All') {
       this.trainees = this.originalTrainees.filter(trainee =>
-        trainee.username.toLowerCase().includes(searchLower) ||
-        trainee.email.toLowerCase().includes(searchLower)
+        trainee?.username?.toLowerCase().includes(searchLower) ||
+        trainee?.email?.toLowerCase().includes(searchLower)
       );
     }
   }
@@ -145,40 +214,36 @@ export class AdminDashboardComponent implements OnInit {
  
     this.search();  // Reapply search after filtering
   }
+ 
   loadAvailableCourses() {
-    this.mainService.getAvailableCourses().subscribe(
-      (data) => {
+    this.mainService.getAvailableCourses().subscribe({
+      next:(data) => {
+        // console.log("Available Courses Data:", data);  
         this.availableCourses = data;
       },
-      (error) => {
+     error: (error) => {
         console.error('Error fetching available courses:', error);
       }
-    );
+  });
   }
- 
-  assignTrainerToTrainee() {
-    if (this.selectedTrainee && this.selectedTrainerId) {
-      this.mainService.assignTrainerToTrainee(this.selectedTrainee.id, this.selectedTrainerId).subscribe(
-        (data) => {
-          // Update the trainer for the selected trainee in the local list
-          const assignedTrainee = this.trainees.find(t => t.id === this.selectedTrainee.id);
-          if (assignedTrainee) {
-            assignedTrainee.trainer_id = this.selectedTrainerId;  // Update trainer ID
-            assignedTrainee.trainer_name = this.trainers.find(t => t.id === this.selectedTrainerId)?.username || 'Not assigned'; // Update trainer name
-          }
- 
-          // Close the modal
-          this.isAssigningTrainer = false;
-          this.selectedTrainee = null;
-          this.selectedTrainerId = null;
-        },
-        (error) => {
-          console.error('Error assigning trainer:', error);
-        }
-      );
+  showTrainers() {
+    this.isTrainerVisible = true;
+    this.isTraineeVisible = false;
+  }
+
+  showTrainees() {
+    this.isTrainerVisible = false;
+    this.isTraineeVisible = true;
+    
+    // Only load trainees if not already 
+    if (!this.traineesLoaded) {
+      this.loadTrainees();
+      this.traineesLoaded = true;  // Set the flag to true after loading
     }
   }
+
  
+
   openAssignTraineesModal(trainer: any) {
     if (trainer) {
       this.selectedTrainer = trainer;
@@ -196,11 +261,42 @@ export class AdminDashboardComponent implements OnInit {
     this.selectedTrainerId = null;
   }
  
-  assignTrainer(trainee: any) {
+ 
+  unassignTrainer(trainee: any) {
     this.selectedTrainee = trainee;
     this.isAssigningTrainer = true;
-    this.isEditingTrainee = false;  // Ensure isEditingTrainee is false when assigning trainer
+    this.isEditingTrainee = false;
   }
+  
+  // New method for unassigning the trainer
+  unassignTrainerFromTrainee() {
+    if (this.selectedTrainee) {
+      this.mainService.unassignTrainerFromTrainee(this.selectedTrainee.id).subscribe({
+       next: (response) => {
+          // Update the trainee's information after unassigning
+          const unassignedTrainee = this.trainees.find(t => t.id === this.selectedTrainee.id);
+          if (unassignedTrainee) {
+            unassignedTrainee.trainer_name = 'Not assigned'; // Or any other default value
+            unassignedTrainee.trainer_id = null;
+          }
+  
+          // Close the modal and reset selection
+          this.isAssigningTrainer = false;
+          this.selectedTrainee = null;
+        },
+        error:(error) => {
+          console.log(error);
+        }
+     } );
+    }
+  }
+  
+  // Cancel the action
+  cancelUnassign() {
+    this.isAssigningTrainer = false;
+    this.selectedTrainee = null;
+  }
+  
  
   openAddTrainerModal() {
     this.showAddTrainerModal = true;
@@ -214,21 +310,20 @@ export class AdminDashboardComponent implements OnInit {
     this.showAddTraineeModal = true;
   }
  
- 
   closeAddTraineeModal() {
     this.showAddTraineeModal = false;
   }
  
-  // Close edit modals
   closeEditTrainerModal() {
-    this.selectedTrainer = null; // Reset selected trainer
-  this.isAssigningCourses = false; // Ensure no other modals are open
-  this.isAssigningTrainees = false;
+    this.selectedTrainer = null;
+    this.showEditTrainerModal = false;
+    this.isAssigningCourses = false;
+    this.isAssigningTrainees = false;
   }
  
-  closeEditTraineeModal() {  
-    this.selectedTrainee = null;  
-    this.isEditingTrainee = false;
+  closeEditTraineeModal() {
+    this.showEditTraineeModal = false;
+    this.selectedTrainee = null;
   }
  
   handleAddedTrainer(trainer: any) {
@@ -243,21 +338,23 @@ export class AdminDashboardComponent implements OnInit {
  
   editTrainer(trainer: any) {
     this.selectedTrainer = { ...trainer };
+    this.showEditTrainerModal = true;
+ 
   }
  
   deleteTrainer(trainerId: number) {
-    this.mainService.deleteTrainer(trainerId).subscribe(
-      () => {
+    this.mainService.deleteTrainer(trainerId).subscribe({
+      next: () => {
         this.trainers = this.trainers.filter(trainer => trainer.id !== trainerId);
       },
-      (error) => {
-        alert("Trainer is already assiged to Trainee");
+      error: () => {
+        alert("Trainer is already assigned to Trainee");
       }
-    );
+    });
   }
+  
  
   assignTraineesToTrainer() {
-    console.log('Selected Trainer:', this.selectedTrainer); // Add this log to track the state
     const selectedTrainees = this.trainees.filter(trainee => trainee.selected);
  
     selectedTrainees.forEach(trainee => {
@@ -265,10 +362,7 @@ export class AdminDashboardComponent implements OnInit {
         this.mainService.assignTraineesToTrainer(trainee.id, this.selectedTrainer.id).subscribe(
           () => {
             trainee.trainer_name = this.selectedTrainer.username;
-            trainee.selected = false;  // Uncheck the box after assigning
-          },
-          (error) => {
-            console.error('Error assigning trainee:', error);
+            trainee.selected = false;
           }
         );
       } else {
@@ -276,12 +370,9 @@ export class AdminDashboardComponent implements OnInit {
       }
     });
  
-    this.isAssigningTrainees = false;  // Close the modal
-    this.selectedTrainer = null;       // Reset the selected trainer
+    this.isAssigningTrainees = false;
+    this.selectedTrainer = null;
   }
- 
- 
- 
  
   cancelAssignTrainees() {
     this.isAssigningTrainees = false;
@@ -289,28 +380,28 @@ export class AdminDashboardComponent implements OnInit {
   }
  
   editTrainee(trainee: any) {
-    this.selectedTrainee = { ...trainee };
-    this.isEditingTrainee = true;  
-    this.isAssigningTrainer = false;  // Ensure the Assign Trainer modal is not opened
+    this.selectedTrainee = trainee;
+    this.showEditTraineeModal = true;
+    this.isEditingTrainee = true;
+    this.isAssigningTrainer = false;
   }
- 
   deleteTrainee(traineeId: number) {
     this.mainService.deleteTrainee(traineeId).subscribe(
-      () => {
-        this.trainees = this.trainees.filter(trainee => trainee.id !== traineeId);
-      },
-      (error) => {
-        alert("Can't delete trainee because he is in training");
+      (resp) => {
+        alert("Trainee Deleted Successfully!");
       }
     );
   }
- 
+  
+  
+  
   handleUpdatedTrainee(updatedTrainee: any) {
     const index = this.trainees.findIndex(t => t.id === updatedTrainee.id);
     if (index !== -1) {
       this.trainees[index] = updatedTrainee;
     }
-    this.selectedTrainee = null;  // Reset selected trainee after update
+ 
+    this.closeEditTraineeModal();
   }
  
   updateTrainerInDashboard(updatedTrainer: any) {
@@ -318,62 +409,60 @@ export class AdminDashboardComponent implements OnInit {
     if (index !== -1) {
       this.trainers[index] = updatedTrainer;
     }
-    this.selectedTrainer = null;  // Reset selected trainer after update
+    this.showEditTrainerModal = false;
   }
+ 
   openAssignCoursesModal(trainer: any) {
     this.selectedTrainer = trainer;
     this.isAssigningCourses = true;
-    this.isAssigningTrainees = false; // Ensure this is not open
-    this.isEditingTrainee = false;   // Ensure the editing trainee modal is not open
+    this.isAssigningTrainees = false;
+    this.isEditingTrainee = false;
     this.selectedCourses = {};
- 
   }
  
   cancelAssignCourses() {
     this.isAssigningCourses = false;
     this.startDate = '';
     this.endDate = '';
- 
-   this.isAssigningTrainees = false;
-  this.isEditingTrainee = false;    
-  this.selectedTrainer = null;      
+    this.isAssigningTrainees = false;
+    this.isEditingTrainee = false;
+    this.selectedTrainer = null;
   }
  
-  // Assign courses to the trainer
-  // In your component (e.g., admin-dashboard.component.ts)
-assignCoursesToTrainer() {
-  // Get the selected course names that are marked as true
-  const selectedCourseNames = Object.keys(this.selectedCourses).filter(course => this.selectedCourses[course]);
+  assignCoursesToTrainer() {
+    const selectedCourseNames = Object.keys(this.selectedCourses).filter(course => this.selectedCourses[course]);
  
-  // Ensure all required fields are present: selectedTrainer, startDate, endDate, and at least one selected course
-  if (this.selectedTrainer && this.startDate && this.endDate && selectedCourseNames.length) {
-      // Call the service method to assign courses to the trainer
+    if (this.selectedTrainer && this.startDate && this.endDate && selectedCourseNames.length) {
       this.mainService.assignCoursesToTrainer(
-          this.selectedTrainer.id,
-          selectedCourseNames,
-          this.startDate,
-          this.endDate
-      ).subscribe(
-          (data) => {
-              alert('Courses assigned successfully');
-              this.isAssigningCourses = false; // Update the flag for assigning courses
-          },
-          (error) => {
-              console.error('Error assigning courses:', error);
-          }
-      );
-  } else {
+        this.selectedTrainer.id,
+        selectedCourseNames,
+        this.startDate,
+        this.endDate
+      ).subscribe({
+       next: () => {
+          alert('Courses assigned successfully');
+          this.isAssigningCourses = false;
+        },
+       error: (error) => {
+          console.error('Error assigning courses:', error);
+        }
+    });
+    } else {
       console.error('Please select a trainer, start date, end date, and at least one course.');
+    }
+ 
+    this.isAssigningCourses = false;
+    this.selectedTrainer = null;
+    this.startDate = '';
+    this.endDate = '';
   }
-  this.isAssigningCourses = false;
-  this.selectedTrainer = null;
-  this.startDate = '';
-  this.endDate = '';
-}
- 
- 
  
   logout() {
     this.authGuard.logout();  // Logout the user
+  }
+ 
+  openEditTrainerModal(trainer: any) {
+    this.selectedTrainer = trainer;
+    this.showEditTrainerModal = true;
   }
 }

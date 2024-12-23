@@ -61,8 +61,8 @@ export class LoginComponent implements OnInit {
       password: this.loginForm.value.password
     };
 
-    this.mainService.login(loginData).subscribe(
-      (response) => {
+    this.mainService.login(loginData).subscribe({
+      next:(response) => {
         const role = response.role;
         const token = response.token;
         const id = response.id;
@@ -83,9 +83,9 @@ export class LoginComponent implements OnInit {
           alert('Unknown role, please contact the admin.');
         }
       },
-      (error) => {
+     error: (error) => {
         alert('Login failed: Incorrect credentials');
       }
-    );
+   } );
   }
 }

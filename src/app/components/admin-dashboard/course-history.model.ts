@@ -5,6 +5,7 @@ export interface Course {
   }
   
   export interface TraineeCoursesResponse {
+    [x: string]: any;
     trainerName: string;
     assignedCourses: Course[];
   }
