@@ -5,8 +5,10 @@ import com.elevate360.project.dto.EditProfile.AdminUpdateRequest;
 import com.elevate360.project.dto.TraineeDTO;
 import com.elevate360.project.entity.TrainerTraineeAssignment;
 import com.elevate360.project.entity.User;
+import com.elevate360.project.entity.exam.Exam;
 import com.elevate360.project.repo.TrainerTraineeAssignmentRepo;
 import com.elevate360.project.repo.UserRepository;
+import com.elevate360.project.repo.exam.ExamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -263,6 +265,22 @@ public class UserService {
         } catch (Exception e) {
             System.out.println("Failed to send email: " + e.getMessage());
         }
+    }
+
+
+    @Autowired
+    private ExamRepository examRepository;
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public List<Exam> getExamsByTrainerId(Long trainerId) {
+        return examRepository.findByTrainerId(trainerId);
+    }
+
+    public Long getTrainerIdFromTrainee(Long traineeId) {
+        return userRepository.getTrainerIdByTraineeId(traineeId);
     }
 }
 

@@ -43,6 +43,7 @@ public interface UserRepository extends JpaRepository<User, Long> , CrudReposito
 //    List<User.AssignedCourse> findAssignedCoursesByTrainerId(@Param("trainerId") Long trainerId);
 
 
-
+    @Query(value = "SELECT trainer_id FROM user_table WHERE id = :traineeId", nativeQuery = true)
+    Long getTrainerIdByTraineeId(@Param("traineeId") Long traineeId);
 }
 
