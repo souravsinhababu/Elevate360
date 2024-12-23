@@ -22,59 +22,54 @@
         </tr>
       </tbody>
     </table>
-   
+  
     <!-- Courses Heading -->
     <h3 class="courses-heading">Courses</h3>
- 
+  
     <!-- Tabs for Ongoing, Upcoming, and History -->
     <div class="tabs">
       <button (click)="selectTab('ongoing')" [class.active]="selectedTab === 'ongoing'">Ongoing</button>
       <button (click)="selectTab('upcoming')" [class.active]="selectedTab === 'upcoming'">Upcoming</button>
       <button (click)="selectTab('history')" [class.active]="selectedTab === 'history'">History</button>
     </div>
- 
+  
     <!-- Ongoing Courses -->
     <div *ngIf="selectedTab === 'ongoing'">
       <h4>Ongoing Courses</h4>
       <ul>
-        <li *ngFor="let trainee of trainees">
-          <div *ngFor="let course of trainee.trainer?.assignedCourses">
-            <div *ngIf="isOngoing(course)">
-              <strong>{{ course.courseName }}</strong> (Start: {{ course.startDate }}, End: {{ course.endDate }})
-            </div>
+        <li *ngFor="let course of uniqueAssignedCourses">
+          <div *ngIf="isOngoing(course)">
+            <strong>{{ course.courseName }}</strong> (Start: {{ course.startDate }}, End: {{ course.endDate }})
           </div>
         </li>
       </ul>
     </div>
- 
+  
     <!-- Upcoming Courses -->
     <div *ngIf="selectedTab === 'upcoming'">
       <h4>Upcoming Courses</h4>
       <ul>
-        <li *ngFor="let trainee of trainees">
-          <div *ngFor="let course of trainee.trainer?.assignedCourses">
-            <div *ngIf="isUpcoming(course)">
-              <strong>{{ course.courseName }}</strong> (Start: {{ course.startDate }}, End: {{ course.endDate }})
-            </div>
+        <li *ngFor="let course of uniqueAssignedCourses">
+          <div *ngIf="isUpcoming(course)">
+            <strong>{{ course.courseName }}</strong> (Start: {{ course.startDate }}, End: {{ course.endDate }})
           </div>
         </li>
       </ul>
     </div>
- 
+  
     <!-- History (Completed Courses) -->
     <div *ngIf="selectedTab === 'history'">
       <h4>Completed Courses</h4>
       <ul>
-        <li *ngFor="let trainee of trainees">
-          <div *ngFor="let course of trainee.trainer?.assignedCourses">
-            <div *ngIf="isCompleted(course)">
-              <strong>{{ course.courseName }}</strong> (Start: {{ course.startDate }}, End: {{ course.endDate }})
-            </div>
+        <li *ngFor="let course of uniqueAssignedCourses">
+          <div *ngIf="isCompleted(course)">
+            <strong>{{ course.courseName }}</strong> (Start: {{ course.startDate }}, End: {{ course.endDate }})
           </div>
         </li>
       </ul>
     </div>
   </div>
+  
  
   <div *ngIf="!isLoading && trainees.length === 0" class="no-trainees-message">
     <p>No trainees assigned to you.</p>
