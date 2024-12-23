@@ -84,7 +84,6 @@ export class AdminDashboardComponent implements OnInit {
  
   openEditAdminModal(): void {
     this.showEditAdminModal = true;
-    console.log('Modal is open:', this.showEditAdminModal);
   }
  
   closeEditAdminModal(): void {
@@ -142,7 +141,7 @@ export class AdminDashboardComponent implements OnInit {
         courseHistory: item.assignments || []  // Include the assignments or course history
       }));
   
-      console.log('Trainees:', this.trainees); // Debugging output
+      // console.log('Trainees:', this.trainees); // Debugging output
     });
   }
   
@@ -244,7 +243,6 @@ export class AdminDashboardComponent implements OnInit {
           // Close the modal and reset selection
           this.isAssigningTrainer = false;
           this.selectedTrainee = null;
-          console.log("Success");
         },
         error:(error) => {
           console.log(error);

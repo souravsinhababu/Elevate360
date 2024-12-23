@@ -1,123 +1,196 @@
 /* Main Dashboard Container */
 .dashboard-container {
-    padding: 30px;
-    text-align: center;
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    max-width: 1200px;
-    margin: 20px auto;
-  }
-  
-  /* Header Section */
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .welcome-message {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .logout-button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .logout-button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Assigned Trainees Section */
-  .assigned-trainees-header {
-    font-size: 22px;
-    font-weight: bold;
-    margin-top: 30px;
-    color: #333;
-  }
-  
-  .trainee-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  } 
-  
-  .trainee-table th,
-  .trainee-table td {
-    padding: 12px;
-    text-align: left;
-    border: 1px solid #ddd;
-  }
-  
-  .trainee-table th {
-    background-color: #f4f4f4;
-    color: #333;
-    font-size: 16px;
-  }
-  
-  .trainee-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .trainee-table tr:hover {
-    background-color: #e9ecef;
-  }
-  
-  .trainee-table td {
-    font-size: 14px;
-  }
-  
-  /* Loading message */
-  .loading-message {
-    font-size: 18px;
-    color: #007bff;
-    margin-top: 20px;
-    font-weight: bold;
-  }
-  
-  /* No Trainees Message */
-  .no-trainees-message {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-    border-radius: 5px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-  }
-  
-  .no-trainees-message p {
-    margin: 0;
-  }
-  
-  .no-trainees-message::before {
-    content: "⚠️"; /* Warning icon */
-    margin-right: 10px;
-    font-size: 24px;
-  }
-  
-  /* General Styling */
-  h2 {
-    font-size: 28px;
-    margin-top: 20px;
-    color: #333;
-  }
-  
-  h3 {
-    font-size: 20px;
-    margin-top: 20px;
-    color: #333;
-  }
-  
+  padding: 30px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 20px auto;
+}
+ 
+/* Header Section */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+ 
+.welcome-message {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+ 
+.logout-button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+ 
+.logout-button:hover {
+  background-color: #0056b3;
+}
+ 
+/* Assigned Trainees Section */
+.assigned-trainees-header {
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 30px;
+  color: #333;
+}
+ 
+.trainee-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+ 
+.trainee-table th,
+.trainee-table td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+ 
+.trainee-table th {
+  background-color: #f4f4f4;
+  color: #333;
+  font-size: 16px;
+}
+ 
+.trainee-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+ 
+.trainee-table tr:hover {
+  background-color: #e9ecef;
+}
+ 
+.trainee-table td {
+  font-size: 14px;
+}
+ 
+/* Loading message */
+.loading-message {
+  font-size: 18px;
+  color: #007bff;
+  margin-top: 20px;
+  font-weight: bold;
+}
+ 
+/* No Trainees Message */
+.no-trainees-message {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+ 
+.no-trainees-message p {
+  margin: 0;
+}
+ 
+.no-trainees-message::before {
+  content: "⚠️"; /* Warning icon */
+  margin-right: 10px;
+  font-size: 24px;
+}
+ 
+/* General Styling */
+h2 {
+  font-size: 28px;
+  margin-top: 20px;
+  color: #333;
+}
+ 
+h3 {
+  font-size: 20px;
+  margin-top: 20px;
+  color: #333;
+}
+ 
+/* Tabs Section */
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30px; /* Added margin-top for space between table and tabs */
+}
+ 
+.tabs button {
+  padding: 10px;
+  border: none;
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+ 
+.tabs button.active {
+  background-color: #4CAF50;
+  color: white;
+}
+ 
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+ 
+li {
+  margin: 10px 0;
+}
+ 
+/* Tab Content */
+.tab-content {
+  display: block;
+  padding: 20px;
+  margin-top: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+ 
+.tab-content ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+ 
+.tab-content li {
+  margin: 15px 0;
+  font-size: 14px;
+}
+ 
+/* Course Item */
+.course-item {
+  font-size: 16px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+ 
+.course-item:hover {
+  background-color: #f1f1f1;
+}
+ 
+/* Active Tab Styling */
+.active-tab {
+  display: block;
+}
+ 
+.courses-heading {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #333;
+}
