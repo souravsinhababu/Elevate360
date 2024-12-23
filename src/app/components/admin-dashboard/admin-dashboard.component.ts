@@ -54,7 +54,7 @@ export class AdminDashboardComponent implements OnInit {
  
   ngOnInit(): void {
     this.loadTrainers();
-    // this.loadTrainees();
+    this.loadTrainees();
     this.loadAvailableCourses();
    
    
@@ -200,12 +200,6 @@ export class AdminDashboardComponent implements OnInit {
   showTrainees() {
     this.isTrainerVisible = false;
     this.isTraineeVisible = true;
-    
-    // Only load trainees if not already 
-    if (!this.traineesLoaded) {
-      this.loadTrainees();
-      this.traineesLoaded = true;  // Set the flag to true after loading
-    }
   }
 
   
@@ -250,6 +244,7 @@ export class AdminDashboardComponent implements OnInit {
           // Close the modal and reset selection
           this.isAssigningTrainer = false;
           this.selectedTrainee = null;
+          console.log("Success");
         },
         error:(error) => {
           console.log(error);
@@ -431,7 +426,7 @@ openAssignCoursesModal(trainer: any) {
       // Make an API call to assign courses to the trainer
       this.mainService.assignCoursesToTrainer(this.selectedTrainer.id, coursesToAssign, this.startDate, this.endDate)
         .subscribe(response => {
-          console.log("Courses assigned successfully");
+          alert("course assigned successfully!")
           this.cancelAssignCourses(); // Close modal after assignment
         });
     } else {
