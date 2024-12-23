@@ -264,7 +264,7 @@
             <input 
               type="checkbox" 
               [(ngModel)]="selectedCourses[course]" 
-              [disabled]="isAllCoursesAssigned || selectedCourses[course]" />
+              [disabled]="isAllCoursesAssigned || isCourseAssigned(course)" />
             {{ course }}
           </label>
         </div>
@@ -273,15 +273,16 @@
       <!-- Start and end date inputs -->
       <label for="startDate">Start Date:</label>
       <input type="date" id="startDate" [(ngModel)]="startDate" />
-  
+    
       <label for="endDate">End Date:</label>
       <input type="date" id="endDate" [(ngModel)]="endDate" />
-  
+    
       <!-- Disable the Assign button if all courses are assigned -->
       <button (click)="assignCoursesToTrainer()" [disabled]="isAllCoursesAssigned">Assign</button>
       <button (click)="cancelAssignCourses()">Cancel</button>
     </div>
   </div>
+  
   
 </div>
  

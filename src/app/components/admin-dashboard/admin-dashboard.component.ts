@@ -379,41 +379,40 @@ export class AdminDashboardComponent implements OnInit {
     this.showEditTrainerModal = false;
   }
  
-  openAssignCoursesModal(trainer: any) {
-    this.selectedTrainer = trainer;
-    this.isAssigningCourses = true;
-    this.isAssigningTrainees = false;
-    this.isEditingTrainee = false;
-    this.selectedCourses = {};
-
-    // Get the list of assigned courses for the trainer
-    const assignedCourses = trainer.assignedCourses.map((course: { courseName: any; }) => course.courseName);
-
-    // Loop through all available courses and keep them in a separate list
-    this.availableCourses.forEach(category => {
-        category.courses.forEach((course: string | number) => {
-            // If the course is assigned, mark it as selected
-            if (assignedCourses.includes(course)) {
-                this.selectedCourses[course] = true;
-            }
-        });
-    });
-
-    // Check if all courses are assigned
-    const allCoursesAssigned = this.availableCourses.every(category =>
-        category.courses.every((course: any) => assignedCourses.includes(course))
-    );
-
-    if (allCoursesAssigned) {
-        // Disable checkboxes if all courses are assigned
-        this.isAllCoursesAssigned = true;
-    } else {
-        this.isAllCoursesAssigned = false;
-    }
+ // Function to check if a course is already assigned
+isCourseAssigned(course: string): boolean {
+  return this.selectedTrainer?.assignedCourses.some((assignedCourse: { courseName: string }) => assignedCourse.courseName === course);
 }
 
+openAssignCoursesModal(trainer: any) {
+  this.selectedTrainer = trainer;
+  this.isAssigningCourses = true;
+  this.isAssigningTrainees = false;
+  this.isEditingTrainee = false;
+  this.selectedCourses = {}; // Reset selected courses
 
+  // Get the list of assigned courses for the trainer
+  const assignedCourses = trainer.assignedCourses.map((course: { courseName: string }) => course.courseName);
 
+  // Loop through all available courses and set selected courses
+  this.availableCourses.forEach(category => {
+    category.courses.forEach((course: string | number) => {
+      // If the course is assigned, mark it as selected
+      if (assignedCourses.includes(course)) {
+        this.selectedCourses[course] = true;
+      } else {
+        this.selectedCourses[course] = false; // Set unassigned courses to false
+      }
+    });
+  });
+
+  // Check if all courses are assigned
+  const allCoursesAssigned = this.availableCourses.every(category =>
+    category.courses.every((course: any) => assignedCourses.includes(course))
+  );
+
+  this.isAllCoursesAssigned = allCoursesAssigned; // Set flag for all courses assigned
+}
  
   cancelAssignCourses() {
     this.isAssigningCourses = false;
@@ -425,20 +424,20 @@ export class AdminDashboardComponent implements OnInit {
   }
  
   assignCoursesToTrainer() {
-    // Assuming you are sending the selected courses to the backend API
+    // Collect the courses to be assigned (only those that are selected)
     const coursesToAssign = Object.keys(this.selectedCourses).filter(course => this.selectedCourses[course]);
+  
     if (coursesToAssign.length > 0) {
-        // Make an API call to assign courses to the trainer
-        this.mainService.assignCoursesToTrainer(this.selectedTrainer.id, coursesToAssign, this.startDate, this.endDate)
-            .subscribe(response => {
-                console.log("Courses assigned successfully");
-                this.cancelAssignCourses(); // Close modal after assignment
-            });
+      // Make an API call to assign courses to the trainer
+      this.mainService.assignCoursesToTrainer(this.selectedTrainer.id, coursesToAssign, this.startDate, this.endDate)
+        .subscribe(response => {
+          console.log("Courses assigned successfully");
+          this.cancelAssignCourses(); // Close modal after assignment
+        });
     } else {
-        console.log("No courses selected");
+      console.log("No courses selected");
     }
-}
-
+  }
  
   logout() {
     this.authGuard.logout();  // Logout the user
