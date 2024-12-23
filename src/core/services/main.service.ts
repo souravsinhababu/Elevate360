@@ -59,9 +59,9 @@ assignCoursesToTrainer(trainerId: number, courses: string[], startDate: string, 
   return this.http.post(url, courses);
 }
 
-getCourseHistory(traineeId: number): Observable<TraineeCoursesResponse[]> {
-  return this.http.get<TraineeCoursesResponse[]>(`${environment.apiUrl}/admin/trainee/${traineeId}`);
-}
+// getCourseHistory(traineeId: number): Observable<TraineeCoursesResponse[]> {
+//   return this.http.get<TraineeCoursesResponse[]>(`${environment.apiUrl}/admin/course-history/${traineeId}`);
+// }
 
   
 

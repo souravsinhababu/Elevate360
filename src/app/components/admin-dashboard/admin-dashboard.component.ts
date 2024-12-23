@@ -52,10 +52,10 @@ export class AdminDashboardComponent implements OnInit {
   ) {}
  
   ngOnInit(): void {
-    console.log('Admin Dashboard Loaded');
     this.loadTrainers();
     // this.loadTrainees();
     this.loadAvailableCourses();
+   
    
     // Retrieve admin name and ID dynamically (example from localStorage)
     const storedUsername = localStorage.getItem('username');
@@ -67,7 +67,6 @@ export class AdminDashboardComponent implements OnInit {
     // You can also store the admin ID in localStorage after login
     if (storedAdminId) {
       this.adminId = parseInt(storedAdminId, 10);  // Parse adminId from localStorage
-      console.log('Parsed Admin ID:', this.adminId); // Log parsed admin ID to verify
     } else {
       console.error('Admin ID is not available in localStorage!');
     }
@@ -108,16 +107,16 @@ export class AdminDashboardComponent implements OnInit {
     };
  
     // Call the API to update admin details using the dynamically fetched adminId
-    this.mainService.editAdminDetails(this.adminId, updateRequest).subscribe(
-      (response) => {
+    this.mainService.editAdminDetails(this.adminId, updateRequest).subscribe({
+      next:(response) => {
         alert('Admin details updated successfully!');
         this.closeEditAdminModal();  // Close the modal after successful update
       },
-      (error) => {
+     error: (error) => {
         alert('Failed to update admin details!');
         console.error(error);
       }
-    );
+  });
   }
  
  
@@ -134,55 +133,21 @@ export class AdminDashboardComponent implements OnInit {
       }
   });
   }
-
-  loadTrainees() {
-    this.mainService.loadTrainees().subscribe({
-      next:(data) => {
-        this.trainees = data.map(trainee => {
-          // Fetch course history for each trainee
-          this.loadCourseHistory(trainee.id);  // Fetch course history
-          trainee.trainer_name = trainee.trainer ? trainee.trainer.username : 'Not assigned';
-          return trainee;
-        });
-        this.originalTrainees = [...data];
-        this.search();
-      },
-     error: (error) => {
-        console.error('Error fetching trainees:', error);
-      }
-  });
+  loadTrainees(): void {
+    this.mainService.loadTrainees().subscribe((response) => {
+      // Transform the response data to extract trainee details
+      this.trainees = response.map(item => ({
+        ...item.trainee,  // Extract the trainee object
+        courseHistory: item.assignments || []  // Include the assignments or course history
+      }));
+  
+      console.log('Trainees:', this.trainees); // Debugging output
+    });
   }
+  
+  
+  
 
- 
-  loadCourseHistory(traineeId: number) {
-    this.mainService.getCourseHistory(traineeId).subscribe({
-      next:(historyData) => {
-        // console.log('API Response:', historyData);  // Log the full response
- 
-        // Find the trainee object to extract the trainer's name
-        const trainee = this.trainees.find(t => t.id === traineeId);  // Find the trainee by ID
-        const trainerName = trainee ? trainee.trainer_name : '';  // Get trainerName from the trainee object
- 
-        // Find the trainer's course history from the API response
-        const traineeHistory = historyData.find(
-          (trainer) => trainer.trainerName === trainerName
-        );
- 
-        // console.log('Trainee History:', traineeHistory);  
- 
-        // If a trainer is found, store their assigned courses along with trainerName, otherwise assign an empty array
-        this.courseHistory[traineeId] = traineeHistory ? {
-          trainerName: trainerName,
-          assignedCourses: traineeHistory.assignedCourses
-        } : { trainerName: '', assignedCourses: [] };
- 
-        // console.log('Assigned Courses:', this.courseHistory[traineeId]);  
-      },
-     error: (error) => {
-        console.error('Error loading course history', error);
-      }
-   } );
-  }
  
   search() {
     const searchLower = this.searchQuery.toLowerCase();
@@ -242,6 +207,7 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
+  
  
 
   openAssignTraineesModal(trainer: any) {
@@ -361,7 +327,7 @@ export class AdminDashboardComponent implements OnInit {
       if (this.selectedTrainer && this.selectedTrainer.username) {
         this.mainService.assignTraineesToTrainer(trainee.id, this.selectedTrainer.id).subscribe(
           () => {
-            trainee.trainer_name = this.selectedTrainer.username;
+            trainee.trainer.username = this.selectedTrainer.username;
             trainee.selected = false;
           }
         );
