@@ -250,29 +250,39 @@
     </div>
   </div>
  
-  <!-- Modal for Assigning Courses -->
-<div *ngIf="isAssigningCourses" class="modal">
-  <div class="modal-content">
-    <h4>Assign Courses to {{ selectedTrainer?.username }}</h4>
-    <div *ngFor="let category of availableCourses">
-      <h5>{{ category.trainingCategory.category }}</h5>
-      <div *ngFor="let course of category.courses">
-        <label>
-          <input type="checkbox" [(ngModel)]="selectedCourses[course]" />
-          {{ course }}
-        </label>
+  <div *ngIf="isAssigningCourses" class="modal">
+    <div class="modal-content">
+      <h4>Assign Courses to {{ selectedTrainer?.username }}</h4>
+      
+      <!-- Loop through available courses and display each one -->
+      <div *ngFor="let category of availableCourses">
+        <h5>{{ category.trainingCategory.category }}</h5>
+        
+        <!-- Loop through each course within a category -->
+        <div *ngFor="let course of category.courses">
+          <label>
+            <input 
+              type="checkbox" 
+              [(ngModel)]="selectedCourses[course]" 
+              [disabled]="isAllCoursesAssigned || selectedCourses[course]" />
+            {{ course }}
+          </label>
+        </div>
       </div>
+  
+      <!-- Start and end date inputs -->
+      <label for="startDate">Start Date:</label>
+      <input type="date" id="startDate" [(ngModel)]="startDate" />
+  
+      <label for="endDate">End Date:</label>
+      <input type="date" id="endDate" [(ngModel)]="endDate" />
+  
+      <!-- Disable the Assign button if all courses are assigned -->
+      <button (click)="assignCoursesToTrainer()" [disabled]="isAllCoursesAssigned">Assign</button>
+      <button (click)="cancelAssignCourses()">Cancel</button>
     </div>
-    <label for="startDate">Start Date:</label>
-    <input type="date" id="startDate" [(ngModel)]="startDate" />
- 
-    <label for="endDate">End Date:</label>
-    <input type="date" id="endDate" [(ngModel)]="endDate" />
-    <button (click)="assignCoursesToTrainer()">Assign</button>
-    <button (click)="cancelAssignCourses()">Cancel</button>
   </div>
-</div>
- 
+  
 </div>
  
  

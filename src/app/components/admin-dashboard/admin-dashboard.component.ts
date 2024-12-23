@@ -43,6 +43,7 @@ export class AdminDashboardComponent implements OnInit {
   showEditAdminModal = false;
   public adminId: number | undefined;
   traineesLoaded: any;
+  isAllCoursesAssigned: boolean = false;
  
   constructor(
     private fb: FormBuilder,
@@ -384,7 +385,35 @@ export class AdminDashboardComponent implements OnInit {
     this.isAssigningTrainees = false;
     this.isEditingTrainee = false;
     this.selectedCourses = {};
-  }
+
+    // Get the list of assigned courses for the trainer
+    const assignedCourses = trainer.assignedCourses.map((course: { courseName: any; }) => course.courseName);
+
+    // Loop through all available courses and keep them in a separate list
+    this.availableCourses.forEach(category => {
+        category.courses.forEach((course: string | number) => {
+            // If the course is assigned, mark it as selected
+            if (assignedCourses.includes(course)) {
+                this.selectedCourses[course] = true;
+            }
+        });
+    });
+
+    // Check if all courses are assigned
+    const allCoursesAssigned = this.availableCourses.every(category =>
+        category.courses.every((course: any) => assignedCourses.includes(course))
+    );
+
+    if (allCoursesAssigned) {
+        // Disable checkboxes if all courses are assigned
+        this.isAllCoursesAssigned = true;
+    } else {
+        this.isAllCoursesAssigned = false;
+    }
+}
+
+
+
  
   cancelAssignCourses() {
     this.isAssigningCourses = false;
@@ -396,32 +425,20 @@ export class AdminDashboardComponent implements OnInit {
   }
  
   assignCoursesToTrainer() {
-    const selectedCourseNames = Object.keys(this.selectedCourses).filter(course => this.selectedCourses[course]);
- 
-    if (this.selectedTrainer && this.startDate && this.endDate && selectedCourseNames.length) {
-      this.mainService.assignCoursesToTrainer(
-        this.selectedTrainer.id,
-        selectedCourseNames,
-        this.startDate,
-        this.endDate
-      ).subscribe({
-       next: () => {
-          alert('Courses assigned successfully');
-          this.isAssigningCourses = false;
-        },
-       error: (error) => {
-          console.error('Error assigning courses:', error);
-        }
-    });
+    // Assuming you are sending the selected courses to the backend API
+    const coursesToAssign = Object.keys(this.selectedCourses).filter(course => this.selectedCourses[course]);
+    if (coursesToAssign.length > 0) {
+        // Make an API call to assign courses to the trainer
+        this.mainService.assignCoursesToTrainer(this.selectedTrainer.id, coursesToAssign, this.startDate, this.endDate)
+            .subscribe(response => {
+                console.log("Courses assigned successfully");
+                this.cancelAssignCourses(); // Close modal after assignment
+            });
     } else {
-      console.error('Please select a trainer, start date, end date, and at least one course.');
+        console.log("No courses selected");
     }
- 
-    this.isAssigningCourses = false;
-    this.selectedTrainer = null;
-    this.startDate = '';
-    this.endDate = '';
-  }
+}
+
  
   logout() {
     this.authGuard.logout();  // Logout the user
