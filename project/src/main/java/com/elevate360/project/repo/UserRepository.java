@@ -8,12 +8,16 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> , CrudRepository<User, Long> {
     User findByEmail(String email);
 
     List<User> findByRole(String a);
     List<User> findByTrainer(User trainer);
+//used to edit the trainer email and password
+    Optional<User> findById(Long id);
+
 
     @Query("SELECT u FROM User u WHERE u.trainer.id = :trainerId AND u.role = 'trainee'")
     List<User> findTraineesByTrainerId(@Param("trainerId") Long trainerId);

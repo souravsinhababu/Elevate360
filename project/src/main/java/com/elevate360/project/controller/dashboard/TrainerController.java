@@ -1,7 +1,7 @@
 package com.elevate360.project.controller.dashboard;
 
-import com.elevate360.project.dto.AssignTraineesRequest;
-import com.elevate360.project.dto.TraineeDTO;
+import com.elevate360.project.dto.EditProfile.TrainerUpdateRequest;
+import com.elevate360.project.dto.EditProfile.TrainerUpdateRequest;
 import com.elevate360.project.entity.User;
 import com.elevate360.project.repo.UserRepository;
 import com.elevate360.project.service.UserService;
@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/trainer")
@@ -32,4 +31,12 @@ public class TrainerController {
             return ResponseEntity.notFound().build(); // Return 404 if no trainees found or trainer not found
         }
     }
+
+    @PutMapping("/edit-trainer/{id}")
+    public ResponseEntity<User> editTrainerEmailAndPassword(@PathVariable Long id, @RequestBody TrainerUpdateRequest updateRequest) {
+        return userService.editTrainerEmailAndPassword(id, updateRequest);
+    }
+
+
+
 }

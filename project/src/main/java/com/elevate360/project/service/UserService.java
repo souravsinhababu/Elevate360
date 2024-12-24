@@ -1,7 +1,8 @@
 package com.elevate360.project.service;
 
-import com.elevate360.project.dto.AssignTraineesRequest;
 import com.elevate360.project.dto.EditProfile.AdminUpdateRequest;
+import com.elevate360.project.dto.EditProfile.TraineeUpdateRequest;
+import com.elevate360.project.dto.EditProfile.TrainerUpdateRequest;
 import com.elevate360.project.dto.TraineeDTO;
 import com.elevate360.project.entity.TrainerTraineeAssignment;
 import com.elevate360.project.entity.User;
@@ -16,7 +17,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,8 +24,15 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
+//    @Autowired
+//    private static UserRepository userRepository;
+
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
 
     @Autowired
@@ -226,6 +233,67 @@ public class UserService {
 
         return ResponseEntity.status(404).build(); // Not Found if user does not exist
     }
+
+
+    public ResponseEntity<User> editTrainerEmailAndPassword(Long id, TrainerUpdateRequest updateRequest) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            // Ensure the user is a trainer
+            if ("trainer".equals(user.getRole())) {
+                // Update email and password
+                user.setEmail(updateRequest.getEmail());
+                user.setPassword(updateRequest.getPassword());
+
+                // Save the updated user
+                userRepository.save(user);
+
+                // Return the updated user without the password field in the response
+                User responseUser = new User();
+                responseUser.setId(user.getId());
+                responseUser.setUsername(user.getUsername());
+                responseUser.setEmail(user.getEmail());
+                responseUser.setRole(user.getRole());
+
+                return ResponseEntity.ok(responseUser); // Return the formatted trainer data without password
+            } else {
+                return ResponseEntity.status(403).build(); // Forbidden if not a trainer
+            }
+        }
+
+        return ResponseEntity.status(404).build(); // Not Found if user does not exist
+    }
+
+    public ResponseEntity<User> editTraineeEmailAndPassword(Long id, TraineeUpdateRequest updateRequest) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        // Check if the user exists
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            // Ensure the user is a trainee
+            if ("trainee".equals(user.getRole())) {
+                // Update email and password
+                user.setEmail(updateRequest.getEmail());
+                user.setPassword(updateRequest.getPassword());
+
+                // Save the updated user
+                userRepository.save(user);
+
+                // Return the updated user data
+                return ResponseEntity.ok(user); // Return the updated user
+            } else {
+                return ResponseEntity.status(403).build(); // Forbidden if not a trainee
+            }
+        }
+
+        return ResponseEntity.status(404).build(); // Not Found if user does not exist
+    }
+
+
+
 
     //sending mail
     // Method to send signup link
