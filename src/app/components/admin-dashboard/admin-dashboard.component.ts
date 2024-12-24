@@ -43,6 +43,7 @@ export class AdminDashboardComponent implements OnInit {
   showEditAdminModal = false;
   public adminId: number | undefined;
   traineesLoaded: any;
+  isAllCoursesAssigned: boolean = false;
  
   constructor(
     private fb: FormBuilder,
@@ -53,7 +54,7 @@ export class AdminDashboardComponent implements OnInit {
  
   ngOnInit(): void {
     this.loadTrainers();
-    // this.loadTrainees();
+    this.loadTrainees();
     this.loadAvailableCourses();
    
    
@@ -83,7 +84,6 @@ export class AdminDashboardComponent implements OnInit {
  
   openEditAdminModal(): void {
     this.showEditAdminModal = true;
-    console.log('Modal is open:', this.showEditAdminModal);
   }
  
   closeEditAdminModal(): void {
@@ -141,7 +141,7 @@ export class AdminDashboardComponent implements OnInit {
         courseHistory: item.assignments || []  // Include the assignments or course history
       }));
   
-      console.log('Trainees:', this.trainees); // Debugging output
+      // console.log('Trainees:', this.trainees); // Debugging output
     });
   }
   
@@ -199,12 +199,6 @@ export class AdminDashboardComponent implements OnInit {
   showTrainees() {
     this.isTrainerVisible = false;
     this.isTraineeVisible = true;
-    
-    // Only load trainees if not already 
-    if (!this.traineesLoaded) {
-      this.loadTrainees();
-      this.traineesLoaded = true;  // Set the flag to true after loading
-    }
   }
 
   
@@ -378,13 +372,40 @@ export class AdminDashboardComponent implements OnInit {
     this.showEditTrainerModal = false;
   }
  
-  openAssignCoursesModal(trainer: any) {
-    this.selectedTrainer = trainer;
-    this.isAssigningCourses = true;
-    this.isAssigningTrainees = false;
-    this.isEditingTrainee = false;
-    this.selectedCourses = {};
-  }
+ // Function to check if a course is already assigned
+isCourseAssigned(course: string): boolean {
+  return this.selectedTrainer?.assignedCourses.some((assignedCourse: { courseName: string }) => assignedCourse.courseName === course);
+}
+
+openAssignCoursesModal(trainer: any) {
+  this.selectedTrainer = trainer;
+  this.isAssigningCourses = true;
+  this.isAssigningTrainees = false;
+  this.isEditingTrainee = false;
+  this.selectedCourses = {}; // Reset selected courses
+
+  // Get the list of assigned courses for the trainer
+  const assignedCourses = trainer.assignedCourses.map((course: { courseName: string }) => course.courseName);
+
+  // Loop through all available courses and set selected courses
+  this.availableCourses.forEach(category => {
+    category.courses.forEach((course: string | number) => {
+      // If the course is assigned, mark it as selected
+      if (assignedCourses.includes(course)) {
+        this.selectedCourses[course] = true;
+      } else {
+        this.selectedCourses[course] = false; // Set unassigned courses to false
+      }
+    });
+  });
+
+  // Check if all courses are assigned
+  const allCoursesAssigned = this.availableCourses.every(category =>
+    category.courses.every((course: any) => assignedCourses.includes(course))
+  );
+
+  this.isAllCoursesAssigned = allCoursesAssigned; // Set flag for all courses assigned
+}
  
   cancelAssignCourses() {
     this.isAssigningCourses = false;
@@ -396,31 +417,19 @@ export class AdminDashboardComponent implements OnInit {
   }
  
   assignCoursesToTrainer() {
-    const selectedCourseNames = Object.keys(this.selectedCourses).filter(course => this.selectedCourses[course]);
- 
-    if (this.selectedTrainer && this.startDate && this.endDate && selectedCourseNames.length) {
-      this.mainService.assignCoursesToTrainer(
-        this.selectedTrainer.id,
-        selectedCourseNames,
-        this.startDate,
-        this.endDate
-      ).subscribe({
-       next: () => {
-          alert('Courses assigned successfully');
-          this.isAssigningCourses = false;
-        },
-       error: (error) => {
-          console.error('Error assigning courses:', error);
-        }
-    });
+    // Collect the courses to be assigned (only those that are selected)
+    const coursesToAssign = Object.keys(this.selectedCourses).filter(course => this.selectedCourses[course]);
+  
+    if (coursesToAssign.length > 0) {
+      // Make an API call to assign courses to the trainer
+      this.mainService.assignCoursesToTrainer(this.selectedTrainer.id, coursesToAssign, this.startDate, this.endDate)
+        .subscribe(response => {
+          alert("course assigned successfully!")
+          this.cancelAssignCourses(); // Close modal after assignment
+        });
     } else {
-      console.error('Please select a trainer, start date, end date, and at least one course.');
+      console.log("No courses selected");
     }
- 
-    this.isAssigningCourses = false;
-    this.selectedTrainer = null;
-    this.startDate = '';
-    this.endDate = '';
   }
  
   logout() {
