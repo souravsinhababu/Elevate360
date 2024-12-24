@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { MainService } from '../../../core/services/main.service';
 import { AuthGuard } from '../../../core/guards/auth.guard';
  
+interface Option {
+  option: string;
+  isCorrect: boolean;
+}
+ 
 @Component({
   selector: 'app-trainer-dashboard',
   templateUrl: './trainer-dashboard.component.html',
@@ -11,51 +16,64 @@ export class TrainerDashboardComponent implements OnInit {
   userId: number | null = null;
   trainees: any[] = [];  // Array to store trainees
   isLoading: boolean = true;  // To show a loading indicator
-  public trainername: string = '';
+  public trainername: string = ''; // Trainer name
   selectedTab: 'ongoing' | 'upcoming' | 'history' = 'ongoing'; // Default tab is ongoing
   uniqueAssignedCourses: any[] = []; // Array to store unique courses
-
-  constructor(private authGuard: AuthGuard, private mainService: MainService) {}
-
+  questions: any[] = [];  // Array to store the questions
+  selectedCourseName: string = '';  // Variable to store selected course name
+ 
+  availableCourses: string[] = [];  // Array to store available courses from API
+ 
+  constructor(
+    private authGuard: AuthGuard,
+    private mainService: MainService
+  ) {}
+ 
   ngOnInit(): void {
-    // Retrieve the user ID from AuthService (which fetches it from localStorage)
     this.userId = this.authGuard.getUserId();
-
-    if (this.userId) {
-      // Fetch trainees assigned to the trainer
+ 
+    if (this.userId !== null) {
       this.fetchTrainees(this.userId);
     }
-
+ 
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
       this.trainername = storedUsername;  // Set the trainer name from localStorage
     }
+ 
+    this.loadAvailableCourses();  // Load the available courses for dropdown
   }
-
-  // Method to fetch trainees assigned to the trainer using MainService
+ 
   fetchTrainees(trainerId: number): void {
     this.mainService.getTraineesByTrainer(trainerId).subscribe({
       next: (data) => {
-        this.trainees = data;  // Store trainees data
-        this.isLoading = false; // Hide loading indicator
-
-        // Get unique courses from all trainees
+        this.trainees = data;
+        this.isLoading = false;
         this.uniqueAssignedCourses = this.getUniqueCourses(data);
       },
       error: (error) => {
         console.error('Error fetching trainees:', error);
-        this.isLoading = false; // Hide loading indicator even if there's an error
+        this.isLoading = false;
       }
     });
   }
-
-  // Method to extract unique courses from all trainees
+ 
+  loadAvailableCourses(): void {
+    this.mainService.getAvailableCourses().subscribe({
+      next: (response) => {
+        this.availableCourses = response.flatMap(category => category.courses);
+      },
+      error: (error) => {
+        console.error('Error loading available courses:', error);
+      }
+    });
+  }
+ 
   getUniqueCourses(trainees: any[]): any[] {
     const courses: any[] = [];
     trainees.forEach(trainee => {
       if (trainee.trainer?.assignedCourses) {
         trainee.trainer.assignedCourses.forEach((course: { courseName: any; }) => {
-          // Check if the course is already in the list to avoid duplicates
           if (!courses.find(existingCourse => existingCourse.courseName === course.courseName)) {
             courses.push(course);
           }
@@ -64,46 +82,121 @@ export class TrainerDashboardComponent implements OnInit {
     });
     return courses;
   }
-
-  // Method to determine if a course is ongoing
-  isOngoing(course: any): boolean {
-    const currentDate = new Date();
-    const startDate = new Date(course.startDate);
-    const endDate = new Date(course.endDate);
-    return currentDate >= startDate && currentDate <= endDate;
-  }
-
-  // Method to determine if a course is upcoming
-  isUpcoming(course: any): boolean {
-    const currentDate = new Date();
-    const startDate = new Date(course.startDate);
-    return currentDate < startDate; // Check if the course start date is in the future
-  }
-  hasOngoingCourses(): boolean {
-    return this.uniqueAssignedCourses.some(course => this.isOngoing(course));
-  }
-
-  hasUpcomingCourses(): boolean {
-    return this.uniqueAssignedCourses.some(course => this.isUpcoming(course));
-  }
-
-  hasCompletedCourses(): boolean {
-    return this.uniqueAssignedCourses.some(course => this.isCompleted(course));
-  }
-
-  // Method to determine if a course is completed (i.e., endDate is before the current date)
-  isCompleted(course: any): boolean {
-    const currentDate = new Date();
-    const endDate = new Date(course.endDate);
-    return currentDate > endDate; // Completed if the end date is in the past
-  }
-
+ 
   // Method to handle tab selection
   selectTab(tab: 'ongoing' | 'upcoming' | 'history'): void {
     this.selectedTab = tab;
   }
-
+ 
+  hasOngoingCourses(): boolean {
+    return this.uniqueAssignedCourses.some(course => this.isOngoing(course));
+  }
+ 
+  hasUpcomingCourses(): boolean {
+    return this.uniqueAssignedCourses.some(course => this.isUpcoming(course));
+  }
+ 
+  hasCompletedCourses(): boolean {
+    return this.uniqueAssignedCourses.some(course => this.isCompleted(course));
+  }
+ 
+  isOngoing(course: any): boolean {
+    const today = new Date();
+    const startDate = new Date(course.startDate);
+    const endDate = new Date(course.endDate);
+    return startDate <= today && endDate >= today;
+  }
+ 
+  isUpcoming(course: any): boolean {
+    const today = new Date();
+    const startDate = new Date(course.startDate);
+    return startDate > today;
+  }
+ 
+  isCompleted(course: any): boolean {
+    const today = new Date();
+    const endDate = new Date(course.endDate);
+    return endDate < today;
+  }
+ 
+  // Method to mark the correct option for a question
+  markCorrectOption(question: any, option: Option): void {
+    question.options.forEach((opt: Option) => opt.isCorrect = false);
+    option.isCorrect = true;
+    question.correctOption = option;
+  }
+ 
+  submitQuiz(): void {
+    if (!this.selectedCourseName) {
+      alert('Please select a course before submitting the quiz.');
+      return;
+    }
+ 
+    // Check if all questions have at least 2 options and one correct answer
+    for (let question of this.questions) {
+      if (question.options.filter((opt: { option: string; }) => opt.option.trim() !== '').length < 2) {
+        alert('Each question must have at least two options.');
+        return;
+      }
+ 
+      if (!question.correctOption) {
+        alert('Each question must have a correct answer selected.');
+        return;
+      }
+    }
+ 
+    const examData = {
+      courseName: this.selectedCourseName,  // Use selectedCourseName as the selected course
+      technology: this.selectedCourseName,  // Still passing the same value here for technology
+      questions: this.questions.map(q => ({
+        question: q.question,
+        options: q.options.map((option: { option: any; isCorrect: any; }) => ({
+          option: option.option,
+          correct: option.isCorrect
+        }))
+      }))
+    };
+ 
+    console.log('Exam Data:', examData);
+ 
+    if (this.userId !== null) {
+      this.mainService.createExam(this.userId, examData).subscribe({
+        next: (response) => {
+          console.log('Quiz created successfully', response);
+        },
+        error: (error) => {
+          console.error('Error creating quiz:', error);
+        }
+      });
+    } else {
+      console.error('User ID is null, cannot create quiz');
+    }
+  }
+ 
+  addQuestion(): void {
+    this.questions.push({
+      question: '',
+      options: [
+        { option: '', isCorrect: false },
+        { option: '', isCorrect: false },
+        { option: '', isCorrect: false },
+        { option: '', isCorrect: false }
+      ],
+      correctOption: null
+    });
+  }
+ 
   logout() {
-    this.authGuard.logout();  // Logout the user
+    this.authGuard.logout();
+  }
+ 
+  hasMinimumTwoOptions(question: any): boolean {
+    return question.options.filter((opt: { option: string; }) => opt.option.trim() !== '').length >= 2;
+  }
+ 
+  hasCorrectAnswer(question: any): boolean {
+    return question.correctOption !== null;
   }
 }
+ 
+ 
