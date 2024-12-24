@@ -5,9 +5,11 @@ import com.elevate360.project.dto.EditProfile.TraineeUpdateRequest;
 import com.elevate360.project.dto.EditProfile.TrainerUpdateRequest;
 import com.elevate360.project.dto.TraineeDTO;
 import com.elevate360.project.entity.TrainerTraineeAssignment;
+import com.elevate360.project.entity.TrainingList;
 import com.elevate360.project.entity.User;
 import com.elevate360.project.entity.exam.Exam;
 import com.elevate360.project.repo.TrainerTraineeAssignmentRepo;
+import com.elevate360.project.repo.TrainingListRepository;
 import com.elevate360.project.repo.UserRepository;
 import com.elevate360.project.repo.exam.ExamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    @Autowired
+    private TrainingListRepository trainingListRepository;
 
 
     @Autowired
@@ -349,6 +354,10 @@ public class UserService {
 
     public Long getTrainerIdFromTrainee(Long traineeId) {
         return userRepository.getTrainerIdByTraineeId(traineeId);
+    }
+    // Method to get all training lists
+    public List<TrainingList> getAllTrainingLists() {
+        return trainingListRepository.findAll();
     }
 }
 
