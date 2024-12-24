@@ -1,4 +1,49 @@
-<div >
-  <p>Welcome, {{traineename}}!</p>
-  <button  (click)="logout()">Logout</button>
+<div class="dashboard-container">
+  <h2>Welcome, {{ traineename }}</h2>
+ 
+ 
+  <!-- Edit Button to open the form -->
+  <button class="edit-button" (click)="openEditTraineeModal()">Edit Details</button>
+ 
+  <!-- Modal for Editing Trainee Details -->
+  <div *ngIf="showEditTraineeModal" class="modal">
+    <div class="modal-content">
+      <h3>Edit Trainee Details</h3>
+ 
+      <form [formGroup]="editTraineeForm" (ngSubmit)="onEditTraineeSubmit()" class="edit-form">
+        <label for="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          required
+          placeholder="Enter new email"
+        />
+        <div *ngIf="isInvalid('email')" class="error">
+          Please enter a valid email.
+        </div>
+ 
+        <label for="password">Password:</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          required
+          placeholder="Enter new password"
+        />
+        <div *ngIf="isInvalid('password')" class="error">
+          Password is required and should be at least 6 characters.
+        </div>
+ 
+        <div class="button-container">
+          <button type="submit" class="save-button">Save Changes</button>
+          <button type="button" (click)="closeEditTraineeModal()" class="close-btn">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+ 
+  <!-- Logout button -->
+  <button class="logout-button" (click)="logout()">Logout</button>
 </div>
+ 

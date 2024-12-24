@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MainService } from '../../../core/services/main.service';
 import { AuthGuard } from '../../../core/guards/auth.guard';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';  // Import for error handling
  
 interface Option {
   option: string;
@@ -23,25 +26,92 @@ export class TrainerDashboardComponent implements OnInit {
   selectedCourseName: string = '';  // Variable to store selected course name
  
   availableCourses: string[] = [];  // Array to store available courses from API
- 
+  public isEditing: boolean = false;
+  public updatedEmail: string = '';
+  public updatedPassword: string = '';
+  public showEditTrainerModal = false;
+  editTrainerForm!: FormGroup;
+  public trainerId: number | undefined;
   constructor(
     private authGuard: AuthGuard,
-    private mainService: MainService
+    private mainService: MainService,
+    private fb: FormBuilder,
+    private router: Router
   ) {}
  
   ngOnInit(): void {
     this.userId = this.authGuard.getUserId();
- 
+    this.loadAvailableCourses();
     if (this.userId !== null) {
       this.fetchTrainees(this.userId);
     }
- 
+    const storedTrainerId = localStorage.getItem('userId');
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
       this.trainername = storedUsername;  // Set the trainer name from localStorage
     }
+    if (storedTrainerId) {
+      this.trainerId = parseInt(storedTrainerId, 10);
+      this.fetchTrainees(this.trainerId);
+    } else {
+      console.error('Trainer ID is not available in localStorage!');
+    }
  
-    this.loadAvailableCourses();  // Load the available courses for dropdown
+    // Initialize the form
+    this.editTrainerForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
+ 
+  // Check if a form control is invalid
+  isInvalid(controlName: string): boolean {
+    const control = this.editTrainerForm.get(controlName);
+    return !!(control?.invalid && control?.touched);
+  }
+ 
+  // Open the modal for editing trainer details
+openEditTrainerModal(): void {
+  this.showEditTrainerModal = true;
+}
+ 
+// Close the modal
+closeEditTrainerModal(): void {
+  this.showEditTrainerModal = false;
+}
+ 
+// Handle form submission for editing trainer details
+onEditTrainerSubmit(): void {
+  if (this.editTrainerForm.invalid) {
+    return;  // Don't proceed if form is invalid
+  }
+ 
+  if (!this.trainerId) {
+    alert('Trainer ID not found!');
+    return;
+  }
+ 
+  const updateRequest = {
+    email: this.editTrainerForm.value.email,
+    password: this.editTrainerForm.value.password
+  };
+ 
+  this.mainService.editTrainerDetails(this.trainerId, updateRequest).subscribe({
+    next: (response) => {
+      alert('Trainer details updated successfully!');
+      this.closeEditTrainerModal();  // Close the modal after successful update
+    },
+    error: (error: HttpErrorResponse) => {
+      alert('Failed to update trainer details!');
+      console.error('Error details:', error);  // Log the full error object
+      if (error.error && error.error.message) {
+        console.error('Error Message:', error.error.message);
+      }
+    }
+  });
+
+ 
+     // Load the available courses for dropdown
   }
  
   fetchTrainees(trainerId: number): void {
@@ -157,12 +227,12 @@ export class TrainerDashboardComponent implements OnInit {
       }))
     };
  
-    console.log('Exam Data:', examData);
+  
  
     if (this.userId !== null) {
       this.mainService.createExam(this.userId, examData).subscribe({
         next: (response) => {
-          console.log('Quiz created successfully', response);
+         alert("quiz added");
         },
         error: (error) => {
           console.error('Error creating quiz:', error);
