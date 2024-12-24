@@ -69,6 +69,15 @@ assignCoursesToTrainer(trainerId: number, courses: string[], startDate: string, 
     const loginUrl = `${environment.apiUrl}/api/users/login?email=${loginData.email}&password=${loginData.password}`;
     return this.http.post<any>(loginUrl, {});
   }
+ // Create an exam for a trainer
+   // Method to create an exam for a trainer
+   createExam(trainerId: number, examData: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/exam/create/${trainerId}`, examData);
+  }
+ // Fetch exams assigned to a trainer based on the trainer ID
+ getExamsByTrainer(trainerId: number): Observable<any[]> {
+  return this.http.get<any[]>(`${environment.apiUrl}/exam/trainer/${trainerId}`);
+}
 
   // // Add Trainee method for handling adding a new trainee
   // addTrainee(traineeData: { username: string, email: string, password: string, designation: string, role: string }): Observable<any> {
