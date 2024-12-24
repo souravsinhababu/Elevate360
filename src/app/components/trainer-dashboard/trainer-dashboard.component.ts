@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MainService } from '../../../core/services/main.service';
 import { AuthGuard } from '../../../core/guards/auth.guard';
-
+ 
 interface Option {
   option: string;
   isCorrect: boolean;
 }
-
+ 
 @Component({
   selector: 'app-trainer-dashboard',
   templateUrl: './trainer-dashboard.component.html',
@@ -21,29 +21,29 @@ export class TrainerDashboardComponent implements OnInit {
   uniqueAssignedCourses: any[] = []; // Array to store unique courses
   questions: any[] = [];  // Array to store the questions
   selectedCourseName: string = '';  // Variable to store selected course name
-  
+ 
   availableCourses: string[] = [];  // Array to store available courses from API
-
+ 
   constructor(
     private authGuard: AuthGuard,
     private mainService: MainService
   ) {}
-
+ 
   ngOnInit(): void {
     this.userId = this.authGuard.getUserId();
-
+ 
     if (this.userId !== null) {
       this.fetchTrainees(this.userId);
     }
-
+ 
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
       this.trainername = storedUsername;  // Set the trainer name from localStorage
     }
-
+ 
     this.loadAvailableCourses();  // Load the available courses for dropdown
   }
-
+ 
   fetchTrainees(trainerId: number): void {
     this.mainService.getTraineesByTrainer(trainerId).subscribe({
       next: (data) => {
@@ -57,11 +57,10 @@ export class TrainerDashboardComponent implements OnInit {
       }
     });
   }
-
+ 
   loadAvailableCourses(): void {
     this.mainService.getAvailableCourses().subscribe({
       next: (response) => {
-        // Extracting the courses from the API response
         this.availableCourses = response.flatMap(category => category.courses);
       },
       error: (error) => {
@@ -69,7 +68,7 @@ export class TrainerDashboardComponent implements OnInit {
       }
     });
   }
-
+ 
   getUniqueCourses(trainees: any[]): any[] {
     const courses: any[] = [];
     trainees.forEach(trainee => {
@@ -83,56 +82,69 @@ export class TrainerDashboardComponent implements OnInit {
     });
     return courses;
   }
-
+ 
   // Method to handle tab selection
   selectTab(tab: 'ongoing' | 'upcoming' | 'history'): void {
     this.selectedTab = tab;
   }
-
+ 
   hasOngoingCourses(): boolean {
     return this.uniqueAssignedCourses.some(course => this.isOngoing(course));
   }
-
+ 
   hasUpcomingCourses(): boolean {
     return this.uniqueAssignedCourses.some(course => this.isUpcoming(course));
   }
-
+ 
   hasCompletedCourses(): boolean {
     return this.uniqueAssignedCourses.some(course => this.isCompleted(course));
   }
-
+ 
   isOngoing(course: any): boolean {
     const today = new Date();
     const startDate = new Date(course.startDate);
     const endDate = new Date(course.endDate);
     return startDate <= today && endDate >= today;
   }
-
+ 
   isUpcoming(course: any): boolean {
     const today = new Date();
     const startDate = new Date(course.startDate);
     return startDate > today;
   }
-
+ 
   isCompleted(course: any): boolean {
     const today = new Date();
     const endDate = new Date(course.endDate);
     return endDate < today;
   }
-
+ 
   // Method to mark the correct option for a question
   markCorrectOption(question: any, option: Option): void {
     question.options.forEach((opt: Option) => opt.isCorrect = false);
     option.isCorrect = true;
     question.correctOption = option;
   }
-
+ 
   submitQuiz(): void {
-    if (!this.selectedCourseName) {  // Check if selectedCourseName is selected
+    if (!this.selectedCourseName) {
       alert('Please select a course before submitting the quiz.');
       return;
     }
-
+ 
+    // Check if all questions have at least 2 options and one correct answer
+    for (let question of this.questions) {
+      if (question.options.filter((opt: { option: string; }) => opt.option.trim() !== '').length < 2) {
+        alert('Each question must have at least two options.');
+        return;
+      }
+ 
+      if (!question.correctOption) {
+        alert('Each question must have a correct answer selected.');
+        return;
+      }
+    }
+ 
     const examData = {
       courseName: this.selectedCourseName,  // Use selectedCourseName as the selected course
       technology: this.selectedCourseName,  // Still passing the same value here for technology
@@ -144,10 +156,10 @@ export class TrainerDashboardComponent implements OnInit {
         }))
       }))
     };
-
+ 
     console.log('Exam Data:', examData);
-
-    if (this.userId !== null) {  // Check if userId is not null
+ 
+    if (this.userId !== null) {
       this.mainService.createExam(this.userId, examData).subscribe({
         next: (response) => {
           console.log('Quiz created successfully', response);
@@ -160,7 +172,7 @@ export class TrainerDashboardComponent implements OnInit {
       console.error('User ID is null, cannot create quiz');
     }
   }
-
+ 
   addQuestion(): void {
     this.questions.push({
       question: '',
@@ -173,8 +185,18 @@ export class TrainerDashboardComponent implements OnInit {
       correctOption: null
     });
   }
-
+ 
   logout() {
     this.authGuard.logout();
   }
+ 
+  hasMinimumTwoOptions(question: any): boolean {
+    return question.options.filter((opt: { option: string; }) => opt.option.trim() !== '').length >= 2;
+  }
+ 
+  hasCorrectAnswer(question: any): boolean {
+    return question.correctOption !== null;
+  }
 }
+ 
+ 

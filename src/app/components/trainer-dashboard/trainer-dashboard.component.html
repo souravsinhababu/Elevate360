@@ -4,12 +4,12 @@
     <p class="welcome-message">Welcome, {{trainername}}!</p>
     <button class="logout-button" (click)="logout()">Logout</button>
   </div>
-
+ 
   <h2>Trainer Dashboard</h2>
-
+ 
   <!-- Loading Message -->
   <div *ngIf="isLoading" class="loading-message">Loading trainees...</div>
-
+ 
   <!-- Trainee List Section -->
   <div *ngIf="!isLoading && trainees.length > 0">
     <section class="assigned-trainees">
@@ -29,7 +29,7 @@
         </tbody>
       </table>
     </section>
-
+ 
     <!-- Courses Section -->
     <section class="courses">
       <h3 class="courses-heading">Courses</h3>
@@ -38,7 +38,7 @@
         <button (click)="selectTab('upcoming')" [class.active]="selectedTab === 'upcoming'">Upcoming</button>
         <button (click)="selectTab('history')" [class.active]="selectedTab === 'history'">History</button>
       </div>
-
+ 
       <!-- Ongoing Courses -->
       <div *ngIf="selectedTab === 'ongoing'" class="tab-content">
         <ul *ngIf="hasOngoingCourses()">
@@ -51,7 +51,7 @@
         </ul>
         <p *ngIf="!hasOngoingCourses()">No Courses</p>
       </div>
-
+ 
       <!-- Upcoming Courses -->
       <div *ngIf="selectedTab === 'upcoming'" class="tab-content">
         <ul *ngIf="hasUpcomingCourses()">
@@ -64,7 +64,7 @@
         </ul>
         <p *ngIf="!hasUpcomingCourses()">No Courses</p>
       </div>
-
+ 
       <!-- Completed Courses -->
       <div *ngIf="selectedTab === 'history'" class="tab-content">
         <ul *ngIf="hasCompletedCourses()">
@@ -79,43 +79,61 @@
       </div>
     </section>
   </div>
-
+ 
   <!-- No Trainees Message -->
   <div *ngIf="!isLoading && trainees.length === 0" class="no-trainees-message">
     <p>No trainees assigned to you.</p>
   </div>
-
-  <!-- Quiz Section -->
-  <section class="quiz-section">
-    <h3>Create Quiz</h3>
-    <form (ngSubmit)="submitQuiz()">
-      <!-- Dropdown to select course (dynamically populated from availableCourses) -->
-      <label for="courseName">Select Course</label>
-      <select [(ngModel)]="selectedCourseName" name="courseName" required>
-        <option value="" disabled>Select Course</option>
-        <option *ngFor="let course of availableCourses" [value]="course">{{ course }}</option>
-      </select>
-
-      <!-- Add questions dynamically -->
-      <div *ngFor="let question of questions; let i = index">
-        <div class="question-container">
-          <label for="question-{{i}}">Question {{i + 1}}</label>
-          <input type="text" [(ngModel)]="question.question" name="question-{{i}}" required />
-
-          <!-- 4 Fixed Options -->
-          <div *ngFor="let option of question.options; let j = index">
-            <label for="option-{{i}}-{{j}}">Option {{j + 1}}</label>
-            <input type="text" [(ngModel)]="option.option" name="option-{{i}}-{{j}}" required />
-
-            <!-- Correct Answer Radio Button for each option -->
-            <input type="radio" [(ngModel)]="question.correctOption" name="correctOption-{{i}}" [value]="option" (change)="markCorrectOption(question, option)" />
-            <label>Correct</label>
+ 
+ <!-- Quiz Section -->
+<section class="quiz-section">
+  <h3>Create Quiz</h3>
+  <form (ngSubmit)="submitQuiz()" #quizForm="ngForm">
+    <!-- Dropdown to select course (dynamically populated from availableCourses) -->
+    <label for="courseName">Select Course</label>
+    <select [(ngModel)]="selectedCourseName" name="courseName" required #courseName="ngModel">
+      <option value="" disabled>Select Course</option>
+      <option *ngFor="let course of availableCourses" [value]="course">{{ course }}</option>
+    </select>
+    <div *ngIf="courseName.invalid && courseName.touched" class="error-message">
+      Please select a course.
+    </div>
+ 
+    <!-- Add questions dynamically -->
+    <div *ngFor="let question of questions; let i = index">
+      <div class="question-container">
+        <label for="question-{{i}}">Question {{i + 1}}</label>
+        <input type="text" [(ngModel)]="question.question" name="question-{{i}}" required #question="ngModel" />
+        <div *ngIf="question.invalid && question.touched" class="error-message">
+          Please provide a question.
+        </div>
+ 
+        <!-- 4 Fixed Options -->
+        <div *ngFor="let option of question.options; let j = index">
+          <label for="option-{{i}}-{{j}}">Option {{j + 1}}</label>
+          <input type="text" [(ngModel)]="option.option" name="option-{{i}}-{{j}}" required #option="ngModel" />
+          <div *ngIf="option.invalid && option.touched" class="error-message">
+            Please provide an option.
           </div>
+ 
+          <!-- Correct Answer Radio Button for each option -->
+          <input type="radio" [(ngModel)]="question.correctOption" name="correctOption-{{i}}" [value]="option" (change)="markCorrectOption(question, option)" />
+          <label>Correct</label>
+        </div>
+ 
+        <!-- Validation for minimum 2 options and selecting a correct answer -->
+        <div *ngIf="!hasMinimumTwoOptions(question)" class="error-message">
+          A question must have four options.
+        </div>
+        <div *ngIf="!hasCorrectAnswer(question)" class="error-message">
+          Please select a correct answer for this question.
         </div>
       </div>
-
-      <button type="button" (click)="addQuestion()">Add Question</button>
-      <button type="submit" [disabled]="questions.length === 0 || !selectedCourseName">Submit Quiz</button>
-    </form>
-  </section>
-</div>
+    </div>
+ 
+    <button type="button" (click)="addQuestion()">Add Question</button>
+    <button type="submit" [disabled]="quizForm.invalid || questions.length === 0 || !selectedCourseName">Submit Quiz</button>
+  </form>
+</section>
+ 
+ 
