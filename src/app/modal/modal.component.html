@@ -1,0 +1,7 @@
+<div *ngIf="showModal" class="modal-backdrop" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()"> <!-- Prevent modal from closing when clicking inside -->
+      <ng-content></ng-content> <!-- Content passed from parent -->
+      <button (click)="closeModal()" class="close-btn">Close</button>
+    </div>
+  </div>
+  

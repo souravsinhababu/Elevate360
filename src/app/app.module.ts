@@ -12,6 +12,8 @@ import { AdminDashboardComponent } from './components/admin-dashboard/admin-dash
 import { AppRoutingModule } from '../core/routes/app-routing.module';
 import { AddTraineeComponent } from './components/add-trainee/add-trainee.component';
 import { AddTrainerComponent } from './components/add-trainer/add-trainer.component';
+import { TestComponent } from './test/test.component';
+import { ModalComponent } from './modal/modal.component';
 
 
 
@@ -24,7 +26,9 @@ import { AddTrainerComponent } from './components/add-trainer/add-trainer.compon
     TrainerDashboardComponent,
     AdminDashboardComponent,
     AddTraineeComponent,
-    AddTrainerComponent
+    AddTrainerComponent,
+    TestComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,

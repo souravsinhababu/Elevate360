@@ -105,5 +105,18 @@ assignCoursesToTrainer(trainerId: number, courses: string[], startDate: string, 
   sendSignupLink(user: { email: string }): Observable<string> {
     return this.http.post<string>(`${environment.apiUrl}/admin/send-signup-link`, user);
   }
+  editTraineeDetails(traineeId: number, traineeData: { email: string, password: string }): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/admin/edit-trainee/${traineeId}`, traineeData);
+  }
+ 
+  editTrainerDetails(trainerId: number, updateRequest: { email: string, password: string }): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/trainer/edit-trainer/${trainerId}`, updateRequest);
+  }
+  getQuestions(traineeId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/exam/trainer/${traineeId}`);
+  }
+  submitTest(testResult: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/submit`, testResult);
+  }
  
 }

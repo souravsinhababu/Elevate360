@@ -1,10 +1,33 @@
 <div class="dashboard-container">
   <!-- Header Section -->
-  <div class="header">
-    <p class="welcome-message">Welcome, {{trainername}}!</p>
-    <button class="logout-button" (click)="logout()">Logout</button>
-  </div>
  
+    <p class="welcome-message">Welcome, {{trainername}}!</p>
+    <button class="edit-button" (click)="openEditTrainerModal()">Edit Details</button>
+    <button class="logout-button" (click)="logout()">Logout</button>
+ 
+ 
+  <!-- Edit Trainer Modal (Popup) -->
+  <div *ngIf="showEditTrainerModal" class="modal">
+    <div class="modal-content">
+      <h3>Edit Trainer Details</h3>
+      <form [formGroup]="editTrainerForm" (ngSubmit)="onEditTrainerSubmit()" class="edit-form">
+        <label for="email">Email:</label>
+        <input type="email" id="email" formControlName="email" placeholder="Enter new email" required />
+        <div *ngIf="isInvalid('email')" class="error">Please enter a valid email.</div>
+ 
+        <label for="password">Password:</label>
+        <input type="password" id="password" formControlName="password" placeholder="Enter new password" required />
+        <div *ngIf="isInvalid('password')" class="error">Password is required and should be at least 6 characters.</div>
+ 
+        <div class="button-container">
+          <button type="submit" class="save-button">Save Changes</button>
+          <button type="button" (click)="closeEditTrainerModal()" class="close-btn">Close</button>
+        </div>
+      </form>
+    </div>
+</div>
+
+
   <h2>Trainer Dashboard</h2>
  
   <!-- Loading Message -->
@@ -136,4 +159,5 @@
   </form>
 </section>
  
- 
+
+ </div>
