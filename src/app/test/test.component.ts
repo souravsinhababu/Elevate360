@@ -13,20 +13,34 @@ export class TestComponent implements OnInit {
   currentQuestionIndex: number = 0; // Index for navigating questions
   selectedAnswers: string[] = []; // Stores selected answers
   currentExam: any; // Stores the current exam data
-  traineeId: number = 58; // Set traineeId if needed
+  traineeId: number | null = null; // Set traineeId as a number or null if not available
 
   constructor(private mainService: MainService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.loadExams();
+    // Retrieve trainee ID from localStorage and convert to number
+    const storedTraineeId = localStorage.getItem('userId');
+    if (storedTraineeId) {
+      this.traineeId = parseInt(storedTraineeId, 10); // Convert to number
+      console.log('Trainee ID:', this.traineeId); // Log to ensure it's correct
+    }
+
+    // Ensure traineeId is valid before calling loadExams
+    if (this.traineeId) {
+      this.loadExams();
+    } else {
+      console.error('Trainee ID not found or invalid.');
+    }
   }
 
   loadExams() {
-    this.mainService.getQuestions(this.traineeId).subscribe((data: any[]) => {
-      this.exams = data;
-      this.currentExam = this.exams[this.currentExamIndex]; // Load the first exam
-      this.displayQuestion();
-    });
+    if (this.traineeId !== null) {
+      this.mainService.getQuestions(this.traineeId).subscribe((data: any[]) => {
+        this.exams = data;
+        this.currentExam = this.exams[this.currentExamIndex]; // Load the first exam
+        this.displayQuestion();
+      });
+    }
   }
 
   displayQuestion() {
@@ -68,13 +82,17 @@ export class TestComponent implements OnInit {
   }
 
   submitTest() {
-    const testResult = {
-      traineeId: this.traineeId,
-      answers: this.selectedAnswers
-    };
+    if (this.traineeId !== null) {
+      const testResult = {
+        traineeId: this.traineeId,
+        answers: this.selectedAnswers
+      };
 
-    this.mainService.submitTest(testResult).subscribe((response: any) => {
-      alert('Test submitted successfully!');
-    });
+      this.mainService.submitTest(testResult).subscribe((response: any) => {
+        alert('Test submitted successfully!');
+      });
+    } else {
+      console.error('Trainee ID is invalid.');
+    }
   }
 }

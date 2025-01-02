@@ -32,22 +32,24 @@ export class TraineeDashboardComponent implements OnInit {
     // Retrieve trainee name and ID dynamically from localStorage
     const storedUsername = localStorage.getItem('username');
     const storedTraineeId = localStorage.getItem('userId');  // Ensure 'traineeId' is correctly stored in localStorage
-
+  
     if (storedUsername) {
       this.traineename = storedUsername;  // Set the trainee name from localStorage
     }
-
+  
     if (storedTraineeId) {
       this.traineeId = parseInt(storedTraineeId, 10);  // Dynamically retrieve the traineeId
+      console.log('Retrieved Trainee ID:', this.traineeId);  // Log the retrieved traineeId
     } else {
       console.error('Trainee ID is not available in localStorage!');
     }
-
+  
     this.editTraineeForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
+  
 
   isInvalid(controlName: string): boolean {
     const control = this.editTraineeForm.get(controlName);
@@ -104,6 +106,7 @@ export class TraineeDashboardComponent implements OnInit {
 
   // Function to navigate to the Test page
   takeTest() {
+    
     this.router.navigate(['/test']);  // Navigate to the test component
   }
 }
