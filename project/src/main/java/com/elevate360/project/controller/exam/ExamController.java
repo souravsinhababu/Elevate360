@@ -24,7 +24,8 @@ public class ExamController {
     private UserService userService;
 
     @PostMapping("/create/{trainerId}")
-    public ResponseEntity<Exam> createExam(@RequestBody Exam exam) {
+    public ResponseEntity<Exam> createExam(@PathVariable Long trainerId, @RequestBody Exam exam) {
+        exam.setTrainerId(trainerId);
         Exam savedExam = examService.createExam(exam);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedExam);
     }
