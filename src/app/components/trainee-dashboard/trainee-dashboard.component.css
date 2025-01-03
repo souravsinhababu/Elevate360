@@ -1,83 +1,84 @@
-/* Add this in your CSS (e.g., trainee-dashboard.component.css) */
+/* Trainee Dashboard Styles */
 .dashboard-container {
-    position: relative; /* Makes the container a reference point for absolute positioning */
-    padding: 20px;
-  }
- 
-  /* Modal Styling */
-  .modal {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Overlay background */
-  }
- 
-  .modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    width: 400px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
- 
-  /* Buttons Styling */
-  .edit-button, .logout-button {
-    position: absolute; /* Positioning at the top right */
-    top: 10px; /* Distance from the top */
-    padding: 10px 20px;
-    background-color: #4CAF50; /* Green background */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-  }
- 
-  /* Logout button positioned further left */
-  .logout-button {
-    right: 100px; /* Move the logout button 100px from the right */
-  }
- 
-  /* Edit button positioned 190px from the right */
-  .edit-button {
-    right: 190px; /* Increased distance from the right edge */
-  }
- 
-  .edit-button:hover, .logout-button:hover {
-    background-color: #45a049; /* Darker green when hovered */
-    transform: scale(1.05); /* Slight scale effect on hover */
-  }
- 
-  .error {
-    color: red;
-    font-size: 12px;
-  }
- 
-  /* Button Container for Modal */
-  .button-container {
-    display: flex;
-    justify-content: space-between;
-  }
- 
-  .save-button, .close-btn {
-    padding: 8px 16px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
- 
-  .save-button:hover, .close-btn:hover {
-    background-color: #45a049;
-  }
-  /* Modal Styles */
+  position: relative; /* Makes the container a reference point for absolute positioning */
+  padding: 20px;
+}
+
+/* Modal Styling */
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Overlay background */
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Buttons Styling */
+.edit-button, .logout-button {
+  position: absolute; /* Positioning at the top right */
+  top: 10px; /* Distance from the top */
+  padding: 10px 20px;
+  background-color: #4CAF50; /* Green background */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Logout button positioned further left */
+.logout-button {
+  right: 100px; /* Move the logout button 100px from the right */
+}
+
+/* Edit button positioned 190px from the right */
+.edit-button {
+  right: 190px; /* Increased distance from the right edge */
+}
+
+.edit-button:hover, .logout-button:hover {
+  background-color: #45a049; /* Darker green when hovered */
+  transform: scale(1.05); /* Slight scale effect on hover */
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+}
+
+/* Button Container for Modal */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.save-button, .close-btn {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.save-button:hover, .close-btn:hover {
+  background-color: #45a049;
+}
+
+/* Modal Styles */
 .modal {
   position: fixed;
   top: 0;
@@ -90,7 +91,7 @@
   align-items: center;
   z-index: 1000;
 }
- 
+
 .modal-content {
   background-color: white;
   padding: 20px;
@@ -99,7 +100,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.3s ease-out;
 }
- 
+
 /* Fade-in animation for modal */
 @keyframes fadeIn {
   from {
@@ -111,18 +112,18 @@
     transform: scale(1);
   }
 }
- 
+
 /* Modal Form Styling */
 .edit-form {
   display: flex;
   flex-direction: column;
 }
- 
+
 .edit-form label {
   font-size: 16px;
   margin-bottom: 8px;
 }
- 
+
 .edit-form input {
   padding: 10px;
   font-size: 14px;
@@ -130,12 +131,12 @@
   border-radius: 6px;
   margin-bottom: 20px;
 }
- 
+
 .button-container {
   display: flex;
   justify-content: space-between;
 }
- 
+
 .save-button {
   padding: 10px 20px;
   background-color: #28a745;
@@ -144,11 +145,11 @@
   cursor: pointer;
   border-radius: 6px;
 }
- 
+
 .save-button:hover {
   background-color: #218838;
 }
- 
+
 .close-btn {
   padding: 10px 20px;
   background-color: #6c757d;
@@ -157,16 +158,102 @@
   cursor: pointer;
   border-radius: 6px;
 }
- 
+
 .close-btn:hover {
   background-color: #5a6268;
 }
- 
-/* Error Message Styling */
+
 .error {
   color: #f44336;
   font-size: 12px;
   margin-top: -10px;
 }
- 
- 
+
+/* Test Component Styles */
+
+/* Main container for the test */
+.test-container {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading for the test */
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Style for the question section */
+.question {
+  margin-bottom: 30px;
+}
+
+.question h3 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Style for each option (radio button and label) */
+.question input[type="radio"] {
+  margin-right: 10px;
+}
+
+.question label {
+  font-size: 16px;
+  color: #555;
+  cursor: pointer;
+}
+
+.question label:hover {
+  text-decoration: underline;
+}
+
+/* Container for buttons */
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Style for the navigation buttons */
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Disabled state for the 'Next Exam' button when there are no more exams */
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Style for the loading text */
+ng-template #loading {
+  text-align: center;
+  font-size: 18px;
+  color: #007bff;
+  margin-top: 50px;
+}
+
+/* Styling for individual answer options when hovered */
+.question input[type="radio"]:checked + label {
+  font-weight: bold;
+  color: #007bff;
+}

@@ -1,13 +1,39 @@
+<!-- trainee-dashboard.component.html -->
 <div class="dashboard-container">
   <h2>Welcome, {{ traineename }}</h2>
 
   <!-- Button to open Test popup -->
   <button (click)="openTestPopup()">Start Test</button>
 
-  <!-- Modal with TestComponent inside it -->
-  <app-modal [showModal]="showModal" (close)="closeTestPopup()">
-    <app-test></app-test>  <!-- Pass TestComponent inside the modal -->
-  </app-modal>
+  <!-- Test Modal -->
+  <div *ngIf="showModal" class="modal-backdrop" (click)="closeTestPopup()">
+    <div class="modal-content" (click)="$event.stopPropagation()"> <!-- Prevent modal from closing when clicking inside -->
+      <h1>Take Test</h1>
+
+      <!-- Exam and Question Navigation -->
+      <div *ngIf="currentExam; else loading">
+        <div class="question">
+          <h3>{{ currentExam?.questions[currentQuestionIndex]?.question }}</h3>
+          <div *ngFor="let option of currentExam?.questions[currentQuestionIndex]?.options; let i = index">
+            <input type="radio" name="answer" [value]="option.option" id="option{{i}}">
+            <label for="option{{i}}">{{ option.option }}</label><br>
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button (click)="nextQuestion()">Next Question</button>
+          <button *ngIf="currentQuestionIndex === currentExam?.questions.length - 1" (click)="nextExam()">Next Exam</button>
+          <button *ngIf="currentExamIndex === exams.length - 1" (click)="submitTest()">Submit Test</button>
+        </div>
+      </div>
+
+      <ng-template #loading>
+        <p>Loading exams...</p>
+      </ng-template>
+
+      <button (click)="closeTestPopup()" class="close-btn">Close</button>
+    </div>
+  </div>
 
   <!-- Edit Button to open the form -->
   <button class="edit-button" (click)="openEditTraineeModal()">Edit Details</button>

@@ -16,10 +16,16 @@ export class TraineeDashboardComponent implements OnInit {
   public updatedEmail: string = '';
   public updatedPassword: string = '';
   public showEditTraineeModal = false;
+  public showModal: boolean = false; // Controls visibility of the test modal
   editTraineeForm!: FormGroup; // Form to edit trainee details
   public traineeId: number | undefined;
-  showModal: boolean = false; // Controls visibility of the modal
-
+  
+  // Exam-related variables
+  exams: any[] = [];
+  currentExamIndex: number = 0;
+  currentQuestionIndex: number = 0;
+  selectedAnswers: string[] = [];
+  currentExam: any;
 
   constructor(
     private authGuard: AuthGuard,
@@ -31,7 +37,7 @@ export class TraineeDashboardComponent implements OnInit {
   ngOnInit(): void {
     // Retrieve trainee name and ID dynamically from localStorage
     const storedUsername = localStorage.getItem('username');
-    const storedTraineeId = localStorage.getItem('userId');  // Ensure 'traineeId' is correctly stored in localStorage
+    const storedTraineeId = localStorage.getItem('userId');
   
     if (storedUsername) {
       this.traineename = storedUsername;  // Set the trainee name from localStorage
@@ -39,7 +45,6 @@ export class TraineeDashboardComponent implements OnInit {
   
     if (storedTraineeId) {
       this.traineeId = parseInt(storedTraineeId, 10);  // Dynamically retrieve the traineeId
-      console.log('Retrieved Trainee ID:', this.traineeId);  // Log the retrieved traineeId
     } else {
       console.error('Trainee ID is not available in localStorage!');
     }
@@ -48,14 +53,85 @@ export class TraineeDashboardComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+
+    if (this.traineeId) {
+      this.loadExams(); // Load exams if trainee ID is available
+    }
+  }
+
+  openTestPopup() {
+    this.showModal = true;
+  }
+
+  closeTestPopup() {
+    this.showModal = false;
+  }
+
+  loadExams() {
+    if (this.traineeId !== undefined && this.traineeId !== null) {
+      this.mainService.getQuestions(this.traineeId).subscribe((data: any[]) => {
+        this.exams = data;
+        this.currentExam = this.exams[this.currentExamIndex];
+        this.displayQuestion();
+      });
+    } else {
+      console.error('Trainee ID is invalid or not found');
+    }
   }
   
 
-  isInvalid(controlName: string): boolean {
-    const control = this.editTraineeForm.get(controlName);
-    return !!(control?.invalid && control?.touched);  // Return true if invalid and touched
+  displayQuestion() {
+    const currentQuestion = this.currentExam?.questions[this.currentQuestionIndex];
+    if (currentQuestion) {
+      this.selectedAnswers[this.currentQuestionIndex] = ''; // Reset answer for current question
+    }
   }
 
+  nextQuestion() {
+    const selectedOption = this.getSelectedOption();
+    if (selectedOption) {
+      this.selectedAnswers[this.currentQuestionIndex] = selectedOption;
+    }
+
+    this.currentQuestionIndex++;
+
+    if (this.currentQuestionIndex >= this.currentExam?.questions.length) {
+      this.nextExam();
+    } else {
+      this.displayQuestion();
+    }
+  }
+
+  getSelectedOption(): string | null {
+    const selectedOption = document.querySelector('input[name="answer"]:checked');
+    return selectedOption ? (selectedOption as HTMLInputElement).value : null;
+  }
+
+  nextExam() {
+    this.currentExamIndex++;
+    if (this.currentExamIndex >= this.exams.length) {
+      this.submitTest();  // If no more exams, submit the test
+    } else {
+      this.currentExam = this.exams[this.currentExamIndex];
+      this.currentQuestionIndex = 0; // Reset question index for the next exam
+      this.displayQuestion();
+    }
+  }
+
+  submitTest() {
+    const traineeId = this.traineeId as number; // Type assertion
+  
+    const testResult = {
+      traineeId: traineeId,  // Now it's treated as a number
+      answers: this.selectedAnswers
+    };
+  
+    this.mainService.submitTest(testResult).subscribe((response: any) => {
+      alert('Test submitted successfully!');
+    });
+  }
+  
+  
   openEditTraineeModal(): void {
     this.showEditTraineeModal = true;
   }
@@ -63,14 +139,10 @@ export class TraineeDashboardComponent implements OnInit {
   closeEditTraineeModal(): void {
     this.showEditTraineeModal = false;
   }
-  // Opens the modal
-  openTestPopup() {
-    this.showModal = true;
-  }
 
-  // Closes the modal
-  closeTestPopup() {
-    this.showModal = false;
+  isInvalid(controlName: string): boolean {
+    const control = this.editTraineeForm.get(controlName);
+    return !!(control?.invalid && control?.touched);  // Return true if invalid and touched
   }
 
   onEditTraineeSubmit(): void {
@@ -102,11 +174,5 @@ export class TraineeDashboardComponent implements OnInit {
 
   logout() {
     this.authGuard.logout();  // Logout the user
-  }
-
-  // Function to navigate to the Test page
-  takeTest() {
-    
-    this.router.navigate(['/test']);  // Navigate to the test component
   }
 }
