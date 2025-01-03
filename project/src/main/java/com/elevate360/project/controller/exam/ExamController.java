@@ -1,9 +1,13 @@
 package com.elevate360.project.controller.exam;
 
+import com.elevate360.project.dto.examvalidator.ExamSubmissionDTO;
 import com.elevate360.project.entity.exam.Exam;
+import com.elevate360.project.entity.exam.validator.ExamResult;
 import com.elevate360.project.service.UserService;
 import com.elevate360.project.service.exam.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,9 +24,9 @@ public class ExamController {
     private UserService userService;
 
     @PostMapping("/create/{trainerId}")
-    public Exam createExam(@PathVariable Long trainerId, @RequestBody Exam exam) {
-        exam.setTrainerId(trainerId);
-        return examService.createExam(exam);
+    public ResponseEntity<Exam> createExam(@RequestBody Exam exam) {
+        Exam savedExam = examService.createExam(exam);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedExam);
     }
 
     @GetMapping("/trainer/{traineeId}")
@@ -37,6 +41,10 @@ public class ExamController {
         // For simplicity, assume it returns the trainerId from the User table
         // You can replace this with actual logic to fetch trainerId from your User repository
         return userService.getTrainerIdFromTrainee(traineeId); // Placeholder logic
+    }
+    @PostMapping("/submit/{traineeId}")
+    public ExamResult submitExam(@PathVariable Long traineeId, @RequestBody ExamSubmissionDTO submissionDTO) {
+        return examService.evaluateExam(traineeId, submissionDTO);
     }
 }
 
