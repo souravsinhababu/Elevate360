@@ -3,7 +3,7 @@ import { MainService } from '../../../core/services/main.service';
 import { AuthGuard } from '../../../core/guards/auth.guard';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';  // Import for error handling
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-trainee-dashboard',
@@ -12,20 +12,37 @@ import { HttpErrorResponse } from '@angular/common/http';  // Import for error h
 })
 export class TraineeDashboardComponent implements OnInit {
   public traineename: string = '';
-  public isEditing: boolean = false;
-  public updatedEmail: string = '';
-  public updatedPassword: string = '';
-  public showEditTraineeModal = false;
-  public showModal: boolean = false; // Controls visibility of the test modal
-  editTraineeForm!: FormGroup; // Form to edit trainee details
+  public showModal: boolean = false;
+  editTraineeForm!: FormGroup;
+  public showEditTraineeModal: boolean = false;
   public traineeId: number | undefined;
-  
+
   // Exam-related variables
   exams: any[] = [];
   currentExamIndex: number = 0;
   currentQuestionIndex: number = 0;
   selectedAnswers: string[] = [];
   currentExam: any;
+
+  // Define form fields as an array of objects
+  formFields = [
+    {
+      label: 'Email',
+      type: 'email',
+      id: 'email',
+      required: true,
+      placeholder: 'Enter new email',
+      errorMessage: 'Please enter a valid email.'
+    },
+    {
+      label: 'Password',
+      type: 'password',
+      id: 'password',
+      required: true,
+      placeholder: 'Enter new password',
+      errorMessage: 'Password is required and should be at least 6 characters.'
+    }
+  ];
 
   constructor(
     private authGuard: AuthGuard,
@@ -35,27 +52,26 @@ export class TraineeDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Retrieve trainee name and ID dynamically from localStorage
     const storedUsername = localStorage.getItem('username');
     const storedTraineeId = localStorage.getItem('userId');
-  
+
     if (storedUsername) {
-      this.traineename = storedUsername;  // Set the trainee name from localStorage
+      this.traineename = storedUsername;
     }
-  
+
     if (storedTraineeId) {
-      this.traineeId = parseInt(storedTraineeId, 10);  // Dynamically retrieve the traineeId
+      this.traineeId = parseInt(storedTraineeId, 10);
     } else {
       console.error('Trainee ID is not available in localStorage!');
     }
-  
+
     this.editTraineeForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
 
     if (this.traineeId) {
-      this.loadExams(); // Load exams if trainee ID is available
+      this.loadExams();
     }
   }
 
@@ -65,25 +81,29 @@ export class TraineeDashboardComponent implements OnInit {
 
   closeTestPopup() {
     this.showModal = false;
+    this.currentExam = null; // Reset the exam when closing
   }
 
   loadExams() {
     if (this.traineeId !== undefined && this.traineeId !== null) {
       this.mainService.getQuestions(this.traineeId).subscribe((data: any[]) => {
         this.exams = data;
-        this.currentExam = this.exams[this.currentExamIndex];
-        this.displayQuestion();
       });
     } else {
       console.error('Trainee ID is invalid or not found');
     }
   }
-  
+
+  startExam(exam: any) {
+    this.currentExam = exam;
+    this.currentQuestionIndex = 0;
+    this.displayQuestion();
+  }
 
   displayQuestion() {
     const currentQuestion = this.currentExam?.questions[this.currentQuestionIndex];
     if (currentQuestion) {
-      this.selectedAnswers[this.currentQuestionIndex] = ''; // Reset answer for current question
+      this.selectedAnswers[this.currentQuestionIndex] = '';
     }
   }
 
@@ -95,8 +115,9 @@ export class TraineeDashboardComponent implements OnInit {
 
     this.currentQuestionIndex++;
 
+    // If we've reached the end of the exam, trigger the test submission
     if (this.currentQuestionIndex >= this.currentExam?.questions.length) {
-      this.nextExam();
+      this.submitTest();
     } else {
       this.displayQuestion();
     }
@@ -107,31 +128,19 @@ export class TraineeDashboardComponent implements OnInit {
     return selectedOption ? (selectedOption as HTMLInputElement).value : null;
   }
 
-  nextExam() {
-    this.currentExamIndex++;
-    if (this.currentExamIndex >= this.exams.length) {
-      this.submitTest();  // If no more exams, submit the test
-    } else {
-      this.currentExam = this.exams[this.currentExamIndex];
-      this.currentQuestionIndex = 0; // Reset question index for the next exam
-      this.displayQuestion();
-    }
-  }
-
   submitTest() {
-    const traineeId = this.traineeId as number; // Type assertion
-  
+    const traineeId = this.traineeId as number;
+
     const testResult = {
-      traineeId: traineeId,  // Now it's treated as a number
+      traineeId: traineeId,
       answers: this.selectedAnswers
     };
-  
+
     this.mainService.submitTest(testResult).subscribe((response: any) => {
       alert('Test submitted successfully!');
     });
   }
-  
-  
+
   openEditTraineeModal(): void {
     this.showEditTraineeModal = true;
   }
@@ -142,7 +151,7 @@ export class TraineeDashboardComponent implements OnInit {
 
   isInvalid(controlName: string): boolean {
     const control = this.editTraineeForm.get(controlName);
-    return !!(control?.invalid && control?.touched);  // Return true if invalid and touched
+    return !!(control?.invalid && control?.touched);
   }
 
   onEditTraineeSubmit(): void {
@@ -163,7 +172,7 @@ export class TraineeDashboardComponent implements OnInit {
     this.mainService.editTraineeDetails(this.traineeId, updateRequest).subscribe({
       next: (response) => {
         alert('Trainee details updated successfully!');
-        this.closeEditTraineeModal();  // Close the modal after successful update
+        this.closeEditTraineeModal();
       },
       error: (error: HttpErrorResponse) => {
         alert('Failed to update trainee details!');
@@ -173,6 +182,6 @@ export class TraineeDashboardComponent implements OnInit {
   }
 
   logout() {
-    this.authGuard.logout();  // Logout the user
+    this.authGuard.logout();
   }
 }

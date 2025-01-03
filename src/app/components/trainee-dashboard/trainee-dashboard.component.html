@@ -1,17 +1,28 @@
-<!-- trainee-dashboard.component.html -->
 <div class="dashboard-container">
   <h2>Welcome, {{ traineename }}</h2>
 
   <!-- Button to open Test popup -->
   <button (click)="openTestPopup()">Start Test</button>
 
-  <!-- Test Modal -->
-  <div *ngIf="showModal" class="modal-backdrop" (click)="closeTestPopup()">
-    <div class="modal-content" (click)="$event.stopPropagation()"> <!-- Prevent modal from closing when clicking inside -->
-      <h1>Take Test</h1>
+  <!-- Test Modal in Fullscreen -->
+  <div *ngIf="showModal" class="fullscreen-modal-backdrop" (click)="closeTestPopup()">
+    <div class="fullscreen-modal-content" (click)="$event.stopPropagation()">
+      <button class="fullscreen-close-btn" (click)="closeTestPopup()">×</button>
 
-      <!-- Exam and Question Navigation -->
-      <div *ngIf="currentExam; else loading">
+      <!-- Show Course List or Exam Questions -->
+      <div *ngIf="!currentExam">
+        <h1>Select Course to Start Test</h1>
+
+        <!-- List of Courses displayed as clickable boxes -->
+        <div *ngIf="exams.length > 0" class="course-list">
+          <div *ngFor="let exam of exams" class="course-box" (click)="startExam(exam)">
+            <div class="course-title">{{ exam.courseName }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="currentExam">
+        <h2>{{ currentExam?.courseName }}</h2>
         <div class="question">
           <h3>{{ currentExam?.questions[currentQuestionIndex]?.question }}</h3>
           <div *ngFor="let option of currentExam?.questions[currentQuestionIndex]?.options; let i = index">
@@ -21,17 +32,10 @@
         </div>
 
         <div class="buttons">
-          <button (click)="nextQuestion()">Next Question</button>
-          <button *ngIf="currentQuestionIndex === currentExam?.questions.length - 1" (click)="nextExam()">Next Exam</button>
-          <button *ngIf="currentExamIndex === exams.length - 1" (click)="submitTest()">Submit Test</button>
+          <button (click)="nextQuestion()" [disabled]="currentQuestionIndex === currentExam?.questions.length - 1">Next Question</button>
+          <button *ngIf="currentQuestionIndex === currentExam?.questions.length - 1" (click)="submitTest()">Submit Test</button>
         </div>
       </div>
-
-      <ng-template #loading>
-        <p>Loading exams...</p>
-      </ng-template>
-
-      <button (click)="closeTestPopup()" class="close-btn">Close</button>
     </div>
   </div>
 
@@ -44,28 +48,18 @@
       <h3>Edit Trainee Details</h3>
 
       <form [formGroup]="editTraineeForm" (ngSubmit)="onEditTraineeSubmit()" class="edit-form">
-        <label for="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          formControlName="email"
-          required
-          placeholder="Enter new email"
-        />
-        <div *ngIf="isInvalid('email')" class="error">
-          Please enter a valid email.
-        </div>
-
-        <label for="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          formControlName="password"
-          required
-          placeholder="Enter new password"
-        />
-        <div *ngIf="isInvalid('password')" class="error">
-          Password is required and should be at least 6 characters.
+        <div *ngFor="let field of formFields">
+          <label [for]="field.id">{{ field.label }}:</label>
+          <input
+            [type]="field.type"
+            [id]="field.id"
+            [formControlName]="field.id"
+            [required]="field.required"
+            [placeholder]="field.placeholder"
+          />
+          <div *ngIf="isInvalid(field.id)" class="error">
+            {{ field.errorMessage }}
+          </div>
         </div>
 
         <div class="button-container">
