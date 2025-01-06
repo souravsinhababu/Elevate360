@@ -77,10 +77,20 @@ public class ExamResultDTO {
     // DTO for Question
     public static class QuestionDTO {
 
+        private Long questionId;
         private String question;
         private List<AnswerOptionDTO> options;
 
         // Getters and Setters
+
+        public Long getQuestionId() {
+            return questionId;
+        }
+
+        public void setQuestionId(Long questionId) {
+            this.questionId = questionId;
+        }
+
         public String getQuestion() {
             return question;
         }
@@ -135,6 +145,7 @@ public class ExamResultDTO {
         // Map questions and answer options
         List<QuestionDTO> questionDTOs = exam.getQuestions().stream().map(question -> {
             QuestionDTO questionDTO = new QuestionDTO();
+            questionDTO.setQuestionId(question.getId()); // Assuming `question.getId()` returns the ID
             questionDTO.setQuestion(question.getQuestion());
             List<QuestionDTO.AnswerOptionDTO> answerOptionDTOs = question.getOptions().stream().map(option -> {
                 QuestionDTO.AnswerOptionDTO optionDTO = new QuestionDTO.AnswerOptionDTO();
@@ -145,6 +156,7 @@ public class ExamResultDTO {
             questionDTO.setOptions(answerOptionDTOs);
             return questionDTO;
         }).toList();
+
 
         dto.setQuestions(questionDTOs);
 
