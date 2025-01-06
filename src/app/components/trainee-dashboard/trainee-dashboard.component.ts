@@ -152,22 +152,38 @@ export class TraineeDashboardComponent implements OnInit {
   
   submitTest() {
     const traineeId = this.traineeId as number;
+    
+    if (!traineeId) {
+      alert('Trainee ID is not available.');
+      return;
+    }
+  
+    // Verify the currentExam object before using its id
+    console.log("Current exam details:", this.currentExam);
+    
+    // Check if examId exists
+    const examId = this.currentExam?.examId;
+    if (!examId) {
+      alert('Exam ID is not available.');
+      return;
+    }
   
     // Collect the answers in the required format
     const questionAnswers = this.selectedAnswers.map((answer, index) => {
       return {
-        questionId: this.currentExam?.questions[index]?.id,  // Assuming questions have an 'id' property
-        selectedOption: answer || ''  // Ensure empty strings are handled properly
+        questionId: this.currentExam?.questions[index]?.questionId,  // Ensure you use the correct questionId
+        selectedOption: answer || ''  // Ensure empty answers are sent as an empty string
       };
     });
   
+    // Prepare the payload with examId and questionAnswers
     const testResult = {
+      examId: examId,  // Ensure examId is set here
       traineeId: traineeId,
-      examId: this.currentExam?.id,  
       questionAnswers: questionAnswers
     };
-  
-    // Call the API with the formatted test result
+    
+    // Call the service to submit the test
     this.mainService.submitTest(testResult).subscribe((response: any) => {
       alert('Test submitted successfully!');
       // console.log(response);  
@@ -177,7 +193,7 @@ export class TraineeDashboardComponent implements OnInit {
     });
   }
   
-  
+ 
 
   openEditTraineeModal(): void {
     this.showEditTraineeModal = true;
