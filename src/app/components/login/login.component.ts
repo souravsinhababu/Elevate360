@@ -74,6 +74,10 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('authToken', token);
 
         if (role === 'trainee') {
+          const trainer=response.trainer.username
+          localStorage.setItem('trainername',trainer);
+          const courses=response.trainer.assignedCourses;
+          localStorage.setItem('courses', JSON.stringify(courses));
           this.router.navigate(['/trainee-dashboard']);
         } else if (role === 'trainer') {
           this.router.navigate(['/trainer-dashboard']);

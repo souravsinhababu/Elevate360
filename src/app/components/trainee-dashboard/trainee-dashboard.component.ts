@@ -17,6 +17,11 @@ export class TraineeDashboardComponent implements OnInit {
   public showEditTraineeModal: boolean = false;
   public traineeId: number | undefined;
 
+  // Properties for trainername and courses
+  public trainername: string | null = '';
+  public courses: { courseName: string, startDate: string, endDate: string }[] = [];
+
+
   // Exam-related variables
   exams: any[] = [];
   currentExamIndex: number = 0;
@@ -54,7 +59,19 @@ export class TraineeDashboardComponent implements OnInit {
   ngOnInit(): void {
     const storedUsername = localStorage.getItem('username');
     const storedTraineeId = localStorage.getItem('userId');
+    
+    // Retrieve trainername and courses from localStorage
+    const trainername = localStorage.getItem('trainername');
+    const courses = localStorage.getItem('courses');
 
+    // Assign the values to class properties
+    if (trainername) {
+      this.trainername = trainername;
+    }
+
+    if (courses) {
+      this.courses = JSON.parse(courses); // Parse the courses JSON string into an array
+    }
     if (storedUsername) {
       this.traineename = storedUsername;
     }
