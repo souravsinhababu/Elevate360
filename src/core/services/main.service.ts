@@ -116,7 +116,15 @@ assignCoursesToTrainer(trainerId: number, courses: string[], startDate: string, 
     return this.http.get<any[]>(`${environment.apiUrl}/exam/trainer/${traineeId}`);
   }
   submitTest(testResult: any): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrl}/submit`, testResult);
+    const traineeId = testResult.traineeId;
+    const examId = testResult.examId;
+    const url = `${environment.apiUrl}/exam/submit/${traineeId}`;
+  
+    return this.http.post<any>(url, {
+      examId: examId,
+      questionAnswers: testResult.questionAnswers
+    });
   }
+  
  
 }

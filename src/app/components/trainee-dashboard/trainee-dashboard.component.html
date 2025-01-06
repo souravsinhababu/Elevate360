@@ -7,7 +7,7 @@
   
    <!-- Futuristic trainer name style -->
    <div class="trainer-name-container">
-    <p class="futuristic-trainer-name">Trainer: <span>{{ trainername }}</span></p>
+    <p class="futuristic-trainer-name">Trainer: <span>{{trainername }}</span></p>
   </div>
   
     <div class="timeline">
@@ -50,9 +50,15 @@
         <div class="question">
           <h3>{{ currentExam?.questions[currentQuestionIndex]?.question }}</h3>
           <div *ngFor="let option of currentExam?.questions[currentQuestionIndex]?.options; let i = index">
-            <input type="radio" name="answer" [value]="option.option" id="option{{i}}">
+            <input 
+              type="radio" 
+              name="answer" 
+              [value]="option.option" 
+              id="option{{i}}" 
+              [(ngModel)]="selectedAnswers[currentQuestionIndex]"  >
             <label for="option{{i}}">{{ option.option }}</label><br>
           </div>
+          
         </div>
 
         <div class="buttons">
@@ -93,6 +99,12 @@
       </form>
     </div>
   </div>
+
+  <div *ngIf="scorePercentage !== undefined">
+    <h3>Your Score: {{ scorePercentage }}%</h3>
+    <p>Correct Answers: {{ correctAnswers }} / {{ totalQuestions }}</p>
+  </div>
+  
 
   <!-- Logout button -->
   <button class="logout-button" (click)="logout()">Logout</button>

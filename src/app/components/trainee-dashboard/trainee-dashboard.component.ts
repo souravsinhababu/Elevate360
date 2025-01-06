@@ -48,6 +48,9 @@ export class TraineeDashboardComponent implements OnInit {
       errorMessage: 'Password is required and should be at least 6 characters.'
     }
   ];
+  correctAnswers: any;
+  totalQuestions: any;
+  scorePercentage: any;
 
   constructor(
     private authGuard: AuthGuard,
@@ -127,11 +130,12 @@ export class TraineeDashboardComponent implements OnInit {
   nextQuestion() {
     const selectedOption = this.getSelectedOption();
     if (selectedOption) {
+      // Save the selected option for the current question
       this.selectedAnswers[this.currentQuestionIndex] = selectedOption;
     }
-
+  
     this.currentQuestionIndex++;
-
+  
     // If we've reached the end of the exam, trigger the test submission
     if (this.currentQuestionIndex >= this.currentExam?.questions.length) {
       this.submitTest();
@@ -139,24 +143,41 @@ export class TraineeDashboardComponent implements OnInit {
       this.displayQuestion();
     }
   }
+  
 
   getSelectedOption(): string | null {
     const selectedOption = document.querySelector('input[name="answer"]:checked');
     return selectedOption ? (selectedOption as HTMLInputElement).value : null;
   }
-
+  
   submitTest() {
     const traineeId = this.traineeId as number;
-
+  
+    // Collect the answers in the required format
+    const questionAnswers = this.selectedAnswers.map((answer, index) => {
+      return {
+        questionId: this.currentExam?.questions[index]?.id,  // Assuming questions have an 'id' property
+        selectedOption: answer || ''  // Ensure empty strings are handled properly
+      };
+    });
+  
     const testResult = {
       traineeId: traineeId,
-      answers: this.selectedAnswers
+      examId: this.currentExam?.id,  
+      questionAnswers: questionAnswers
     };
-
+  
+    // Call the API with the formatted test result
     this.mainService.submitTest(testResult).subscribe((response: any) => {
       alert('Test submitted successfully!');
+      // console.log(response);  
+    }, error => {
+      alert('There was an error submitting your test.');
+      console.error(error);
     });
   }
+  
+  
 
   openEditTraineeModal(): void {
     this.showEditTraineeModal = true;
