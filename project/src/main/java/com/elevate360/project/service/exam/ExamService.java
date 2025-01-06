@@ -1,5 +1,6 @@
 package com.elevate360.project.service.exam;
 
+import com.elevate360.project.dto.examvalidator.ExamResultDTO;
 import com.elevate360.project.dto.examvalidator.ExamSubmissionDTO;
 import com.elevate360.project.entity.exam.Exam;
 import com.elevate360.project.entity.exam.validator.ExamResult;

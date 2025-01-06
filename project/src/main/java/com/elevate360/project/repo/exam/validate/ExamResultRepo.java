@@ -9,4 +9,5 @@ public interface ExamResultRepo extends JpaRepository<ExamResult, Long> {
 
     // Custom query method to find results by examId
     List<ExamResult> findByExamId(Long examId);
+    List<ExamResult> findByTraineeId(Long traineeId);
 }
