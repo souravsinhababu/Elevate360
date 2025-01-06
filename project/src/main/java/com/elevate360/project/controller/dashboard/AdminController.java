@@ -136,18 +136,6 @@ public class AdminController {
         return ResponseEntity.ok(response);  // Return the response from the service
     }
 
-
-
-    @GetMapping("/available-courses")
-    public ResponseEntity<List<TrainingList>> getAvailableCourses() {
-        try {
-            List<TrainingList> availableCourses = courseAssignmentService.getAllAvailableCourses();
-            return ResponseEntity.ok(availableCourses);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);
-        }
-    }
-
     // Assigning course to the trainer
     @PostMapping("/assign/{trainerId}")
     public ResponseEntity<Object> assignCoursesToTrainer(
@@ -168,7 +156,6 @@ public class AdminController {
         }
     }
 
-
     // Getting course history
     @GetMapping("/course-history")
     public ResponseEntity<List<CourseHistoryDTO>> getCourseHistories() {
@@ -179,6 +166,17 @@ public class AdminController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+    @GetMapping("/available-courses")
+    public ResponseEntity<List<TrainingList>> getAvailableCourses() {
+        try {
+            List<TrainingList> availableCourses = courseAssignmentService.getAllAvailableCourses();
+            return ResponseEntity.ok(availableCourses);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
 
     @GetMapping("/course-history/{traineeId}")
     public ResponseEntity<CourseHistoryResponse> getCourseHistoriesByTraineeId(@PathVariable Long traineeId) {
