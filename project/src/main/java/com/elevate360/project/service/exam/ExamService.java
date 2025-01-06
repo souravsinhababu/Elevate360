@@ -6,6 +6,7 @@ import com.elevate360.project.entity.exam.validator.ExamResult;
 import com.elevate360.project.repo.exam.ExamRepository;
 import com.elevate360.project.entity.exam.Question;
 import com.elevate360.project.entity.exam.AnswerOption;
+import com.elevate360.project.repo.exam.validate.ExamResultRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,9 @@ public class ExamService {
 
     @Autowired
     private ExamRepository examRepository;
+
+    @Autowired
+    private ExamResultRepo examResult;
 
     // Method to create exam (unchanged)
     public Exam createExam(Exam exam) {
@@ -65,6 +69,7 @@ public class ExamService {
         result.setTotalQuestions(totalQuestions);
         result.setScorePercentage(scorePercentage);
 
+        examResult.save(result);
         return result; // Return result to save or process further
     }
 
