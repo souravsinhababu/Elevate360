@@ -245,7 +245,8 @@ export class AdminDashboardComponent implements OnInit {
           this.selectedTrainee = null;
         },
         error:(error) => {
-          console.log(error);
+          window.location.reload();
+          // console.log(error);
         }
      } );
     }
@@ -316,20 +317,21 @@ export class AdminDashboardComponent implements OnInit {
  
   assignTraineesToTrainer() {
     const selectedTrainees = this.trainees.filter(trainee => trainee.selected);
- 
+    
     selectedTrainees.forEach(trainee => {
       if (this.selectedTrainer && this.selectedTrainer.username) {
         this.mainService.assignTraineesToTrainer(trainee.id, this.selectedTrainer.id).subscribe(
           () => {
             trainee.trainer.username = this.selectedTrainer.username;
             trainee.selected = false;
+           
           }
         );
       } else {
-        console.error('Selected trainer is invalid or null');
+        alert('Selected trainer is invalid or null');
       }
     });
- 
+    window.location.reload();
     this.isAssigningTrainees = false;
     this.selectedTrainer = null;
   }
@@ -419,7 +421,7 @@ openAssignCoursesModal(trainer: any) {
   assignCoursesToTrainer() {
     // Collect the courses to be assigned (only those that are selected)
     const coursesToAssign = Object.keys(this.selectedCourses).filter(course => this.selectedCourses[course]);
-  
+
     if (coursesToAssign.length > 0) {
       // Make an API call to assign courses to the trainer
       this.mainService.assignCoursesToTrainer(this.selectedTrainer.id, coursesToAssign, this.startDate, this.endDate)
@@ -428,7 +430,7 @@ openAssignCoursesModal(trainer: any) {
           this.cancelAssignCourses(); // Close modal after assignment
         });
     } else {
-      console.log("No courses selected");
+      alert("No courses selected");
     }
   }
  

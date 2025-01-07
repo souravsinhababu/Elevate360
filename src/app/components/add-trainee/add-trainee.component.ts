@@ -51,13 +51,13 @@ export class AddTraineeComponent {
      
       this.mainService.updateTrainee(traineeId, traineeData).toPromise()
         .then((response) => {
-          console.log('Trainee updated successfully', response);
+          // console.log('Trainee updated successfully', response);
           alert('Trainee updated successfully!');
           this.traineeAddedOrUpdated.next(response);
           this.addTrainee.emit(response);
         })
         .catch((error) => {
-          console.error('Error updating trainee:', error);
+          // console.error('Error updating trainee:', error);
           alert(`Failed to update trainee. Error: ${error.message || 'Unknown error'}`);
           this.traineeError.next(`Failed to update trainee. Error: ${error.message || 'Unknown error'}`);
         });
@@ -65,13 +65,13 @@ export class AddTraineeComponent {
       // Add new trainee
       this.mainService.sendSignupLink(traineeData).toPromise()
         .then((response) => {
-          console.log('Trainee added successfully', response);
+          // console.log('Trainee added successfully', response);
           alert('Trainee added successfully!');
           this.traineeAddedOrUpdated.next(response);
           this.addTrainee.emit(response);
         })
         .catch((error) => {
-          console.error('Error adding trainee:', error);
+          // console.error('Error adding trainee:', error);
           alert(`Failed to add trainee. Error: ${error.message || 'Unknown error'}`);
           this.traineeError.next(`Failed to add trainee. Error: ${error.message || 'Unknown error'}`);
         });

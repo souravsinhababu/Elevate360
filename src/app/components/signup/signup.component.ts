@@ -125,12 +125,12 @@ export class SignupComponent implements OnInit {
     this.mainService.signup(user).subscribe({
      next: response => {
         alert('Sign Up Successful!');
-        console.log('Signed up user: ', response);
+        // console.log('Signed up user: ', response);
         this.router.navigate(['/login']);
       },
      error: error => {
         alert('Sign Up Failed! Please try again.');
-        console.error(error);
+        // console.error(error);
       }
    } );
   }
