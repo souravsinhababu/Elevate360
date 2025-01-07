@@ -299,9 +299,9 @@ button.assign {
   background-color: #e60000;
 }
 /* Search and Filter Container */
-.search-filter-container {
+.search-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-top: 20px;
   margin-bottom: 20px;
@@ -310,8 +310,8 @@ button.assign {
   width: 100%;
   margin: 20px auto;
 }
-.search-filter-container .search-box,
-.search-filter-container .filter-box {
+.search-container .search-box,
+.search-container .filter-box {
   padding: 8px 12px;
   font-size: 14px;
   border-radius: 5px;
@@ -333,6 +333,7 @@ button.assign {
 .filter-box:focus {
   border-color: #007bff;
 }
+ 
 
 .modal-content button.assign {
   background-color: #ffc107; /* Assign button - yellow */
