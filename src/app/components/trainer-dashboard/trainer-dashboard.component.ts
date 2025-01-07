@@ -233,6 +233,7 @@ onEditTrainerSubmit(): void {
       this.mainService.createExam(this.userId, examData).subscribe({
         next: (response) => {
          alert("quiz added");
+         window.location.reload();
         },
         error: (error) => {
           console.error('Error creating quiz:', error);
