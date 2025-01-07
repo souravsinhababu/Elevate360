@@ -107,7 +107,6 @@ export class TraineeDashboardComponent implements OnInit {
     }
   }
   
-  
   // Display current question
   displayQuestion() {
     const currentQuestion = this.currentExam?.questions[this.currentQuestionIndex];
@@ -169,6 +168,51 @@ export class TraineeDashboardComponent implements OnInit {
   }
 
   logout() {
-    this.authGuard.logout();
+    this.authGuard.logout(); // Logout the user
+  }
+
+  // Check if a form control is invalid
+  isInvalid(controlName: string): boolean {
+    const control = this.editTraineeForm.get(controlName);
+    return !!(control?.invalid && control?.touched);  // Return true if invalid and touched
+  }
+
+  // Open the modal for editing the trainee details
+  openEditTraineeModal(): void {
+    this.showEditTraineeModal = true;
+  }
+
+  // Close the modal
+  closeEditTraineeModal(): void {
+    this.showEditTraineeModal = false;
+  }
+
+  // Handle form submission for editing trainee details
+  onEditTraineeSubmit(): void {
+    if (this.editTraineeForm.invalid) {
+      return; // Don't proceed if form is invalid
+    }
+
+    if (!this.traineeId) {
+      alert('Trainee ID not found!');
+      return;
+    }
+
+    const updateRequest = {
+      email: this.editTraineeForm.value.email,
+      password: this.editTraineeForm.value.password
+    };
+
+    // Call the API to update trainee details using the dynamically fetched traineeId
+    this.mainService.editTraineeDetails(this.traineeId, updateRequest).subscribe({
+      next: (response) => {
+        alert('Trainee details updated successfully!');
+        this.closeEditTraineeModal();  // Close the modal after successful update
+      },
+      error: (error: HttpErrorResponse) => {
+        alert('Failed to update trainee details!');
+        console.error(error);
+      }
+    });
   }
 }
