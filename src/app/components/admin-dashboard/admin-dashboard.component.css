@@ -308,7 +308,8 @@ button.assign {
   padding: 0 15px;
   max-width: 1200px;
   width: 100%;
-  margin: 20px auto;
+  margin-left: 0;           /* Align to the left */
+  margin-right: 0;          /* Ensure no extra margin on the right */
 }
 .search-container .search-box,
 .search-container .filter-box {

@@ -50,6 +50,7 @@ export class MainService {
   getAvailableCourses() {
     return this.http.get<any[]>(`${environment.apiUrl}/admin/available-courses`);
   }
+  
 
   // Method to assign courses to the trainer
  
@@ -107,7 +108,7 @@ assignCoursesToTrainer(trainerId: number, courses: string[], startDate: string, 
   }
   editTraineeDetails(traineeId: number, traineeData: { email: string, password: string }): Observable<any> {
     return this.http.put(`${environment.apiUrl}/admin/edit-trainee/${traineeId}`, traineeData);
-  }
+  } 
  
   editTrainerDetails(trainerId: number, updateRequest: { email: string, password: string }): Observable<any> {
     return this.http.put(`${environment.apiUrl}/trainer/edit-trainer/${trainerId}`, updateRequest);

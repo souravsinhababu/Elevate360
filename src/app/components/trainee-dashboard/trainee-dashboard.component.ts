@@ -82,7 +82,7 @@ export class TraineeDashboardComponent implements OnInit {
         this.exams = data;
       });
     } else {
-      alert('Trainee ID is invalid or not found');
+      console.error('Trainee ID is invalid or not found');
     }
   }
  
@@ -216,5 +216,6 @@ export class TraineeDashboardComponent implements OnInit {
     });
   }
 }
+ 
  
  
