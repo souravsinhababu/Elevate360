@@ -650,3 +650,61 @@ button:disabled {
 .logout-button:hover {
   background-color: #c0392b;
 }
+/* Test Box Container for displaying test details in multiple columns */
+.test-box-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Automatically adjusts to multiple columns */
+  gap: 20px; /* Space between the test boxes */
+  justify-items: center; /* Center the items */
+  width: 100%;
+  max-width: 1200px; /* Optional: limits the maximum width for the grid */
+  margin-top: 20px; /* Spacing between the heading and the test list */
+}
+
+/* Styling for each Test Box */
+.test-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ecf0f1;
+  padding: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  max-width: 280px; /* Limits the width of each test box */
+  text-align: center;
+}
+
+.test-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.test-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+/* Styling for buttons inside test boxes */
+.test-box button {
+  padding: 10px 20px;
+  background-color: #16a085;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.test-box button:hover {
+  background-color: #1abc9c;
+}
+
+/* Disabled state for the buttons inside the test box */
+.test-box button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}

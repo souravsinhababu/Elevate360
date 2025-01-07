@@ -1,15 +1,14 @@
 <div class="dashboard-container">
   <h2>Welcome, {{ traineename }}</h2>
 
+  <!-- Assigned Courses Section -->
   <div *ngIf="trainername && courses">
-    <!-- Heading for the assigned courses section -->
-     <h2 class="assigned-courses-heading">Assigned Courses</h2>
-  
-   <!-- Futuristic trainer name style -->
-   <div class="trainer-name-container">
-    <p class="futuristic-trainer-name">Trainer: <span>{{trainername }}</span></p>
-  </div>
-  
+    <h2 class="assigned-courses-heading">Assigned Courses</h2>
+
+    <div class="trainer-name-container">
+      <p class="futuristic-trainer-name">Trainer: <span>{{ trainername }}</span></p>
+    </div>
+
     <div class="timeline">
       <div *ngFor="let course of courses" class="timeline-event">
         <div class="timeline-circle"></div>
@@ -21,90 +20,53 @@
       </div>
     </div>
   </div>
-  
-  
 
-<br>
-  <!-- Button to open Test popup -->
-  <button (click)="openTestPopup()" class="test-btn">Take Test</button>
+  <br>
 
-  <!-- Test Modal in Fullscreen -->
-  <div *ngIf="showModal" class="fullscreen-modal-backdrop" (click)="closeTestPopup()">
-    <div class="fullscreen-modal-content" (click)="$event.stopPropagation()">
-      <button class="fullscreen-close-btn" (click)="closeTestPopup()">×</button>
-
-      <!-- Show Course List or Exam Questions -->
-      <div *ngIf="!currentExam">
-        <h1>Select Course to Start Test</h1>
-
-        <!-- List of Courses displayed as clickable boxes -->
-        <div *ngIf="exams.length > 0" class="course-list">
-          <div *ngFor="let exam of exams" class="course-box" (click)="startExam(exam)">
-            <div class="course-title">{{ exam.courseName }}</div>
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="currentExam">
-        <h2>{{ currentExam?.courseName }}</h2>
-        <div class="question">
-          <h3>{{ currentExam?.questions[currentQuestionIndex]?.question }}</h3>
-          <div *ngFor="let option of currentExam?.questions[currentQuestionIndex]?.options; let i = index">
-            <input 
-              type="radio" 
-              name="answer" 
-              [value]="option.option" 
-              id="option{{i}}" 
-              [(ngModel)]="selectedAnswers[currentQuestionIndex]"  >
-            <label for="option{{i}}">{{ option.option }}</label><br>
-          </div>
-          
-        </div>
-
-        <div class="buttons">
-          <button (click)="nextQuestion()" [disabled]="currentQuestionIndex === currentExam?.questions.length - 1">Next Question</button>
-          <button *ngIf="currentQuestionIndex === currentExam?.questions.length - 1" (click)="submitTest()">Submit Test</button>
-        </div>
-      </div>
+<!-- Test Details Section -->
+<div *ngIf="exams.length > 0" class="test-details">
+  <h2>Test Details</h2>
+  <div class="test-box-container">
+    <div *ngFor="let exam of exams" class="test-box" (click)="startFullScreenTest(exam)">
+      <div class="test-title">{{ exam.courseName }}</div>
     </div>
   </div>
+</div>
 
-  <!-- Edit Button to open the form -->
-  <button class="edit-button" (click)="openEditTraineeModal()">Edit Details</button>
 
-  <!-- Modal for Editing Trainee Details -->
-  <div *ngIf="showEditTraineeModal" class="modal">
-    <div class="modal-content">
-      <h3>Edit Trainee Details</h3>
+  <!-- Full-Screen Modal for the Test Questions -->
+  <div *ngIf="currentExam" class="fullscreen-modal-backdrop">
+    <div class="fullscreen-modal-content">
+      <h2>{{ currentExam?.courseName }}</h2>
 
-      <form [formGroup]="editTraineeForm" (ngSubmit)="onEditTraineeSubmit()" class="edit-form">
-        <div *ngFor="let field of formFields">
-          <label [for]="field.id">{{ field.label }}:</label>
+      <div class="question">
+        <h3>{{ currentExam?.questions[currentQuestionIndex]?.question }}</h3>
+
+        <div *ngFor="let option of currentExam?.questions[currentQuestionIndex]?.options; let i = index">
           <input
-            [type]="field.type"
-            [id]="field.id"
-            [formControlName]="field.id"
-            [required]="field.required"
-            [placeholder]="field.placeholder"
-          />
-          <div *ngIf="isInvalid(field.id)" class="error">
-            {{ field.errorMessage }}
-          </div>
+            type="radio"
+            name="answer"
+            [value]="option.option"
+            id="option{{i}}"
+            [(ngModel)]="selectedAnswers[currentQuestionIndex]">
+          <label for="option{{i}}">{{ option.option }}</label><br>
         </div>
+      </div>
 
-        <div class="button-container">
-          <button type="submit" class="save-button">Save Changes</button>
-          <button type="button" (click)="closeEditTraineeModal()" class="close-btn">Close</button>
-        </div>
-      </form>
+      <div class="buttons">
+        <button (click)="nextQuestion()" [disabled]="currentQuestionIndex === currentExam?.questions.length - 1">Next Question</button>
+        <button *ngIf="currentQuestionIndex === currentExam?.questions.length - 1" (click)="submitTest()">Submit Test</button>
+      </div>
+
+      <button class="fullscreen-close-btn" (click)="closeTest()">Close</button>
     </div>
   </div>
 
+  <!-- Score Display Section -->
   <div *ngIf="scorePercentage !== undefined">
     <h3>Your Score: {{ scorePercentage }}%</h3>
     <p>Correct Answers: {{ correctAnswers }} / {{ totalQuestions }}</p>
   </div>
-  
 
   <!-- Logout button -->
   <button class="logout-button" (click)="logout()">Logout</button>

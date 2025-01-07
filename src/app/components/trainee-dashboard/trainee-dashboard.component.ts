@@ -21,7 +21,6 @@ export class TraineeDashboardComponent implements OnInit {
   public trainername: string | null = '';
   public courses: { courseName: string, startDate: string, endDate: string }[] = [];
 
-
   // Exam-related variables
   exams: any[] = [];
   currentExamIndex: number = 0;
@@ -66,6 +65,7 @@ export class TraineeDashboardComponent implements OnInit {
     // Retrieve trainername and courses from localStorage
     const trainername = localStorage.getItem('trainername');
     const courses = localStorage.getItem('courses');
+    this.selectedAnswers = new Array(this.currentExam?.questions.length).fill(null);
 
     // Assign the values to class properties
     if (trainername) {
@@ -95,15 +95,6 @@ export class TraineeDashboardComponent implements OnInit {
     }
   }
 
-  openTestPopup() {
-    this.showModal = true;
-  }
-
-  closeTestPopup() {
-    this.showModal = false;
-    this.currentExam = null; // Reset the exam when closing
-  }
-
   loadExams() {
     if (this.traineeId !== undefined && this.traineeId !== null) {
       this.mainService.getQuestions(this.traineeId).subscribe((data: any[]) => {
@@ -114,12 +105,14 @@ export class TraineeDashboardComponent implements OnInit {
     }
   }
 
-  startExam(exam: any) {
-    this.currentExam = exam;
-    this.currentQuestionIndex = 0;
+  // Full-Screen Test
+  startFullScreenTest(exam: any) {
+    this.currentExam = exam; // Set the current exam
+    this.currentQuestionIndex = 0; // Reset the question index
     this.displayQuestion();
   }
 
+  // Display current question
   displayQuestion() {
     const currentQuestion = this.currentExam?.questions[this.currentQuestionIndex];
     if (currentQuestion) {
@@ -127,112 +120,55 @@ export class TraineeDashboardComponent implements OnInit {
     }
   }
 
+  // Move to the next question
   nextQuestion() {
-    const selectedOption = this.getSelectedOption();
-    if (selectedOption) {
-      // Save the selected option for the current question
-      this.selectedAnswers[this.currentQuestionIndex] = selectedOption;
-    }
-  
     this.currentQuestionIndex++;
-  
-    // If we've reached the end of the exam, trigger the test submission
     if (this.currentQuestionIndex >= this.currentExam?.questions.length) {
       this.submitTest();
     } else {
       this.displayQuestion();
     }
   }
-  
 
-  getSelectedOption(): string | null {
-    const selectedOption = document.querySelector('input[name="answer"]:checked');
-    return selectedOption ? (selectedOption as HTMLInputElement).value : null;
-  }
-  
+  // Submit the test
   submitTest() {
     const traineeId = this.traineeId as number;
-    
     if (!traineeId) {
       alert('Trainee ID is not available.');
       return;
     }
-  
-    // Verify the currentExam object before using its id
-    console.log("Current exam details:", this.currentExam);
-    
-    // Check if examId exists
+
     const examId = this.currentExam?.examId;
     if (!examId) {
       alert('Exam ID is not available.');
       return;
     }
-  
-    // Collect the answers in the required format
+
     const questionAnswers = this.selectedAnswers.map((answer, index) => {
       return {
-        questionId: this.currentExam?.questions[index]?.questionId,  // Ensure you use the correct questionId
-        selectedOption: answer || ''  // Ensure empty answers are sent as an empty string
+        questionId: this.currentExam?.questions[index]?.questionId,
+        selectedOption: answer || ''
       };
     });
-  
-    // Prepare the payload with examId and questionAnswers
+
     const testResult = {
-      examId: examId,  // Ensure examId is set here
+      examId: examId,
       traineeId: traineeId,
       questionAnswers: questionAnswers
     };
-    
-    // Call the service to submit the test
+
     this.mainService.submitTest(testResult).subscribe((response: any) => {
       alert('Test submitted successfully!');
-      // console.log(response);  
     }, error => {
       alert('There was an error submitting your test.');
       console.error(error);
     });
   }
-  
- 
 
-  openEditTraineeModal(): void {
-    this.showEditTraineeModal = true;
-  }
-
-  closeEditTraineeModal(): void {
-    this.showEditTraineeModal = false;
-  }
-
-  isInvalid(controlName: string): boolean {
-    const control = this.editTraineeForm.get(controlName);
-    return !!(control?.invalid && control?.touched);
-  }
-
-  onEditTraineeSubmit(): void {
-    if (this.editTraineeForm.invalid) {
-      return;
-    }
-
-    if (!this.traineeId) {
-      alert('Trainee ID not found!');
-      return;
-    }
-
-    const updateRequest = {
-      email: this.editTraineeForm.value.email,
-      password: this.editTraineeForm.value.password
-    };
-
-    this.mainService.editTraineeDetails(this.traineeId, updateRequest).subscribe({
-      next: (response) => {
-        alert('Trainee details updated successfully!');
-        this.closeEditTraineeModal();
-      },
-      error: (error: HttpErrorResponse) => {
-        alert('Failed to update trainee details!');
-        console.error(error);
-      }
-    });
+  // Close the full-screen test
+  closeTest() {
+    this.currentExam = null; // Reset the current exam
+    this.currentQuestionIndex = 0; // Reset the question index
   }
 
   logout() {
