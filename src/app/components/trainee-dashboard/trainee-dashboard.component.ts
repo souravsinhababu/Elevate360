@@ -82,7 +82,7 @@ export class TraineeDashboardComponent implements OnInit {
         this.exams = data;
       });
     } else {
-      alert('Trainee ID is invalid or not found');
+      console.error('Trainee ID is invalid or not found');
     }
   }
  
@@ -106,11 +106,7 @@ export class TraineeDashboardComponent implements OnInit {
       this.displayQuestion(); // Show the first question
     }
   }
-<<<<<<< HEAD
-  
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
   // Display current question
   displayQuestion() {
     const currentQuestion = this.currentExam?.questions[this.currentQuestionIndex];
@@ -174,67 +170,39 @@ export class TraineeDashboardComponent implements OnInit {
   logout() {
     this.authGuard.logout(); // Logout the user
   }
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
   // Check if a form control is invalid
   isInvalid(controlName: string): boolean {
     const control = this.editTraineeForm.get(controlName);
     return !!(control?.invalid && control?.touched);  // Return true if invalid and touched
   }
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
   // Open the modal for editing the trainee details
   openEditTraineeModal(): void {
     this.showEditTraineeModal = true;
   }
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
   // Close the modal
   closeEditTraineeModal(): void {
     this.showEditTraineeModal = false;
   }
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
   // Handle form submission for editing trainee details
   onEditTraineeSubmit(): void {
     if (this.editTraineeForm.invalid) {
       return; // Don't proceed if form is invalid
     }
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
     if (!this.traineeId) {
       alert('Trainee ID not found!');
       return;
     }
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
     const updateRequest = {
       email: this.editTraineeForm.value.email,
       password: this.editTraineeForm.value.password
     };
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
     // Call the API to update trainee details using the dynamically fetched traineeId
     this.mainService.editTraineeDetails(this.traineeId, updateRequest).subscribe({
       next: (response) => {
@@ -248,5 +216,6 @@ export class TraineeDashboardComponent implements OnInit {
     });
   }
 }
+ 
  
  

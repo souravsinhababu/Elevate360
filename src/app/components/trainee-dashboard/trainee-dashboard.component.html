@@ -1,25 +1,14 @@
 <div class="dashboard-container">
   <h2>Welcome, {{ traineename }}</h2>
-<<<<<<< HEAD
-
-  <!-- Edit Button to open the form -->
-  <button class="edit-button" (click)="openEditTraineeModal()">Edit Details</button>
-
-=======
  
   <!-- Edit Button to open the form -->
   <button class="edit-button" (click)="openEditTraineeModal()">Edit Details</button>
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
   <!-- Modal for Editing Trainee Details -->
   <div *ngIf="showEditTraineeModal" class="modal">
     <div class="modal-content">
       <h3>Edit Trainee Details</h3>
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
       <form [formGroup]="editTraineeForm" (ngSubmit)="onEditTraineeSubmit()" class="edit-form">
         <label for="email">Email:</label>
         <input
@@ -32,11 +21,7 @@
         <div *ngIf="isInvalid('email')" class="error">
           Please enter a valid email.
         </div>
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
         <label for="password">Password:</label>
         <input
           type="password"
@@ -48,11 +33,7 @@
         <div *ngIf="isInvalid('password')" class="error">
           Password is required and should be at least 6 characters.
         </div>
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
         <div class="button-container">
           <button type="submit" class="save-button">Save Changes</button>
           <button type="button" (click)="closeEditTraineeModal()" class="close-btn">Close</button>
@@ -60,11 +41,7 @@
       </form>
     </div>
   </div>
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
   <!-- Assigned Courses Section -->
   <div *ngIf="trainername && courses">
     <h2 class="assigned-courses-heading">Assigned Courses</h2>
@@ -86,11 +63,7 @@
   </div>
  
   <br>
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
   <!-- Test Details Section -->
   <div *ngIf="exams.length > 0" class="test-details">
     <h2>Test Details</h2>
@@ -100,39 +73,23 @@
       </div>
     </div>
   </div>
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
   <!-- Full-Screen Modal for the Test Questions -->
   <div *ngIf="currentExam" class="fullscreen-modal-backdrop">
     <div class="fullscreen-modal-content">
       <h2>{{ currentExam?.courseName }}</h2>
-<<<<<<< HEAD
-      
-=======
      
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
       <!-- If the test is already taken, show the score -->
       <div *ngIf="scorePercentage !== undefined">
         <h3>Your Score: {{ scorePercentage }}%</h3>
         <p>Correct Answers: {{ correctAnswers }} / {{ totalQuestions }}</p>
       </div>
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
       <!-- If the test is not taken yet, show the questions -->
       <div *ngIf="showModal">
         <div class="question">
           <h3>{{ currentExam?.questions[currentQuestionIndex]?.question }}</h3>
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
           <div *ngFor="let option of currentExam?.questions[currentQuestionIndex]?.options; let i = index">
             <input
               type="radio"
@@ -143,31 +100,20 @@
             <label for="option{{i}}">{{ option.option }}</label><br>
           </div>
         </div>
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
         <div class="buttons">
           <button (click)="nextQuestion()" [disabled]="currentQuestionIndex === currentExam?.questions.length - 1">Next Question</button>
           <button *ngIf="currentQuestionIndex === currentExam?.questions.length - 1" (click)="submitTest()">Submit Test</button>
         </div>
       </div>
-<<<<<<< HEAD
-
-      <button class="fullscreen-close-btn" (click)="closeTest()">Close</button>
-    </div>
-  </div>
-
-=======
  
       <button class="fullscreen-close-btn" (click)="closeTest()">Close</button>
     </div>
   </div>
  
->>>>>>> 70de81a7a0173c458f64e3945f957cc2cb72f207
   <!-- Logout button -->
   <button class="logout-button" (click)="logout()">Logout</button>
 </div>
+ 
  
  
