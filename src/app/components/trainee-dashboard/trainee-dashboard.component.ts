@@ -89,10 +89,10 @@ export class TraineeDashboardComponent implements OnInit {
   startFullScreenTest(exam: any) {
     this.currentExam = exam; // Set the current exam
     this.currentQuestionIndex = 0; // Reset the question index
-    
-    // Check if the exam already has a score
-    if (exam.scorePercentage !== undefined && exam.scorePercentage !== null) {
-      // Exam has a score, display the score directly and do not open the question modal
+  
+    // Check if the exam has a score or not
+    if (exam.scorePercentage !== undefined && exam.scorePercentage !== null && exam.totalQuestions !== 0) {
+      // If the score is available and the total questions are greater than 0, display the score
       this.scorePercentage = exam.scorePercentage;
       this.correctAnswers = exam.correctAnswers;
       this.totalQuestions = exam.totalQuestions;
@@ -100,12 +100,13 @@ export class TraineeDashboardComponent implements OnInit {
       // Hide the question modal since the test is already taken
       this.showModal = false; 
     } else {
-      // Exam has no score yet, so show the questions to be answered
+      // If no score or totalQuestions is 0, display the questions to take the test
       this.selectedAnswers = new Array(exam.questions.length).fill(null); // Reset answers
       this.showModal = true; // Show the question modal to answer questions
       this.displayQuestion(); // Show the first question
     }
   }
+  
   
   // Display current question
   displayQuestion() {
