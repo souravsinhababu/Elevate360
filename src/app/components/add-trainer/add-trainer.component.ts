@@ -55,14 +55,14 @@ export class AddTrainerComponent implements OnChanges {
      
       this.mainService.updateTrainer(trainerId, trainerData).toPromise()
         .then((response) => {
-          console.log('Trainer updated successfully', response);
+          // console.log('Trainer updated successfully', response);
           alert('Trainer updated successfully!');
           this.trainerAddedOrUpdated.next(response);
           this.addTrainer.emit(response);  // Emit the updated trainer data
           window.location.reload();  // Reload the page
         })
         .catch((error) => {
-          console.error('Error updating trainer:', error);
+          // console.error('Error updating trainer:', error);
           alert(`Failed to update trainer. Error: ${error.message || 'Unknown error'}`);
           this.trainerError.next(`Failed to update trainer. Error: ${error.message || 'Unknown error'}`);
         });
@@ -70,14 +70,14 @@ export class AddTrainerComponent implements OnChanges {
       // Add new trainer
       this.mainService.sendSignupLink(trainerData).toPromise()
         .then((response) => {
-          console.log('Trainer added successfully', response);
+          // console.log('Trainer added successfully', response);
           alert('Trainer added successfully!');
           this.trainerAddedOrUpdated.next(response);
           this.addTrainer.emit(response);  // Emit the newly added trainer data
           window.location.reload();  // Reload the page
         })
         .catch((error) => {
-          console.error('Error adding trainer:', error);
+          // console.error('Error adding trainer:', error);
           alert(`Failed to add trainer. Error: ${error.message || 'Unknown error'}`);
           this.trainerError.next(`Failed to add trainer. Error: ${error.message || 'Unknown error'}`);
         });

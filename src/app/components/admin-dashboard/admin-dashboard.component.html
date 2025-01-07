@@ -69,7 +69,18 @@
       <p>{{ trainees.length }}</p>
     </div>
   </div>
- 
+  <div class="search-container">
+    <label for="searchInput">Search:</label>
+    <input
+      type="text"
+      id="searchInput"
+      [(ngModel)]="searchQuery"
+      (input)="filterList()"
+      placeholder="Search by name or email"
+    />
+  </div>
+  
+
   <!-- Buttons to show Trainers and Trainees -->
   <div class="role-buttons">
     <button 
@@ -83,22 +94,15 @@
       Show Trainees
     </button>
   </div>
-    <!-- Search and Filter Containers on the Same Line -->
-    <div class="search-filter-container">
-      <div class="search-container">
-        <label for="search">Search: </label>
-        <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="search()" id="search" />
-      </div>
-    </div>
+   
    
  
-  <!-- List of Trainers -->
   <div *ngIf="isTrainerVisible">
     <h3>List of Trainers</h3>
     <div class="action-buttons">
       <button (click)="openAddTrainerModal()">Add Trainer</button>
     </div>
-    <div *ngIf="trainers.length > 0">
+    <div *ngIf="filteredTrainers.length > 0">
       <table class="data-table">
         <thead>
           <tr>
@@ -109,7 +113,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let trainer of trainers">
+          <tr *ngFor="let trainer of filteredTrainers">
             <td>{{ trainer.username }}</td>
             <td>{{ trainer.email }}</td>
             <td>
@@ -130,65 +134,62 @@
         </tbody>
       </table>
     </div>
-    <div *ngIf="trainers.length === 0">No trainers found.</div>
+    <div *ngIf="filteredTrainers.length === 0">No trainers found.</div>
   </div>
- 
-<!-- List of Trainees -->
-<div *ngIf="isTraineeVisible">
-  <h3>List of Trainees</h3>
-  <div class="action-buttons">
-    <button (click)="openAddTraineeModal()">Add Trainee</button>
+  
+  <div *ngIf="isTraineeVisible">
+    <h3>List of Trainees</h3>
+    <div class="action-buttons">
+      <button (click)="openAddTraineeModal()">Add Trainee</button>
+    </div>
+    <div *ngIf="filteredTrainees.length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Trainer Name</th>
+            <th>History</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let trainee of filteredTrainees">
+            <td>{{ trainee.username }}</td>
+            <td>{{ trainee.email }}</td>
+            <td>{{ trainee.trainer?.username || 'No Trainer Assigned' }}</td>
+            <td>
+              <div *ngIf="trainee.courseHistory && trainee.courseHistory.length > 0; else noCourses">
+                <ul>
+                  <li *ngFor="let course of trainee.courseHistory">
+                    <strong>{{ course.trainerName }}:</strong>
+                    <span *ngFor="let c of course.assignedCourses">
+                      {{ c.courseName }} ({{ c.startDate }} - {{ c.endDate }})
+                    </span>
+                  </li>
+                </ul>
+              </div>
+              <ng-template #noCourses>
+                <p>No courses assigned</p>
+              </ng-template>
+            </td>
+            <td>
+              <button (click)="editTrainee(trainee)" class="btn btn-primary edit">
+                <i class="fas fa-pencil-alt"></i> Edit
+              </button>
+              <button (click)="deleteTrainee(trainee.id)" class="btn btn-danger delete">
+                <i class="fas fa-trash-alt"></i> Delete
+              </button>
+              <button (click)="unassignTrainer(trainee)" class="btn btn-sm btn-info assign">
+                <i class="fas fa-check"></i> Unassign Trainer
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-  <div *ngIf="trainees.length > 0">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Trainer Name</th>
-          <th>History</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let trainee of trainees">
-          <td>{{ trainee.username }}</td>
-          <td>{{ trainee.email }}</td>
-          <td>{{ trainee.trainer?.username || 'No Trainer Assigned' }}</td> <!-- Safely access trainer's username -->
-          <td>
-            <!-- Check if courseHistory exists and is not empty -->
-            <div *ngIf="trainee.courseHistory && trainee.courseHistory.length > 0; else noCourses">
-              <ul>
-                <li *ngFor="let course of trainee.courseHistory">
-                  <strong>{{ course.trainerName }}:</strong>
-                  <span *ngFor="let c of course.assignedCourses">
-                    {{ c.courseName }} ({{ c.startDate }} - {{ c.endDate }})
-                  </span>
-                </li>
-              </ul>
-            </div>
-            <!-- If courseHistory is empty, show "No courses assigned" -->
-            <ng-template #noCourses>
-              <p>No courses assigned</p>
-            </ng-template>
-          </td>
-          <td>
-            <button (click)="editTrainee(trainee)" class="btn btn-primary edit">
-              <i class="fas fa-pencil-alt"></i> Edit
-            </button>
-            <button (click)="deleteTrainee(trainee.id)" class="btn btn-danger delete">
-              <i class="fas fa-trash-alt"></i> Delete
-            </button>
-            <button (click)="unassignTrainer(trainee)" class="btn btn-sm btn-info assign">
-              <i class="fas fa-check"></i> Unassign Trainer
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
+  
  
   <!-- Modals for Add/Edit/Assign (Same as previous code) -->
   <!-- Add Trainer Modal -->
@@ -285,5 +286,3 @@
   
   
 </div>
- 
- 

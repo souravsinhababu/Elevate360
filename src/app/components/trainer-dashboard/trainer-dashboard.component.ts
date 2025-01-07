@@ -103,7 +103,7 @@ onEditTrainerSubmit(): void {
     },
     error: (error: HttpErrorResponse) => {
       alert('Failed to update trainer details!');
-      console.error('Error details:', error);  // Log the full error object
+      // console.error('Error details:', error);  
       if (error.error && error.error.message) {
         console.error('Error Message:', error.error.message);
       }
