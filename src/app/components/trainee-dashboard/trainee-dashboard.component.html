@@ -34,11 +34,19 @@
 </div>
 
 
-  <!-- Full-Screen Modal for the Test Questions -->
-  <div *ngIf="currentExam" class="fullscreen-modal-backdrop">
-    <div class="fullscreen-modal-content">
-      <h2>{{ currentExam?.courseName }}</h2>
+<!-- Full-Screen Modal for the Test Questions -->
+<div *ngIf="currentExam" class="fullscreen-modal-backdrop">
+  <div class="fullscreen-modal-content">
+    <h2>{{ currentExam?.courseName }}</h2>
+    
+    <!-- If the test is already taken, show the score -->
+    <div *ngIf="scorePercentage !== undefined">
+      <h3>Your Score: {{ scorePercentage }}%</h3>
+      <p>Correct Answers: {{ correctAnswers }} / {{ totalQuestions }}</p>
+    </div>
 
+    <!-- If the test is not taken yet, show the questions -->
+    <div *ngIf="showModal">
       <div class="question">
         <h3>{{ currentExam?.questions[currentQuestionIndex]?.question }}</h3>
 
@@ -57,16 +65,15 @@
         <button (click)="nextQuestion()" [disabled]="currentQuestionIndex === currentExam?.questions.length - 1">Next Question</button>
         <button *ngIf="currentQuestionIndex === currentExam?.questions.length - 1" (click)="submitTest()">Submit Test</button>
       </div>
-
-      <button class="fullscreen-close-btn" (click)="closeTest()">Close</button>
     </div>
-  </div>
 
-  <!-- Score Display Section -->
-  <div *ngIf="scorePercentage !== undefined">
-    <h3>Your Score: {{ scorePercentage }}%</h3>
-    <p>Correct Answers: {{ correctAnswers }} / {{ totalQuestions }}</p>
+    <button class="fullscreen-close-btn" (click)="closeTest()">Close</button>
   </div>
+</div>
+
+
+
+  
 
   <!-- Logout button -->
   <button class="logout-button" (click)="logout()">Logout</button>

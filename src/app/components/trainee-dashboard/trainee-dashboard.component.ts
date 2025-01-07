@@ -28,25 +28,6 @@ export class TraineeDashboardComponent implements OnInit {
   selectedAnswers: string[] = [];
   currentExam: any;
 
-  // Define form fields as an array of objects
-  formFields = [
-    {
-      label: 'Email',
-      type: 'email',
-      id: 'email',
-      required: true,
-      placeholder: 'Enter new email',
-      errorMessage: 'Please enter a valid email.'
-    },
-    {
-      label: 'Password',
-      type: 'password',
-      id: 'password',
-      required: true,
-      placeholder: 'Enter new password',
-      errorMessage: 'Password is required and should be at least 6 characters.'
-    }
-  ];
   correctAnswers: any;
   totalQuestions: any;
   scorePercentage: any;
@@ -105,13 +86,27 @@ export class TraineeDashboardComponent implements OnInit {
     }
   }
 
-  // Full-Screen Test
   startFullScreenTest(exam: any) {
     this.currentExam = exam; // Set the current exam
     this.currentQuestionIndex = 0; // Reset the question index
-    this.displayQuestion();
+    
+    // Check if the exam already has a score
+    if (exam.scorePercentage !== undefined && exam.scorePercentage !== null) {
+      // Exam has a score, display the score directly and do not open the question modal
+      this.scorePercentage = exam.scorePercentage;
+      this.correctAnswers = exam.correctAnswers;
+      this.totalQuestions = exam.totalQuestions;
+      
+      // Hide the question modal since the test is already taken
+      this.showModal = false; 
+    } else {
+      // Exam has no score yet, so show the questions to be answered
+      this.selectedAnswers = new Array(exam.questions.length).fill(null); // Reset answers
+      this.showModal = true; // Show the question modal to answer questions
+      this.displayQuestion(); // Show the first question
+    }
   }
-
+  
   // Display current question
   displayQuestion() {
     const currentQuestion = this.currentExam?.questions[this.currentQuestionIndex];
@@ -159,6 +154,7 @@ export class TraineeDashboardComponent implements OnInit {
 
     this.mainService.submitTest(testResult).subscribe((response: any) => {
       alert('Test submitted successfully!');
+      this.loadExams(); // Reload exams to update the score
     }, error => {
       alert('There was an error submitting your test.');
       console.error(error);
