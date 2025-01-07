@@ -59,8 +59,7 @@ export class AdminDashboardComponent implements OnInit {
     this.loadTrainers();
     this.loadTrainees();
     this.loadAvailableCourses();
-   
-   
+    
     // Retrieve admin name and ID dynamically (example from localStorage)
     const storedUsername = localStorage.getItem('username');
     const storedAdminId = localStorage.getItem('userId');
@@ -79,6 +78,7 @@ export class AdminDashboardComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+    
   }
   isInvalid(controlName: string): boolean {
     const control = this.editAdminForm.get(controlName);
@@ -129,6 +129,9 @@ export class AdminDashboardComponent implements OnInit {
       next:(data) => {
         this.trainers = data;
         this.originalTrainers = [...data]; // Store a copy of the original trainers list
+
+        this.filterList();  // Filter list for trainers after they are loaded
+
       },
       error:(error) => {
         console.error('Error fetching trainers:', error);
@@ -156,22 +159,23 @@ export class AdminDashboardComponent implements OnInit {
       this.trainees = this.originalTrainees;
     } 
   }
-    // Method to filter the list based on search query
-    filterList() {
-      if (this.isTrainerVisible) {
-        this.filteredTrainers = this.trainers.filter(trainer =>
-          trainer.username.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          trainer.email.toLowerCase().includes(this.searchQuery.toLowerCase())
-        );
-      }
-  
-      if (this.isTraineeVisible) {
-        this.filteredTrainees = this.trainees.filter(trainee =>
-          trainee.username.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          trainee.email.toLowerCase().includes(this.searchQuery.toLowerCase())
-        );
-      }
+  filterList() {
+    // Ensure that only the filtered data gets displayed
+    if (this.isTrainerVisible) {
+      this.filteredTrainers = this.trainers.filter(trainer =>
+        trainer.username.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        trainer.email.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
     }
+  
+    if (this.isTraineeVisible) {
+      this.filteredTrainees = this.trainees.filter(trainee =>
+        trainee.username.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        trainee.email.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    }
+  }
+  
   
  
   loadAvailableCourses() {

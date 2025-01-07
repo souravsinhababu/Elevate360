@@ -299,10 +299,10 @@ button.assign {
   background-color: #e60000;
 }
 /* Search and Filter Container */
-.search-filter-container {
+.search-container {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;  /* Use flex-start for left alignment */
+  justify-content: flex-start;
+  align-items: center;
   margin-top: 20px;
   margin-bottom: 20px;
   padding: 0 15px;
@@ -311,9 +311,8 @@ button.assign {
   margin-left: 0;           /* Align to the left */
   margin-right: 0;          /* Ensure no extra margin on the right */
 }
-
-.search-filter-container .search-box,
-.search-filter-container .filter-box {
+.search-container .search-box,
+.search-container .filter-box {
   padding: 8px 12px;
   font-size: 14px;
   border-radius: 5px;
@@ -335,6 +334,7 @@ button.assign {
 .filter-box:focus {
   border-color: #007bff;
 }
+ 
 
 .modal-content button.assign {
   background-color: #ffc107; /* Assign button - yellow */
