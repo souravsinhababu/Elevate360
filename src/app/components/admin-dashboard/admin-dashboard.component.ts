@@ -16,7 +16,7 @@ export class AdminDashboardComponent implements OnInit {
   public originalTrainers: any[] = [];  // Store original trainers list
   public originalTrainees: any[] = [];  // Store original trainees list
   public selectedRole: string = 'All';  
-  public searchQuery: string = '';
+  searchQuery: string = '';
   public selectedTrainer: any;
   public selectedTrainee: any;
   public adminname: string = '';
@@ -37,6 +37,9 @@ export class AdminDashboardComponent implements OnInit {
   public courseHistory: { [traineeId: number]: { trainerName: string; assignedCourses: any[] } } = {};
   public isTrainerVisible: boolean = true;
   public isTraineeVisible: boolean = false;
+  // Filtered trainers and trainees to be displayed
+  filteredTrainers: any[] = [...this.trainers];
+  filteredTrainees: any[] = [...this.trainees];
  
  
   editAdminForm!: FormGroup;  // Form to edit admin details
@@ -126,7 +129,6 @@ export class AdminDashboardComponent implements OnInit {
       next:(data) => {
         this.trainers = data;
         this.originalTrainers = [...data]; // Store a copy of the original trainers list
-        this.search();  // Apply search immediately after loading
       },
       error:(error) => {
         console.error('Error fetching trainers:', error);
@@ -140,33 +142,10 @@ export class AdminDashboardComponent implements OnInit {
         ...item.trainee,  // Extract the trainee object
         courseHistory: item.assignments || []  // Include the assignments or course history
       }));
-  
       // console.log('Trainees:', this.trainees); // Debugging output
     });
   }
-  
-  
-  
-
- 
-  search() {
-    const searchLower = this.searchQuery.toLowerCase();
-  
-    if (this.selectedRole === 'Trainer' || this.selectedRole === 'All') {
-      this.trainers = this.originalTrainers.filter(trainer =>
-        trainer?.username?.toLowerCase().includes(searchLower) ||
-        trainer?.email?.toLowerCase().includes(searchLower)
-      );
-    }
-  
-    if (this.selectedRole === 'Trainee' || this.selectedRole === 'All') {
-      this.trainees = this.originalTrainees.filter(trainee =>
-        trainee?.username?.toLowerCase().includes(searchLower) ||
-        trainee?.email?.toLowerCase().includes(searchLower)
-      );
-    }
-  }
- 
+   
   filterByRole() {
     if (this.selectedRole === 'Trainer') {
       this.trainers = this.originalTrainers;
@@ -175,10 +154,25 @@ export class AdminDashboardComponent implements OnInit {
     } else {
       this.trainers = this.originalTrainers;
       this.trainees = this.originalTrainees;
-    }
- 
-    this.search();  // Reapply search after filtering
+    } 
   }
+    // Method to filter the list based on search query
+    filterList() {
+      if (this.isTrainerVisible) {
+        this.filteredTrainers = this.trainers.filter(trainer =>
+          trainer.username.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          trainer.email.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      }
+  
+      if (this.isTraineeVisible) {
+        this.filteredTrainees = this.trainees.filter(trainee =>
+          trainee.username.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          trainee.email.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      }
+    }
+  
  
   loadAvailableCourses() {
     this.mainService.getAvailableCourses().subscribe({
@@ -194,11 +188,13 @@ export class AdminDashboardComponent implements OnInit {
   showTrainers() {
     this.isTrainerVisible = true;
     this.isTraineeVisible = false;
+    this.filterList(); // Filter list when tab is switched
   }
 
   showTrainees() {
     this.isTrainerVisible = false;
     this.isTraineeVisible = true;
+    this.filterList(); // Filter list when tab is switched
   }
 
   
